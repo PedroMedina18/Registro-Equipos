@@ -4,6 +4,7 @@ from config import COLOR_BASE, COLOR_BARRA_SUPERIOR, COLOR_MENU_LATERAL, COLOR_M
 import util.util_img as util_img
 from .PageEstados import PageEstados
 from .PageTypeEquipos import PageTypeEquipos
+from models.crearTablas import crearTablas
 
 class MainFrame():
 
@@ -15,7 +16,26 @@ class MainFrame():
         self.create_cuerpo_principal()
         self.controles_barra_superior()
         self.controles_menu_lateral()
-   
+    
+    # *Funcion para crear la barra de menus
+    def menus(self):
+        barra_menu = tk.Menu(self.root)
+        self.root.config(menu = barra_menu, width=300, heigh=300)
+
+        menu_inicio = tk.Menu(barra_menu, tearoff=0)
+        menu_opciones = tk.Menu(barra_menu, tearoff=0)
+
+        menu_inicio.add_command(label="Crear Base de Datos", command= crearTablas)
+        menu_inicio.add_command(label="Salir", command= self.root.destroy)
+
+        menu_opciones.add_command(label="Estados")
+        menu_opciones.add_command(label="Areas de Trabajo")
+        menu_opciones.add_command(label="Tipos de Registros")
+
+
+        barra_menu.add_cascade(label="Inicio", menu = menu_inicio)
+        barra_menu.add_cascade(label="Opciones", menu = menu_opciones)
+
     def paneles(self):        
          # Crear paneles: barra superior, menú lateral y cuerpo principal
         self.barra_superior = tk.Frame(self.root, bg=COLOR_BARRA_SUPERIOR, height=60)
@@ -33,7 +53,6 @@ class MainFrame():
         FramePrincipal.pack(side=tk.RIGHT, fill='both', expand=True)
         self.controles_cuerpo()
         
-
     # *Opciones de a barra superior
     def controles_barra_superior(self):
         font_awesome = font.Font(family='FontAwesome', size=12)
