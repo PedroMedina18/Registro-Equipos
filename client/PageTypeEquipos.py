@@ -78,20 +78,20 @@ class PageTypeEquipos():
     def tabla_equipos(self):
 
         # la lista de pelicular
-        self.lista_equipos=[]
+        self.lista_equipos=TipoEquipos.list()
         self.lista_equipos.reverse()
 
         # la tabla de los datos
         # style = ttk.Style()
         # style.configure("tabla.TTreeview", background="black")
 
-        self.tabla = ttk.Treeview(self.framePrincipal, columns=("Nombre", "Marca", "Descripcion"))
+        self.tabla = ttk.Treeview(self.framePrincipal, columns=("Nombre", "Marca", "Descripcion"), height=20)
         # self.tabla.config(style="tabla.TTreeview")
-        self.tabla.grid(row=5, column=0, columnspan=4, sticky="EW")
+        self.tabla.grid(row=5, column=0, columnspan=4, sticky="NSEW")
 
         # Scroll bar
         scroll=ttk.Scrollbar(self.framePrincipal, orient="vertical", command=self.tabla.yview)
-        scroll.grid(row=5, column=4, sticky="nsew")
+        scroll.grid(row=5, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
 
@@ -109,39 +109,38 @@ class PageTypeEquipos():
         # botones finales
 
         # editar
-        self.boton_editar = tk.Button(self.framePrincipal, text="Editar", command=self.editar_datos)
-        self.boton_editar.config(width=20, font=FONT_LABEL, fg="white", bg=COLOR_AZUL, cursor="hand2", activebackground="#35BD6F")
+        self.boton_editar = tk.Button(self.framePrincipal, text="Editar")
+        self.boton_editar.config(width=20, font=FONT_LABEL, fg="white", bg=COLOR_AZUL, cursor="hand2", activebackground=ACTIVE_AZUL, command=self.editar_datos)
         self.boton_editar.grid(row=6, column=0, padx=10, pady=10)
         
         # eliminar
-        self.boton_eliminar = tk.Button(self.framePrincipal, text="Eliminar", command=self.eliminar_datos)
-        self.boton_eliminar.config(width=20, font=FONT_LABEL, fg="white", bg=COLOR_ROJO, cursor="hand2", activebackground="#E15370")
+        self.boton_eliminar = tk.Button(self.framePrincipal, text="Eliminar")
+        self.boton_eliminar.config(width=20, font=FONT_LABEL, fg="white", bg=COLOR_ROJO, cursor="hand2", activebackground=ACTIVE_ROJO, command=self.eliminar_datos)
         self.boton_eliminar.grid(row=6, column=1, padx=10, pady=10)
 
 
     def habilitar_campos(self):
-            pass
-        # self.entry_nombre.config(state="normal")
-        # self.entry_genero.config(state="normal")
-        # self.entry_duracion.config(state="normal")
+        self.entry_nombre.config(state="normal")
+        self.entry_marca.config(state="normal")
+        self.entry_descripcion.config(state="normal")
 
-        # self.boton_guardar.config(state="normal")
-        # self.boton_cancelar.config(state="normal")
+        self.boton_guardar.config(state="normal")
+        self.boton_cancelar.config(state="normal")
 
     def guardar_campos(self):
-            pass
-        # pelicula = Pelicula(
-        #     self.mi_nombre.get(),
-        #     self.mi_duracion.get(),
-        #     self.mi_genero.get(),
-        # )
-        # if(self.id_pelicula==None):
-        #     guardar(pelicula)
-        # else:
-        #     editar(pelicula, self.id_pelicula)
         
-        # self.desabilitar_campos()
-        # self.tabla_peliculas()
+        tipo_equipo = {
+            "nombre" : self.mi_nombre.get(),
+            "marca" : self.mi_marca.get(),
+            "descripcion":self.entry_descripcion.get(1.0, tk.END)
+        }
+        if(self.id_tipo_equipo==None):
+            TipoEquipos.create(nombre=tipo_equipo["nombre"], marca=tipo_equipo["marca"], descripcion=tipo_equipo["descripcion"])
+        else:
+            TipoEquipos.update(id=self.id_tipo_equipo, nombre=tipo_equipo["nombre"], marca=tipo_equipo["marca"], descripcion=tipo_equipo["descripcion"])
+        
+        self.desabilitar_campos()
+        self.tabla_equipos()
 
     def desabilitar_campos(self):
         self.mi_nombre.set("")
@@ -155,3 +154,33 @@ class PageTypeEquipos():
 
         self.boton_guardar.config(state="disabled")
         self.boton_cancelar.config(state="disabled")
+    
+    def editar_datos(self):
+        try:
+            self.id_tipo_equipo=self.tabla.item(self.tabla.selection())["text"]
+            nombre_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][0]
+            marca_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][1]
+            descripcion_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][2]
+
+            self.habilitar_campos()
+
+            self.entry_nombre.insert(0, nombre_tipo_equipo)
+            self.entry_marca.insert(0, marca_tipo_equipo)
+            self.entry_descripcion.insert(1.0, descripcion_tipo_equipo)
+
+        except :
+            titulo = "Edicion de datos"
+            message= "No ha seleccionado ningun registro"
+            messagebox.showerror(titulo, message)
+
+    def eliminar_datos(self):
+
+        try:
+            self.id_tipo_equipo=self.tabla.item(self.tabla.selection())["text"]
+            TipoEquipos.delete(self.id_tipo_equipo)
+            self.tabla_equipos()
+            self.desabilitar_campos()
+        except :
+            titulo = "Eliminar de Registro"
+            message= "No ha seleccionado ningun registro"
+            messagebox.showerror(titulo, message)

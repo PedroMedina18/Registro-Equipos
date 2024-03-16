@@ -3,20 +3,15 @@ from util.comprobacionCampos import  comprobacionString
 from tkinter import messagebox
 from config import TITULO_CAMPOS
 
-class TipoEquipos():
+class Estados():
 
-    def create(nombre="", marca="", descripcion=""):
+    def create(nombre="", descripcion=""):
         conexion =ConexionDB()
         comprobacionNombre=comprobacionString(nombre, 100)
-        comprobacionMarca=comprobacionString(marca, 100)
-        comprobacionDescripcion=comprobacionString(descripcion, 500, False)
+        comprobacionDescripcion=comprobacionString(descripcion, 200, False)
 
         if(not comprobacionNombre["status"]):
             messagebox.showwarning(TITULO_CAMPOS, f'Campo Nombre {comprobacionNombre["message"]}')
-            return None
-        
-        if(not comprobacionMarca["status"]):
-            messagebox.showwarning(TITULO_CAMPOS, f'Campo Marca {comprobacionMarca["message"]}')
             return None
         
         if(not comprobacionDescripcion["status"]):
@@ -24,33 +19,28 @@ class TipoEquipos():
             return None
 
         sql='''
-            INSERT INTO tipos_equipos (nombre, marca, descripcion)
-            VALUES(?, ?, ?)
+            INSERT INTO estados (nombre, descripcion)
+            VALUES(?, ?)
         '''
 
         try:
-            conexion.cursor.execute(sql, (str(nombre), str(marca), str(descripcion)))
+            conexion.cursor.execute(sql, (str(nombre), str(descripcion)))
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
-            message= "La tabla tipo de equipos no esta creada en la base de datos"
+            message= "La tabla estaoos no esta creada en la base de datos"
             messagebox.showwarning(titulo, message)
         finally:
             conexion.cerrar()
 
 
-    def update(nombre="", marca="", descripcion="", id=0):
+    def update(nombre="", descripcion="", id=0):
         conexion=ConexionDB()
         comprobacionNombre=comprobacionString(nombre, 100)
-        comprobacionMarca=comprobacionString(marca, 100)
-        comprobacionDescripcion=comprobacionString(descripcion, 500, False)
+        comprobacionDescripcion=comprobacionString(descripcion, 200, False)
         
         if(not comprobacionNombre["status"]):
             messagebox.showwarning(TITULO_CAMPOS, f'Campo Nombre {comprobacionNombre["message"]}')
-            return None
-        
-        if(not comprobacionMarca["status"]):
-            messagebox.showwarning(TITULO_CAMPOS, f'Campo Marca {comprobacionMarca["message"]}')
             return None
         
         if(not comprobacionDescripcion["status"]):
@@ -58,13 +48,13 @@ class TipoEquipos():
             return None
 
         sql='''
-            UPDATE tipos_equipos
-            SET nombre=?, marca=?, descripcion=?
+            UPDATE estados
+            SET nombre=?, descripcion=?
             WHERE id = ?
         '''
 
         try:
-            conexion.cursor.execute(sql, (str(nombre), str(marca), str(descripcion), int(id)))
+            conexion.cursor.execute(sql, (str(nombre), str(descripcion), int(id)))
         except Exception as error:
             print(error)
             titulo = "Edicion de datos"
@@ -77,7 +67,7 @@ class TipoEquipos():
         conexion=ConexionDB()
 
         sql='''
-            Delete FROM tipos_equipos
+            Delete FROM estados
             WHERE id = ?;
         '''
 
@@ -95,7 +85,7 @@ class TipoEquipos():
 
         lista = []
         sql='''
-            SELECT * FROM tipos_equipos
+            SELECT * FROM estados
         '''
 
         try:

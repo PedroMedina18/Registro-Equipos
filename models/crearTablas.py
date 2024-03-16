@@ -6,17 +6,17 @@ def crearTablas():
 
     tablaEquipos='''
         CREATE TABLE tipos_equipos(
-            id INTEGER, 
-            nombre VARCHAR(100),
-            marca VARCHAR(100),
+            id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL,
+            marca VARCHAR(100) NOT NULL,
             descripcion VARCHAR(500),
             PRIMARY KEY(id AUTOINCREMENT)
         )
     '''
     estados='''
         CREATE TABLE estados(
-            id INTEGER, 
-            nombre VARCHAR(100),
+            id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )
@@ -24,8 +24,8 @@ def crearTablas():
     
     areasTrabajo='''
         CREATE TABLE areas_trabajo(
-            id INTEGER, 
-            nombre VARCHAR(100),
+            id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )  
@@ -33,8 +33,8 @@ def crearTablas():
 
     tipoRegistro='''
         CREATE TABLE tipo_registro(
-            id INTEGER, 
-            nombre VARCHAR(100),
+            id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )  

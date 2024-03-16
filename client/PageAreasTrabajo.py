@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from config import FONT_LABEL,FONT_LABEL_TITULO, COLOR_BASE, COLOR_AZUL, COLOR_ROJO, COLOR_VERDE, ACTIVE_VERDE, ACTIVE_AZUL, ACTIVE_ROJO
-from models.estados import Estados
+from models.areas_trabajo import AreasTrabajo
 
-class PageEstados():
+class PageAreasTrabajo():
 
     def __init__(self, root):
         self.root = root
@@ -19,7 +19,7 @@ class PageEstados():
 
     def controles(self):
         # Titulo
-        self.tituloPage=tk.Label(self.framePrincipal, text="Estados de los Equipos")
+        self.tituloPage=tk.Label(self.framePrincipal, text="Areas de Trabajo")
         self.tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         self.tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
@@ -68,7 +68,7 @@ class PageEstados():
     def tabla_equipos(self):
 
         # la lista de pelicular
-        self.lista_equipos=Estados.list()
+        self.lista_equipos=AreasTrabajo.list()
         self.lista_equipos.reverse()
 
 
@@ -119,9 +119,9 @@ class PageEstados():
             "descripcion":self.entry_descripcion.get(1.0, tk.END)
         }
         if(self.id_estados==None):
-            Estados.create(nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
+            AreasTrabajo.create(nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
         else:
-            Estados.update(id=self.id_estados, nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
+            AreasTrabajo.update(id=self.id_estados, nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
         
         self.desabilitar_campos()
         self.tabla_equipos()
@@ -156,7 +156,7 @@ class PageEstados():
     def eliminar_datos(self):
         try:
             self.id_estados=self.tabla.item(self.tabla.selection())["text"]
-            Estados.delete(self.id_estados)
+            AreasTrabajo.delete(self.id_estados)
             self.tabla_equipos()
             self.desabilitar_campos()
         except :

@@ -4,6 +4,7 @@ from config import COLOR_BASE, COLOR_BARRA_SUPERIOR, COLOR_MENU_LATERAL, COLOR_M
 import util.util_img as util_img
 from .PageEstados import PageEstados
 from .PageTypeEquipos import PageTypeEquipos
+from .PageAreasTrabajo import PageAreasTrabajo
 from models.crearTablas import crearTablas
 
 class MainFrame():
@@ -12,11 +13,15 @@ class MainFrame():
         self.root = root
         self.imgInicio = util_img.leer_imagen("./img/ordenador.png", (300, 300))
         self.cuerpo_principal = None
+        self.menus()
         self.paneles()
         self.create_cuerpo_principal()
         self.controles_barra_superior()
         self.controles_menu_lateral()
     
+
+
+
     # *Funcion para crear la barra de menus
     def menus(self):
         barra_menu = tk.Menu(self.root)
@@ -28,27 +33,50 @@ class MainFrame():
         menu_inicio.add_command(label="Crear Base de Datos", command= crearTablas)
         menu_inicio.add_command(label="Salir", command= self.root.destroy)
 
-        menu_opciones.add_command(label="Estados")
-        menu_opciones.add_command(label="Areas de Trabajo")
+        menu_opciones.add_command(label="Estados", command=lambda:self.destroyCuerpo(PageEstados))
+        menu_opciones.add_command(label="Areas de Trabajo", command=lambda:self.destroyCuerpo(PageAreasTrabajo))
         menu_opciones.add_command(label="Tipos de Registros")
 
 
         barra_menu.add_cascade(label="Inicio", menu = menu_inicio)
         barra_menu.add_cascade(label="Opciones", menu = menu_opciones)
 
-    def paneles(self):        
+    def paneles(self):    
+        # el scroll    
+        self.canvas=tk.Canvas(self.root)
+        # self.canvas.grid_propagate(False)
+        # scrollbar = tk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview, background="white", borderwidth=0, highlightthickness=0, activebackground="gray")
+        # self.canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # # Pack the scrollbar and canvas
+        # scrollbar.pack(side="right", fill="y")
+        self.canvas.pack(side="left", fill="both", expand=True)
+
+        # # Set the scroll region of the canvas
+        # self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+        # # Configure the scrollbar to hide when not needed
+        # scrollbar.configure(command=self.canvas.yview, takefocus=False)
+        # self.root.bind("<Configure>", lambda event: self.on_configure)
+
+
+        
          # Crear paneles: barra superior, menú lateral y cuerpo principal
-        self.barra_superior = tk.Frame(self.root, bg=COLOR_BARRA_SUPERIOR, height=60)
+        self.barra_superior = tk.Frame(self.canvas, bg=COLOR_BARRA_SUPERIOR, height=60)
         self.barra_superior.pack(side=tk.TOP, fill='both')      
 
-        self.menu_lateral = tk.Frame(self.root, bg=COLOR_MENU_LATERAL, width=150)
+        self.menu_lateral = tk.Frame(self.canvas, bg=COLOR_MENU_LATERAL, width=150)
         self.menu_lateral.pack(side=tk.LEFT, fill='both', expand=False) 
+
+    def on_configure(self, event):
+    # Actualizar el tamaño del canvas
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def create_cuerpo_principal(self):
         if(self.cuerpo_principal):
             self.cuerpo_principal.destroy()
 
-        FramePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
+        FramePrincipal=tk.Frame(self.canvas, bg=COLOR_BASE)
         self.cuerpo_principal=FramePrincipal
         FramePrincipal.pack(side=tk.RIGHT, fill='both', expand=True)
         self.controles_cuerpo()
@@ -144,5 +172,5 @@ class MainFrame():
 
     def destroyCuerpo(self, newCuerpo):
         self.cuerpo_principal.destroy()
-        nuevo_cuerpo_princiapl=newCuerpo(self.root)
+        nuevo_cuerpo_princiapl=newCuerpo(self.canvas)
         self.cuerpo_principal=nuevo_cuerpo_princiapl.framePrincipal
