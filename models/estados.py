@@ -99,3 +99,21 @@ class Estados():
         finally:
             conexion.cerrar()
         return lista
+
+
+
+
+# CREATE TABLE equipos (
+#     id INT PRIMARY KEY,
+#     serial VARCHAR(100) NOT NULL,
+#     tipos_equipos INT,
+#     bolivar_marron BOOLEAN,
+#     estado_actual INT,
+#     area_trabajo INT,
+#     FOREIGN KEY (tipos_equipos) REFERENCES tipos_equipos(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+#     FOREIGN KEY (estado_actual) REFERENCES estados(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+#     FOREIGN KEY (area_trabajo) REFERENCES areas_trabajos(id) ON DELETE RESTRICT ON UPDATE CASCADE
+# );
+
+# SELECT * FROM nombre_tabla
+# ORDER BY id ASC;
