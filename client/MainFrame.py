@@ -5,6 +5,7 @@ import util.util_img as util_img
 from .PageEstados import PageEstados
 from .PageTypeEquipos import PageTypeEquipos
 from .PageAreasTrabajo import PageAreasTrabajo
+from .PageCaracteristicas import PageCaracteristicas
 from models.crearTablas import crearTablas
 
 class MainFrame():
@@ -19,9 +20,6 @@ class MainFrame():
         self.controles_barra_superior()
         self.controles_menu_lateral()
     
-
-
-
     # *Funcion para crear la barra de menus
     def menus(self):
         barra_menu = tk.Menu(self.root)
@@ -35,7 +33,7 @@ class MainFrame():
 
         menu_opciones.add_command(label="Estados", command=lambda:self.destroyCuerpo(PageEstados))
         menu_opciones.add_command(label="Areas de Trabajo", command=lambda:self.destroyCuerpo(PageAreasTrabajo))
-        menu_opciones.add_command(label="Tipos de Registros")
+        menu_opciones.add_command(label="Caracteristicas", command=lambda:self.destroyCuerpo(PageCaracteristicas))
 
 
         barra_menu.add_cascade(label="Inicio", menu = menu_inicio)

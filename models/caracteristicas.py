@@ -3,7 +3,7 @@ from util.comprobacionCampos import  comprobacionString
 from tkinter import messagebox
 from config import TITULO_CAMPOS
 
-class Estados():
+class Caracteristicas():
 
     def create(nombre="", descripcion=""):
         conexion =ConexionDB()
@@ -19,7 +19,7 @@ class Estados():
             return None
 
         sql='''
-            INSERT INTO estados (nombre, descripcion)
+            INSERT INTO caracteristicas (nombre, descripcion)
             VALUES(?, ?)
         '''
 
@@ -48,7 +48,7 @@ class Estados():
             return None
 
         sql='''
-            UPDATE estados
+            UPDATE caracteristicas
             SET nombre=?, descripcion=?
             WHERE id = ?
         '''
@@ -67,7 +67,7 @@ class Estados():
         conexion=ConexionDB()
 
         sql='''
-            Delete FROM estados
+            Delete FROM caracteristicas
             WHERE id = ?;
         '''
 
@@ -85,7 +85,7 @@ class Estados():
 
         lista = []
         sql='''
-            SELECT * FROM estados ORDER BY id ASC;
+            SELECT * FROM caracteristicas ORDER BY id ASC;
         '''
 
         try:

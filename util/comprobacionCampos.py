@@ -9,3 +9,14 @@ def comprobacionString(string, numeroCaracteresMaximo, obligatorio=True):
         return {"status":False, "message":"es Obligatorio"}
     
     return {"status":True, "message":"Campo Valido"}
+
+
+def comprobacionBoolean(booleano, obligatorio=True):
+
+    if not isinstance(booleano, bool) and not (booleano==0 or booleano==1):
+        return {"status":False, "message":"no es un booleano. Campo Invalido"}
+    
+    if obligatorio and booleano==None:
+        return {"status":False, "message":"es Obligatorio"}
+
+    return {"status":True, "message":"Campo Valido"}

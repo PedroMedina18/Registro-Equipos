@@ -85,7 +85,7 @@ class AreasTrabajo():
 
         lista = []
         sql='''
-            SELECT * FROM areas_trabajo
+            SELECT * FROM areas_trabajo ORDER BY id ASC;
         '''
 
         try:
