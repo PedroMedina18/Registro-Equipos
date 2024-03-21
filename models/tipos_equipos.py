@@ -97,7 +97,7 @@ class TipoEquipos():
         conexion=ConexionDB()
 
         sql='''
-            Delete FROM tipos_equipos
+            DELETE FROM tipos_equipos
             WHERE id = ?;
         '''
 

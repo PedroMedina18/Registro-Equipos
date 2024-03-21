@@ -59,7 +59,7 @@ class Estados():
         conexion=ConexionDB()
 
         sql='''
-            Delete FROM componentes
+            DELETE FROM componentes
             WHERE id = ?;
         '''
 

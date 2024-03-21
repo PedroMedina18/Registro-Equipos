@@ -10,8 +10,8 @@ class PageTypeEquipos():
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_tipo_equipo=None
         self.crearCuerpo()
-        self.tabla_equipos()
         self.controles()
+        self.tabla_lista()()
         self.desabilitar_campos()
 
     def crearCuerpo(self):
@@ -101,7 +101,7 @@ class PageTypeEquipos():
         self.boton_cancelar.config(width=20, font=FONT_LABEL, fg="white", bg=COLOR_ROJO, cursor="hand2", activebackground=ACTIVE_ROJO)
         self.boton_cancelar.grid(row=7, column=2, padx=8, pady=6)
 
-    def tabla_equipos(self):
+    def tabla_lista(self):
 
         # la lista de pelicular
         self.lista_equipos=TipoEquipos.list()
@@ -180,7 +180,7 @@ class PageTypeEquipos():
             TipoEquipos.update(id=self.id_tipo_equipo, nombre=tipo_equipo["nombre"], marca=tipo_equipo["marca"], modelo=tipo_equipo["modelo"], descripcion=tipo_equipo["descripcion"], equipo_componente=tipo_equipo["equipo_componente"])
         
         self.desabilitar_campos()
-        self.tabla_equipos()
+        self.tabla_lista()()
 
     def desabilitar_campos(self):
         self.mi_nombre.set("")
@@ -234,7 +234,7 @@ class PageTypeEquipos():
         try:
             self.id_tipo_equipo=self.tabla.item(self.tabla.selection())["text"]
             TipoEquipos.delete(self.id_tipo_equipo)
-            self.tabla_equipos()
+            self.tabla_lista()()
             self.desabilitar_campos()
         except :
             titulo = "Eliminar de Registro"

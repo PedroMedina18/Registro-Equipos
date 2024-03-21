@@ -6,6 +6,9 @@ from .PageEstados import PageEstados
 from .PageTypeEquipos import PageTypeEquipos
 from .PageAreasTrabajo import PageAreasTrabajo
 from .PageCaracteristicas import PageCaracteristicas
+from .PageCampos_tablas import PageCampos_tablas
+from .PageTablas import PageTablas
+from .PageAgregarCampos import PageAgregarCampos
 from models.crearTablas import crearTablas
 
 class MainFrame():
@@ -26,17 +29,22 @@ class MainFrame():
         self.root.config(menu = barra_menu, width=300, heigh=300)
 
         menu_inicio = tk.Menu(barra_menu, tearoff=0)
+        menu_tablas = tk.Menu(barra_menu, tearoff=0)
         menu_opciones = tk.Menu(barra_menu, tearoff=0)
 
         menu_inicio.add_command(label="Crear Base de Datos", command= crearTablas)
         menu_inicio.add_command(label="Salir", command= self.root.destroy)
 
+        menu_tablas.add_command(label="Tablas", command=lambda:self.destroyCuerpo(PageTablas))
+        menu_tablas.add_command(label="Campos", command=lambda:self.destroyCuerpo(PageCampos_tablas))
+        menu_tablas.add_command(label="Seleccionar Campos", command=lambda:self.destroyCuerpo(PageAgregarCampos))
+
         menu_opciones.add_command(label="Estados", command=lambda:self.destroyCuerpo(PageEstados))
         menu_opciones.add_command(label="Areas de Trabajo", command=lambda:self.destroyCuerpo(PageAreasTrabajo))
         menu_opciones.add_command(label="Caracteristicas", command=lambda:self.destroyCuerpo(PageCaracteristicas))
 
-
         barra_menu.add_cascade(label="Inicio", menu = menu_inicio)
+        barra_menu.add_cascade(label="Tablas", menu = menu_tablas)
         barra_menu.add_cascade(label="Opciones", menu = menu_opciones)
 
     def paneles(self):    
@@ -59,7 +67,7 @@ class MainFrame():
 
 
         
-         # Crear paneles: barra superior, menú lateral y cuerpo principal
+        # Crear paneles: barra superior, menú lateral y cuerpo principal
         self.barra_superior = tk.Frame(self.canvas, bg=COLOR_BARRA_SUPERIOR, height=60)
         self.barra_superior.pack(side=tk.TOP, fill='both')      
 

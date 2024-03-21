@@ -28,7 +28,7 @@ class Estados():
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
-            message= "La tabla estaoos no esta creada en la base de datos"
+            message= "La tabla estados no esta creada en la base de datos"
             messagebox.showwarning(titulo, message)
         finally:
             conexion.cerrar()
@@ -67,7 +67,7 @@ class Estados():
         conexion=ConexionDB()
 
         sql='''
-            Delete FROM estados
+            DELETE FROM estados
             WHERE id = ?;
         '''
 

@@ -67,7 +67,7 @@ class Caracteristicas():
         conexion=ConexionDB()
 
         sql='''
-            Delete FROM caracteristicas
+            DELETE FROM caracteristicas
             WHERE id = ?;
         '''
 

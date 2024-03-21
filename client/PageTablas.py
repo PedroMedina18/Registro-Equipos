@@ -1,14 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from config import FONT_LABEL,FONT_LABEL_TITULO, COLOR_BASE, COLOR_AZUL, COLOR_ROJO, COLOR_VERDE, ACTIVE_VERDE, ACTIVE_AZUL, ACTIVE_ROJO
-from models.caracteristicas import Caracteristicas
+from models.tablas import Tablas
 
-class PageCaracteristicas():
+class PageTablas():
 
     def __init__(self, root):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
-        self.id_caracteristica=None
+        self.id_tablas=None
         self.crearCuerpo()
         self.controles()
         self.tabla_lista()
@@ -19,7 +19,7 @@ class PageCaracteristicas():
 
     def controles(self):
         # Titulo
-        self.tituloPage=tk.Label(self.framePrincipal, text="Caracteristicas de los componentes")
+        self.tituloPage=tk.Label(self.framePrincipal, text="Nombre de las tablas")
         self.tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         self.tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
@@ -68,7 +68,7 @@ class PageCaracteristicas():
     def tabla_lista(self):
 
         # la lista de pelicular
-        self.lista_equipos=Caracteristicas.list()
+        self.lista_equipos=Tablas.list()
         self.lista_equipos.reverse()
 
 
@@ -118,10 +118,10 @@ class PageCaracteristicas():
             "nombre" : self.mi_nombre.get(),
             "descripcion":self.entry_descripcion.get(1.0, tk.END)
         }
-        if(self.id_caracteristica==None):
-            Caracteristicas.create(nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
+        if(self.id_tablas==None):
+            Tablas.create(nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
         else:
-            Caracteristicas.update(id=self.id_caracteristica, nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
+            Tablas.update(id=self.id_tablas, nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
         
         self.desabilitar_campos()
         self.tabla_lista()
@@ -129,7 +129,7 @@ class PageCaracteristicas():
     def desabilitar_campos(self):
         self.mi_nombre.set("")
         self.entry_descripcion.delete(1.0, tk.END)
-        self.id_caracteristica=None
+        self.id_tablas=None
 
         self.entry_nombre.config(state="disabled")
         self.entry_descripcion.config(state="disabled")
@@ -139,7 +139,7 @@ class PageCaracteristicas():
     
     def editar_datos(self):
         try:
-            self.id_caracteristica=self.tabla.item(self.tabla.selection())["text"]
+            self.id_tablas=self.tabla.item(self.tabla.selection())["text"]
             nombre_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][0]
             descripcion_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][1]
 
@@ -155,8 +155,8 @@ class PageCaracteristicas():
 
     def eliminar_datos(self):
         try:
-            self.id_caracteristica=self.tabla.item(self.tabla.selection())["text"]
-            Caracteristicas.delete(self.id_caracteristica)
+            self.id_tablas=self.tabla.item(self.tabla.selection())["text"]
+            Tablas.delete(self.id_tablas)
             self.tabla_lista()
             self.desabilitar_campos()
         except :

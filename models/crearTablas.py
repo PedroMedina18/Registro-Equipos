@@ -82,7 +82,7 @@ def crearTablas():
         CREATE TABLE componentes_has_caracteristicas(
             id INTEGER NOT NULL, 
             componente_id INTEGER NOT NULL,
-            caracteristica_id_id INTEGER NOT NULL,
+            caracteristica_id INTEGER NOT NULL,
             value VARCHAR(200) NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -101,6 +101,48 @@ def crearTablas():
         )  
     '''
 
+    SQL_tablas='''
+        CREATE TABLE tablas(
+            id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL,
+            descripcion VARCHAR(200),
+            PRIMARY KEY(id AUTOINCREMENT)
+        )
+    '''
+
+    SQL_campos_tablas='''
+        CREATE TABLE campos_tablas(
+            id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL,
+            numero_caracteres INTEGER NOT NULL, 
+            descripcion VARCHAR(200),
+            PRIMARY KEY(id AUTOINCREMENT)
+        )
+    '''
+
+    SQL_tablas_campos_tablas='''
+        CREATE TABLE tablas_has_campos_tablas(
+            id INTEGER NOT NULL, 
+            tablas_id INTEGER NOT NULL,
+            campos_id INTEGER NOT NULL,
+            PRIMARY KEY(id AUTOINCREMENT),
+            FOREIGN KEY (tablas_id) REFERENCES tablas(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+            FOREIGN KEY (campos_id) REFERENCES campos_tablas(id) ON DELETE RESTRICT ON UPDATE CASCADE
+        )
+    '''
+
+    SQL_registros='''
+        CREATE TABLE registros(
+            id INTEGER NOT NULL, 
+            campo_tablas_id INTEGER NOT NULL,
+            value VARCHAR(1000),
+            numero_registro INTEGER NOT NULL,
+            fecha_creacion DATE DEFAULT CURRENT_DATE,
+            fecha_actualizacion DATE DEFAULT CURRENT_DATE,
+            PRIMARY KEY(id AUTOINCREMENT)
+        )
+    '''
+
     try:
         conexion.cursor.execute(SQL_tablaEquipos)
         conexion.cursor.execute(SQL_estados)
@@ -111,6 +153,10 @@ def crearTablas():
         conexion.cursor.execute(SQL_caracteristicas)
         conexion.cursor.execute(SQL_componentes_caracteristicas)
         conexion.cursor.execute(SQL_componentes_equipos)
+        conexion.cursor.execute(SQL_tablas)
+        conexion.cursor.execute(SQL_campos_tablas)
+        conexion.cursor.execute(SQL_tablas_campos_tablas)
+        conexion.cursor.execute(SQL_registros)
         conexion.cerrar()
         titulo = "Crear Tablas"
         message= "Se creo todas las tablas de la base de datos"

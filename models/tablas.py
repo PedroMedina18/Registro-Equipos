@@ -3,7 +3,7 @@ from util.comprobacionCampos import  comprobacionString
 from tkinter import messagebox
 from config import TITULO_CAMPOS
 
-class AreasTrabajo():
+class Tablas():
 
     def create(nombre="", descripcion=""):
         conexion =ConexionDB()
@@ -19,7 +19,7 @@ class AreasTrabajo():
             return None
 
         sql='''
-            INSERT INTO areas_trabajo (nombre, descripcion)
+            INSERT INTO tablas (nombre, descripcion)
             VALUES(?, ?)
         '''
 
@@ -28,7 +28,7 @@ class AreasTrabajo():
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
-            message= "La tabla estaoos no esta creada en la base de datos"
+            message= "La tabla Tablas no esta creada en la base de datos"
             messagebox.showwarning(titulo, message)
         finally:
             conexion.cerrar()
@@ -48,7 +48,7 @@ class AreasTrabajo():
             return None
 
         sql='''
-            UPDATE areas_trabajo
+            UPDATE tablas
             SET nombre=?, descripcion=?
             WHERE id = ?
         '''
@@ -67,7 +67,7 @@ class AreasTrabajo():
         conexion=ConexionDB()
 
         sql='''
-            DELETE FROM areas_trabajo
+            DELETE FROM tablas
             WHERE id = ?;
         '''
 
@@ -85,7 +85,7 @@ class AreasTrabajo():
 
         lista = []
         sql='''
-            SELECT * FROM areas_trabajo ORDER BY id ASC;
+            SELECT * FROM tablas ORDER BY id ASC;
         '''
 
         try:
