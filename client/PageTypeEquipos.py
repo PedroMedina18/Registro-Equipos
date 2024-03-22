@@ -5,13 +5,13 @@ from models.tipos_equipos import TipoEquipos
 
 class PageTypeEquipos():
 
-    def __init__(self, root):
+    def __init__(self, root, *args):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_tipo_equipo=None
         self.crearCuerpo()
         self.controles()
-        self.tabla_lista()()
+        self.tabla_lista()
         self.desabilitar_campos()
 
     def crearCuerpo(self):
@@ -103,7 +103,7 @@ class PageTypeEquipos():
 
     def tabla_lista(self):
 
-        # la lista de pelicular
+        # la lista de tipos de equipo
         self.lista_equipos=TipoEquipos.list()
         self.lista_equipos.reverse()
         # la tabla de los datos
@@ -129,7 +129,7 @@ class PageTypeEquipos():
         self.tabla.column("#5", width=50)
         self.tabla.heading("#5", text="DESCRIPCIÓN")
 
-        # iterar la lista d epeliculas
+        # iterar la lista de tipos de equipo
 
         for item in self.lista_equipos:
 
@@ -180,7 +180,7 @@ class PageTypeEquipos():
             TipoEquipos.update(id=self.id_tipo_equipo, nombre=tipo_equipo["nombre"], marca=tipo_equipo["marca"], modelo=tipo_equipo["modelo"], descripcion=tipo_equipo["descripcion"], equipo_componente=tipo_equipo["equipo_componente"])
         
         self.desabilitar_campos()
-        self.tabla_lista()()
+        self.tabla_lista()
 
     def desabilitar_campos(self):
         self.mi_nombre.set("")
@@ -234,7 +234,7 @@ class PageTypeEquipos():
         try:
             self.id_tipo_equipo=self.tabla.item(self.tabla.selection())["text"]
             TipoEquipos.delete(self.id_tipo_equipo)
-            self.tabla_lista()()
+            self.tabla_lista()
             self.desabilitar_campos()
         except :
             titulo = "Eliminar de Registro"

@@ -14,8 +14,6 @@ class Tablas_has_Campos():
 
         try:
             conexion.cursor.execute(sql_create, [int(tablas), int(campos)])
-            ultimo_registro=conexion.cursor.lastrowid()
-            print(ultimo_registro)
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
@@ -49,7 +47,8 @@ class Tablas_has_Campos():
             SELECT 
                 tc.id, 
                 ca_ta.nombre, 
-                ca_ta.numero_caracteres  
+                ca_ta.numero_caracteres,
+                tc.campos_id AS campos_id
             FROM tablas_has_campos_tablas AS tc
             INNER JOIN tablas AS ta ON tc.tablas_id = ta.id
             INNER JOIN campos_tablas AS ca_ta ON tc.campos_id = ca_ta.id

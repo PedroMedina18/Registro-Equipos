@@ -9,6 +9,7 @@ from .PageCaracteristicas import PageCaracteristicas
 from .PageCampos_tablas import PageCampos_tablas
 from .PageTablas import PageTablas
 from .PageAgregarCampos import PageAgregarCampos
+from .PageListTablas import PageListTablas
 from models.crearTablas import crearTablas
 
 class MainFrame():
@@ -116,17 +117,22 @@ class MainFrame():
         self.home= util_img.leer_imagen("./img/home.png", (50, 50))
         self.destokp= util_img.leer_imagen("./img/destokp.png", (50, 50))
         self.devices= util_img.leer_imagen("./img/devices.png", (50, 50))
+        self.tables= util_img.leer_imagen("./img/table.png", (50, 50))
          
         # Botones del menú lateral
         
         self.buttonHome = ttk.Button(self.menu_lateral, text="Inicio", image=self.home, compound="left", cursor="hand2", command=lambda:self.create_cuerpo_principal())        
         self.buttonDevices = ttk.Button(self.menu_lateral, text="Tipos de Equipo", image=self.devices, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(PageTypeEquipos))        
         self.buttonDestokp = ttk.Button(self.menu_lateral, text="Equipos", image=self.destokp, compound="left", cursor="hand2")
-        
+        self.buttonTable = ttk.Button(self.menu_lateral, text="Tablas", image=self.tables, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(PageListTablas))
+
+
+
         buttons_info = [
             (self.buttonHome),
             (self.buttonDevices),
             (self.buttonDestokp),
+            (self.buttonTable),
         ]
 
         for button in buttons_info:
@@ -176,7 +182,10 @@ class MainFrame():
         else:
             self.menu_lateral.pack(side=tk.LEFT, fill='y')
 
-    def destroyCuerpo(self, newCuerpo):
+    def destroyCuerpo(self, Object_Page):
         self.cuerpo_principal.destroy()
-        nuevo_cuerpo_princiapl=newCuerpo(self.canvas)
-        self.cuerpo_principal=nuevo_cuerpo_princiapl.framePrincipal
+        nuevo_cuerpo_principal=Object_Page(self.canvas, self.cambio_cuerpo_principal)
+        self.cuerpo_principal=nuevo_cuerpo_principal.framePrincipal
+
+    def cambio_cuerpo_principal(self, cuerpo):
+        self.cuerpo_principal=cuerpo

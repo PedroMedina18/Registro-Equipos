@@ -5,7 +5,7 @@ from models.estados import Estados
 
 class PageEstados():
 
-    def __init__(self, root):
+    def __init__(self, root, *args):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_estados=None
@@ -67,13 +67,12 @@ class PageEstados():
 
     def tabla_lista(self):
 
-        # la lista de pelicular
-        self.lista_equipos=Estados.list()
-        self.lista_equipos.reverse()
-
+        # la lista de estados
+        self.lista_estados=[]
+        self.lista_estados.reverse()
+        
 
         self.tabla = ttk.Treeview(self.framePrincipal, columns=("Nombre", "Descripcion"), height=20)
-        # self.tabla.config(style="tabla.TTreeview")
         self.tabla.grid(row=4, column=0, columnspan=4, sticky="NSEW")
 
         # Scroll bar
@@ -86,9 +85,8 @@ class PageEstados():
         self.tabla.heading("#1", text="NOMBRE")
         self.tabla.heading("#2", text="DESCRIPCIÓN")
 
-        # iterar la lista d epeliculas
-
-        for item in self.lista_equipos:
+        # iterar la lista de estados
+        for item in self.lista_estados:
             self.tabla.insert("", 0, text=item[0], 
             values=(item[1], item[2]))
 

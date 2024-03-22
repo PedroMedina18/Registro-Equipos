@@ -5,7 +5,7 @@ from models.caracteristicas import Caracteristicas
 
 class PageCaracteristicas():
 
-    def __init__(self, root):
+    def __init__(self, root, *args):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_caracteristica=None
@@ -68,12 +68,11 @@ class PageCaracteristicas():
     def tabla_lista(self):
 
         # la lista de pelicular
-        self.lista_equipos=Caracteristicas.list()
-        self.lista_equipos.reverse()
+        self.lista_caracteristicas=Caracteristicas.list()
+        self.lista_caracteristicas.reverse()
 
 
         self.tabla = ttk.Treeview(self.framePrincipal, columns=("Nombre", "Descripcion"), height=20)
-        # self.tabla.config(style="tabla.TTreeview")
         self.tabla.grid(row=4, column=0, columnspan=4, sticky="NSEW")
 
         # Scroll bar
@@ -87,8 +86,7 @@ class PageCaracteristicas():
         self.tabla.heading("#2", text="DESCRIPCIÓN")
 
         # iterar la lista d epeliculas
-
-        for item in self.lista_equipos:
+        for item in self.lista_caracteristicas:
             self.tabla.insert("", 0, text=item[0], 
             values=(item[1], item[2]))
 

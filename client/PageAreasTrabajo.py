@@ -5,7 +5,7 @@ from models.areas_trabajo import AreasTrabajo
 
 class PageAreasTrabajo():
 
-    def __init__(self, root):
+    def __init__(self, root, *args):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_estados=None
@@ -67,13 +67,12 @@ class PageAreasTrabajo():
 
     def tabla_lista(self):
 
-        # la lista de pelicular
-        self.lista_equipos=AreasTrabajo.list()
-        self.lista_equipos.reverse()
+        # la lista de areas de trabao
+        self.lista_areas_trabajo=AreasTrabajo.list()
+        self.lista_areas_trabajo.reverse()
 
 
         self.tabla = ttk.Treeview(self.framePrincipal, columns=("Nombre", "Descripcion"), height=20)
-        # self.tabla.config(style="tabla.TTreeview")
         self.tabla.grid(row=4, column=0, columnspan=4, sticky="NSEW")
 
         # Scroll bar
@@ -86,9 +85,8 @@ class PageAreasTrabajo():
         self.tabla.heading("#1", text="NOMBRE")
         self.tabla.heading("#2", text="DESCRIPCIÓN")
 
-        # iterar la lista d epeliculas
-
-        for item in self.lista_equipos:
+        # iterar la lista de areas de trabao
+        for item in self.lista_areas_trabajo:
             self.tabla.insert("", 0, text=item[0], 
             values=(item[1], item[2]))
 

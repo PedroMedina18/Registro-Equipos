@@ -5,7 +5,7 @@ from models.campos_tablas import Campos_Tabla
 
 class PageCampos_tablas():
 
-    def __init__(self, root):
+    def __init__(self, root, *args):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_campos_tabla=None
@@ -78,12 +78,11 @@ class PageCampos_tablas():
     def tabla_lista(self):
 
         # la lista de pelicular
-        self.lista_equipos=Campos_Tabla.list()
-        self.lista_equipos.reverse()
+        self.lista_campos=Campos_Tabla.list()
+        self.lista_campos.reverse()
 
 
         self.tabla = ttk.Treeview(self.framePrincipal, columns=("Nombre", "Caracteres", "Descripcion"), height=20)
-        # self.tabla.config(style="tabla.TTreeview")
         self.tabla.grid(row=5, column=0, columnspan=4, sticky="NSEW")
 
         # Scroll bar
@@ -98,8 +97,7 @@ class PageCampos_tablas():
         self.tabla.heading("#3", text="DESCRIPCIÓN")
 
         # iterar la lista d epeliculas
-
-        for item in self.lista_equipos:
+        for item in self.lista_campos:
             self.tabla.insert("", 0, text=item[0], 
             values=(item[1], item[2], item[3]))
 

@@ -5,11 +5,11 @@ from models.tablas import Tablas
 from models.campos_tablas import Campos_Tabla
 from models.tablas_has_campos import Tablas_has_Campos
 from util.util_img import leer_imagen
-from util.list_values import list_values
+from util.list_values import list_values, verificacion_campos
 
 class PageAgregarCampos():
 
-    def __init__(self, root):
+    def __init__(self, root, *args):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_tabla=None
@@ -27,9 +27,7 @@ class PageAgregarCampos():
         self.campos=Campos_Tabla.list()
 
         self.list_values_tablas=list_values(Tablas.list())   
-        self.list_values_campos=list_values(Campos_Tabla.list())
         
-
         # Titulo
         tituloPage=tk.Label(self.framePrincipal, text="Agregar Campos a la Tabla")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
@@ -51,7 +49,7 @@ class PageAgregarCampos():
         self.select_tabla=ttk.Combobox(self.framePrincipal, state="readonly", values=self.list_values_tablas)
         self.select_tabla.grid(row=1, column=2, padx=5, pady=10)
 
-        self.select_campos=ttk.Combobox(self.framePrincipal, state="readonly", values=self.list_values_campos)
+        self.select_campos=ttk.Combobox(self.framePrincipal, state="readonly")
         self.select_campos.grid(row=2, column=2, padx=5, pady=10)
 
         # Button
@@ -64,12 +62,11 @@ class PageAgregarCampos():
         self.boton_agregar.config(width=10, font=FONT_LABEL, fg="white", bg=COLOR_AZUL, cursor="hand2", activebackground=ACTIVE_AZUL)
         self.boton_agregar.grid(row=2, column=3, padx=5, pady=10)
     
-
     def frameCampos(self):
         self.icon_papelera=leer_imagen("./img/trash.png", (30, 30))
-        self.frame_campos=tk.Frame(self.framePrincipal, bg=COLOR_BASE, height=80)
-        self.frame_campos.grid(row=3, column=0, padx=5, columnspan=4, pady=10, sticky="NSEW")
+        self.frame_campos=tk.Frame(self.framePrincipal, bg=COLOR_BASE, height=100)
         self.frame_campos.columnconfigure(4, weight=1)
+        self.frame_campos.grid(row=3, column=0, padx=5, columnspan=4, pady=10, sticky="NSEW")
 
         # # # Titulo
         titulo=tk.Label(self.frame_campos, text="Lista de Campos")
@@ -79,44 +76,43 @@ class PageAgregarCampos():
         # # # labels
         # Nombre
         label_campos = tk.Label(self.frame_campos, text="Nombre")
-        label_campos.config(font=FONT_LABEL, bg=COLOR_BASE, width=50, anchor="w")
-        label_campos.grid(row=1, column=1, padx=10, pady=10)
+        label_campos.config(font=FONT_LABEL, bg=COLOR_BASE, width=50, anchor="center")
+        label_campos.grid(row=1, column=0, padx=10, pady=10)
 
         # Caracteres
         label_caracteres = tk.Label(self.frame_campos, text="Caracteres")
-        label_caracteres.config(font=FONT_LABEL, bg=COLOR_BASE, width=10, anchor="w")
-        label_caracteres.grid(row=1, column=2, padx=10, pady=10)
+        label_caracteres.config(font=FONT_LABEL, bg=COLOR_BASE, width=10, anchor="center")
+        label_caracteres.grid(row=1, column=1, padx=10, pady=10)
 
         # Opciones
         label_Opciones = tk.Label(self.frame_campos, text="Opciones")
-        label_Opciones.config(font=FONT_LABEL, bg=COLOR_BASE, width=20, anchor="w")
-        label_Opciones.grid(row=1, column=3, padx=10, pady=10)
+        label_Opciones.config(font=FONT_LABEL, bg=COLOR_BASE, width=20, anchor="center")
+        label_Opciones.grid(row=1, column=2, padx=10, pady=10)
         
 
         if(self.id_tabla):
-            lista_campos=Tablas_has_Campos.list(self.id_tabla)
-            print(lista_campos)
+            lista_campos_elejidos=Tablas_has_Campos.list(self.id_tabla)
         else:
-            lista_campos=[]
-        
+            lista_campos_elejidos=[]
+
+        select_campos=verificacion_campos(self.campos, lista_campos_elejidos)
+        self.select_campos.config(values=select_campos)
         CONTADOR=1
-        for campo in lista_campos:
+        for campo in lista_campos_elejidos:
             label = tk.Label(self.frame_campos, text=f"{campo[1]}")
             label.config(font=FONT_LABEL_ELEMENT_LIST, bg=COLOR_BASE, width=50, anchor="w")
-            label.grid(row=1+CONTADOR, column=1, padx=10, pady=10)
+            label.grid(row=1+CONTADOR, column=0, padx=10, pady=10)
 
             caracteres = tk.Label(self.frame_campos, text=f"{campo[2]}")
             caracteres.config(font=FONT_LABEL_ELEMENT_LIST, bg=COLOR_BASE, width=10, anchor="w")
-            caracteres.grid(row=1+CONTADOR, column=2, padx=10, pady=10)
+            caracteres.grid(row=1+CONTADOR, column=1, padx=10, pady=10)
 
-            buton_eliminar = tk.Button(self.frame_campos, image=self.icon_papelera, command=lambda:self.eliminar_campo(id_campo=int(campo[0])))
+            buton_eliminar = tk.Button(self.frame_campos, image=self.icon_papelera, command=lambda:self.eliminar_campos(id_campo=int(campo[0])))
             buton_eliminar.config(width=40, bg=COLOR_ROJO, cursor="hand2", activebackground=COLOR_ROJO)
-            buton_eliminar.grid(row=1+CONTADOR, column=3, padx=5, pady=10)
+            buton_eliminar.grid(row=1+CONTADOR, column=2, padx=5, pady=10)
 
             CONTADOR=CONTADOR+1
             
-
-
     def buscar_campos(self):
         value=self.select_tabla.current()
         if(value<0):
@@ -159,19 +155,11 @@ class PageAgregarCampos():
         self.boton_agregar.config(state="normal")
         self.select_campos.set("")
 
-    # def guardar_campos(self):
-        
-    #     tipo_equipo = {
-    #         "nombre" : self.mi_nombre.get(),
-    #         "descripcion":self.entry_descripcion.get(1.0, tk.END)
-    #     }
-    #     if(self.id_estados==None):
-    #         AreasTrabajo.create(nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
-    #     else:
-    #         AreasTrabajo.update(id=self.id_estados, nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"])
-        
-    #     self.desabilitar_campos()
-    #     self.tabla_equipos()
+    def eliminar_campos(self, id_campo=0):
+        Tablas_has_Campos.delete(id=id_campo)
+        self.frame_campos.destroy()
+        self.frameCampos()
+
 
     def desabilitar_campos(self):
         self.select_campos.set("")
@@ -181,31 +169,3 @@ class PageAgregarCampos():
         self.select_campos.config(state="disabled")
         self.boton_agregar.config(state="disabled")
     
-    def eliminar_campo(self, id_campo=0):
-        pass
-    # def editar_datos(self):
-    #     try:
-    #         self.id_estados=self.tabla.item(self.tabla.selection())["text"]
-    #         nombre_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][0]
-    #         descripcion_tipo_equipo=self.tabla.item(self.tabla.selection())["values"][1]
-
-    #         self.habilitar_campos()
-
-    #         self.entry_nombre.insert(0, nombre_tipo_equipo)
-    #         self.entry_descripcion.insert(1.0, descripcion_tipo_equipo)
-
-    #     except :
-    #         titulo = "Edicion de datos"
-    #         message= "No ha seleccionado ningun registro"
-    #         messagebox.showerror(titulo, message)
-
-    # def eliminar_datos(self):
-        # try:
-        #     self.id_estados=self.tabla.item(self.tabla.selection())["text"]
-        #     AreasTrabajo.delete(self.id_estados)
-        #     self.tabla_equipos()
-        #     self.desabilitar_campos()
-        # except :
-        #     titulo = "Eliminar de Registro"
-        #     message= "No ha seleccionado ningun registro"
-        #     messagebox.showerror(titulo, message)

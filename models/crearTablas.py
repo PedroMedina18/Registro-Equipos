@@ -135,11 +135,12 @@ def crearTablas():
         CREATE TABLE registros(
             id INTEGER NOT NULL, 
             campo_tablas_id INTEGER NOT NULL,
-            value VARCHAR(1000),
+            value VARCHAR(1000) NOT NULL,
             numero_registro INTEGER NOT NULL,
-            fecha_creacion DATE DEFAULT CURRENT_DATE,
-            fecha_actualizacion DATE DEFAULT CURRENT_DATE,
-            PRIMARY KEY(id AUTOINCREMENT)
+            fecha_creacion DATETIME DEFAULT CURRENT_DATETIME,
+            fecha_actualizacion DATETIME,
+            PRIMARY KEY(id AUTOINCREMENT),
+            FOREIGN KEY (campo_tablas_id) REFERENCES tablas_has_campos_tablas(id) ON DELETE CASCADE ON UPDATE CASCADE
         )
     '''
 
