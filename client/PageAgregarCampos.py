@@ -9,7 +9,7 @@ from util.list_values import list_values, verificacion_campos
 
 class PageAgregarCampos():
 
-    def __init__(self, root, *args):
+    def __init__(self, root):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_tabla=None

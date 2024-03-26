@@ -28,7 +28,7 @@ class AreasTrabajo():
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
-            message= "La tabla estaoos no esta creada en la base de datos"
+            message= "La tabla areas_trabaojo no esta creada en la base de datos"
             messagebox.showwarning(titulo, message)
         finally:
             conexion.cerrar()

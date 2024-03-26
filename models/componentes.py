@@ -20,7 +20,7 @@ class Estados():
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
-            message= "La tabla estaoos no esta creada en la base de datos"
+            message= "La tabla componentes no esta creada en la base de datos"
             messagebox.showwarning(titulo, message)
         finally:
             conexion.cerrar()

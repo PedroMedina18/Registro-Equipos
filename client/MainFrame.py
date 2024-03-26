@@ -2,15 +2,18 @@ import tkinter as tk
 from tkinter import font, ttk
 from config import COLOR_BASE, COLOR_BARRA_SUPERIOR, COLOR_MENU_LATERAL, COLOR_MENU_CURSOR_ENCIMA
 import util.util_img as util_img
-from .PageEstados import PageEstados
 from .PageTypeEquipos import PageTypeEquipos
-from .PageAreasTrabajo import PageAreasTrabajo
-from .PageCaracteristicas import PageCaracteristicas
 from .PageCampos_tablas import PageCampos_tablas
-from .PageTablas import PageTablas
 from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
+from .class_pagebasic import PageBasic
 from models.crearTablas import crearTablas
+
+# -------------------------------
+from models.tablas import Tablas
+from models.caracteristicas import Caracteristicas
+from models.estados import Estados
+from models.areas_trabajo import AreasTrabajo
 
 class MainFrame():
 
@@ -36,13 +39,33 @@ class MainFrame():
         menu_inicio.add_command(label="Crear Base de Datos", command= crearTablas)
         menu_inicio.add_command(label="Salir", command= self.root.destroy)
 
-        menu_tablas.add_command(label="Tablas", command=lambda:self.destroyCuerpo(PageTablas))
-        menu_tablas.add_command(label="Campos", command=lambda:self.destroyCuerpo(PageCampos_tablas))
-        menu_tablas.add_command(label="Seleccionar Campos", command=lambda:self.destroyCuerpo(PageAgregarCampos))
+        menu_tablas.add_command(label="Tablas", command=lambda:self.destroyCuerpo(
+            object_page=PageBasic, atributos={
+                "titulo":"Nombre de las Tablas",
+                "model":Tablas
+            }))
+        menu_tablas.add_command(label="Campos", command=lambda:self.destroyCuerpo(
+            object_page=PageCampos_tablas
+            ))
+        menu_tablas.add_command(label="Seleccionar Campos", command=lambda:self.destroyCuerpo(
+            object_page=PageAgregarCampos
+            ))
 
-        menu_opciones.add_command(label="Estados", command=lambda:self.destroyCuerpo(PageEstados))
-        menu_opciones.add_command(label="Areas de Trabajo", command=lambda:self.destroyCuerpo(PageAreasTrabajo))
-        menu_opciones.add_command(label="Caracteristicas", command=lambda:self.destroyCuerpo(PageCaracteristicas))
+        menu_opciones.add_command(label="Estados", command=lambda:self.destroyCuerpo(
+            object_page=PageBasic, atributos={
+                "titulo":"Estados de los Equipos",
+                "model":Estados
+            }))
+        menu_opciones.add_command(label="Areas de Trabajo", command=lambda:self.destroyCuerpo(
+            object_page=PageBasic, atributos={
+                "titulo":"Areas de Trabajo",
+                "model":AreasTrabajo
+            }))
+        menu_opciones.add_command(label="Caracteristicas", command=lambda:self.destroyCuerpo(
+            object_page=PageBasic, atributos={
+                "titulo":"Caracteristicas de los Componentes",
+                "model":Caracteristicas
+            }))
 
         barra_menu.add_cascade(label="Inicio", menu = menu_inicio)
         barra_menu.add_cascade(label="Tablas", menu = menu_tablas)
@@ -122,9 +145,9 @@ class MainFrame():
         # Botones del menú lateral
         
         self.buttonHome = ttk.Button(self.menu_lateral, text="Inicio", image=self.home, compound="left", cursor="hand2", command=lambda:self.create_cuerpo_principal())        
-        self.buttonDevices = ttk.Button(self.menu_lateral, text="Tipos de Equipo", image=self.devices, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(PageTypeEquipos))        
+        self.buttonDevices = ttk.Button(self.menu_lateral, text="Tipos de Equipo", image=self.devices, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(object_page=PageTypeEquipos))        
         self.buttonDestokp = ttk.Button(self.menu_lateral, text="Equipos", image=self.destokp, compound="left", cursor="hand2")
-        self.buttonTable = ttk.Button(self.menu_lateral, text="Tablas", image=self.tables, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(PageListTablas))
+        self.buttonTable = ttk.Button(self.menu_lateral, text="Tablas", image=self.tables, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(object_page=PageListTablas, atributos={"funtion_cambio_cuerpo":True}))
 
 
 
@@ -182,9 +205,15 @@ class MainFrame():
         else:
             self.menu_lateral.pack(side=tk.LEFT, fill='y')
 
-    def destroyCuerpo(self, Object_Page):
+    def destroyCuerpo(self, object_page=object, atributos={}):
         self.cuerpo_principal.destroy()
-        nuevo_cuerpo_principal=Object_Page(self.canvas, self.cambio_cuerpo_principal)
+        if "titulo" in atributos and "model" in atributos:
+            nuevo_cuerpo_principal=object_page(self.canvas, atributos["titulo"], atributos["model"])
+        elif "funtion_cambio_cuerpo" in atributos:
+            nuevo_cuerpo_principal=object_page(self.canvas, self.cambio_cuerpo_principal)
+        else:
+            nuevo_cuerpo_principal=object_page(self.canvas)
+        
         self.cuerpo_principal=nuevo_cuerpo_principal.framePrincipal
 
     def cambio_cuerpo_principal(self, cuerpo):

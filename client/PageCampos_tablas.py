@@ -5,7 +5,7 @@ from models.campos_tablas import Campos_Tabla
 
 class PageCampos_tablas():
 
-    def __init__(self, root, *args):
+    def __init__(self, root):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_campos_tabla=None

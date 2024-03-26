@@ -1,0 +1,5 @@
+corregir el errror de dezplazamiento
+terminar a funcionalidad para crear registros en las tablas
+crear la interfa de componetes
+crear la interefaz para equipos informaticos
+poder ver su historial

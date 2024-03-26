@@ -157,11 +157,8 @@ class PageListTablas():
 
     def tabla_lista(self):
         self.lista_registros=Registros.list(id_tabla=self.id_table)
-        print(self.lista_registros)
-        print(self.LIST_CAMPOS)
-        # self.registros_tabla=[]
-        # for element_list in self.lista_registros:
-        #     pass
+        
+        
 
         columns=tuple(element["nombre"] for element in self.LIST_CAMPOS)
 
@@ -178,10 +175,6 @@ class PageListTablas():
         for index, object in enumerate(self.LIST_CAMPOS):
             tabla.heading(f"#{index+1}", text=object["nombre"].upper())
 
-        # # # iterar la lista 
-        # # for item in self.lista_estados:
-        # #     self.tabla.insert("", 0, text=item[0], 
-        # #     values=(item[1], item[2]))
 
         # botones finales
 
@@ -238,7 +231,6 @@ class PageListTablas():
         
         self.desabilitar_campos()
         self.tabla_lista()
-
 
     def habilitar_campos(self):
         for campos in self.LIST_CAMPOS:

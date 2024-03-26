@@ -5,7 +5,7 @@ from models.tipos_equipos import TipoEquipos
 
 class PageTypeEquipos():
 
-    def __init__(self, root, *args):
+    def __init__(self, root):
         self.root = root
         self.framePrincipal=tk.Frame(self.root, bg=COLOR_BASE)
         self.id_tipo_equipo=None
