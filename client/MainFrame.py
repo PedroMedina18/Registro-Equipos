@@ -6,7 +6,7 @@ from .PageTypeEquipos import PageTypeEquipos
 from .PageCampos_tablas import PageCampos_tablas
 from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
-from .class_pagebasic import PageBasic
+from .Pagebasic import PageBasic
 from models.crearTablas import crearTablas
 
 # -------------------------------
@@ -17,17 +17,17 @@ from models.areas_trabajo import AreasTrabajo
 
 class MainFrame():
 
-    def __init__(self, root):
+    def __init__(self, root, frame):
         self.root = root
+        self.frame = frame
         self.imgInicio = util_img.leer_imagen("./img/ordenador.png", (300, 300))
         self.cuerpo_principal = None
         self.menus()
-        self.paneles()
+        self.barra_superior()
+        self.menu_lateral()
         self.create_cuerpo_principal()
-        self.controles_barra_superior()
-        self.controles_menu_lateral()
     
-    # *Funcion para crear la barra de menus
+    # *Se crea la barra de menus
     def menus(self):
         barra_menu = tk.Menu(self.root)
         self.root.config(menu = barra_menu, width=300, heigh=300)
@@ -71,48 +71,21 @@ class MainFrame():
         barra_menu.add_cascade(label="Tablas", menu = menu_tablas)
         barra_menu.add_cascade(label="Opciones", menu = menu_opciones)
 
-    def paneles(self):    
-        # el scroll    
-        self.canvas=tk.Canvas(self.root)
-        # self.canvas.grid_propagate(False)
-        # scrollbar = tk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview, background="white", borderwidth=0, highlightthickness=0, activebackground="gray")
-        # self.canvas.configure(yscrollcommand=scrollbar.set)
-        
-        # # Pack the scrollbar and canvas
-        # scrollbar.pack(side="right", fill="y")
-        self.canvas.pack(side="left", fill="both", expand=True)
-
-        # # Set the scroll region of the canvas
-        # self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
-        # # Configure the scrollbar to hide when not needed
-        # scrollbar.configure(command=self.canvas.yview, takefocus=False)
-        # self.root.bind("<Configure>", lambda event: self.on_configure)
-
-
-        
-        # Crear paneles: barra superior, menú lateral y cuerpo principal
-        self.barra_superior = tk.Frame(self.canvas, bg=COLOR_BARRA_SUPERIOR, height=60)
-        self.barra_superior.pack(side=tk.TOP, fill='both')      
-
-        self.menu_lateral = tk.Frame(self.canvas, bg=COLOR_MENU_LATERAL, width=150)
-        self.menu_lateral.pack(side=tk.LEFT, fill='both', expand=False) 
-
-    def on_configure(self, event):
-    # Actualizar el tamaño del canvas
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
     def create_cuerpo_principal(self):
         if(self.cuerpo_principal):
             self.cuerpo_principal.destroy()
 
-        FramePrincipal=tk.Frame(self.canvas, bg=COLOR_BASE)
+        FramePrincipal=tk.Frame(self.frame, bg=COLOR_BASE)
         self.cuerpo_principal=FramePrincipal
-        FramePrincipal.pack(side=tk.RIGHT, fill='both', expand=True)
+        FramePrincipal.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         self.controles_cuerpo()
         
     # *Opciones de a barra superior
-    def controles_barra_superior(self):
+    def barra_superior(self):
+        self.barra_superior = tk.Frame(self.frame, bg=COLOR_BARRA_SUPERIOR, height=60)
+        self.barra_superior.pack(side=tk.TOP, fill=tk.BOTH)  
+
+
         font_awesome = font.Font(family='FontAwesome', size=12)
         self.menu= util_img.leer_imagen("./img/menu.png", (50, 50))
         
@@ -132,7 +105,10 @@ class MainFrame():
         self.labelTitulo.pack(side=tk.RIGHT)
 
     # *Crea todos los botones del menu lateral
-    def controles_menu_lateral(self):
+    def menu_lateral(self):
+        self.menu_lateral = tk.Frame(self.frame, bg=COLOR_MENU_LATERAL, width=150)
+        self.menu_lateral.pack(side=tk.LEFT, fill=tk.BOTH, expand=False) 
+
         # Configuración del menú lateral
         self.ancho_menuButton = 20
         self.alto_menuButton = 2
@@ -143,7 +119,6 @@ class MainFrame():
         self.tables= util_img.leer_imagen("./img/table.png", (50, 50))
          
         # Botones del menú lateral
-        
         self.buttonHome = ttk.Button(self.menu_lateral, text="Inicio", image=self.home, compound="left", cursor="hand2", command=lambda:self.create_cuerpo_principal())        
         self.buttonDevices = ttk.Button(self.menu_lateral, text="Tipos de Equipo", image=self.devices, compound="left", cursor="hand2", command=lambda:self.destroyCuerpo(object_page=PageTypeEquipos))        
         self.buttonDestokp = ttk.Button(self.menu_lateral, text="Equipos", image=self.destokp, compound="left", cursor="hand2")
@@ -208,11 +183,11 @@ class MainFrame():
     def destroyCuerpo(self, object_page=object, atributos={}):
         self.cuerpo_principal.destroy()
         if "titulo" in atributos and "model" in atributos:
-            nuevo_cuerpo_principal=object_page(self.canvas, atributos["titulo"], atributos["model"])
+            nuevo_cuerpo_principal=object_page(self.frame, atributos["titulo"], atributos["model"])
         elif "funtion_cambio_cuerpo" in atributos:
-            nuevo_cuerpo_principal=object_page(self.canvas, self.cambio_cuerpo_principal)
+            nuevo_cuerpo_principal=object_page(self.frame, self.cambio_cuerpo_principal)
         else:
-            nuevo_cuerpo_principal=object_page(self.canvas)
+            nuevo_cuerpo_principal=object_page(self.frame)
         
         self.cuerpo_principal=nuevo_cuerpo_principal.framePrincipal
 

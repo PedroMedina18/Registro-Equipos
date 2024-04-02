@@ -1,19 +1,31 @@
 import tkinter as tk
 from client.MainFrame import MainFrame
 import util.util_ventana as util_ventana
+from  client.ScrollFrame import VerticalScrolledFrame
 
 
 def main():
+    # *se crea la ruta raiz
     root = tk.Tk()
     root.title("Sistema de Control de Equipos de Sistemas")
     root.resizable(0, 1)
-    root.state("zoomed")
-    width=root.winfo_screenwidth()
-    height = 500
-    root.geometry(f"{width}x{height}")
-    w, h = 1024, 600        
-    util_ventana.centrar_ventana(root, w, h)   
-    MainFrame(root = root)
+
+    # *para agregar pantalla completa
+    # root.state("zoomed")
+
+    # *tamaño de la ventana en caso de reducir
+    width, height = 1250, 800   
+
+    # *para que la ventana este centrada     
+    util_ventana.centrar_ventana(root, width, height)   
+
+    # *se crea el scroll
+    frame = VerticalScrolledFrame(root)
+    frame.interior.pack(fill = tk.BOTH, expand = True)
+
+
+    # *se invoca la ventana inicial
+    MainFrame(root, frame.interior)
 
     root.mainloop()
 
