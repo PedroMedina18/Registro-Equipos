@@ -21,7 +21,7 @@ def main():
 
     # *se crea el scroll
     frame = VerticalScrolledFrame(root)
-    frame.interior.pack(fill = tk.BOTH, expand = True)
+    frame.pack(fill = tk.BOTH, expand = True)
 
 
     # *se invoca la ventana inicial

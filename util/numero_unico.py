@@ -9,10 +9,9 @@ def numero_unico():
     hour = current_date_time.hour
     minute = current_date_time.minute
     second = current_date_time.second
-    num = random.randint(1, 1000)
 
 
-    total = day + month + year + hour + minute + second + num
+    total = day + month + year + hour + minute + second
 
 
     return int(total)

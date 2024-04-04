@@ -5,6 +5,8 @@ from models.tablas import Tablas
 from models.tablas_has_campos import Tablas_has_Campos
 from models.registros import Registros
 
+
+# la pagina en donde se encuentran todas las tablas
 class PageListTablas():
 
     def __init__(self, root, *args):
@@ -16,6 +18,7 @@ class PageListTablas():
         self.crearCuerpo()
         self.lista_tablas()
 
+    # para crear el cuerpo principal
     def crearCuerpo(self):
         if(self.framePrincipal):
             self.framePrincipal.pack(side=tk.RIGHT, fill='both', expand=True, ipadx=10)
@@ -25,6 +28,7 @@ class PageListTablas():
     
     def lista_tablas(self):
         self.framePrincipal.columnconfigure(0, weight=1)
+
         # Titulo
         tituloPage=tk.Label(self.framePrincipal, text="Lista de tablas")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
@@ -46,7 +50,7 @@ class PageListTablas():
         self.tabla.heading("#1", text="NOMBRE")
         self.tabla.heading("#2", text="DESCRIPCIÓN")
 
-        # iterar la lista d epeliculas
+        # iterar la lista de campos
         for item in self.list_tabla:
             self.tabla.insert("", 0, text=item[0], 
             values=(item[1], item[2]))
@@ -76,7 +80,6 @@ class PageListTablas():
 
     def frameTableData(self, id_table=0, name_tabla=""):
         list_campos=Tablas_has_Campos.list(id_tabla=id_table)
-        list_campos.reverse()
         
         # # Button Regresar
         buttonRegresar=tk.Button(self.framePrincipal, text="Regresar")
@@ -97,15 +100,15 @@ class PageListTablas():
             label_nombre = tk.Label(self.framePrincipal, text=f"{campos[1]}:")
             label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
             label_nombre.grid(row=2+self.CONTADOR, column=0, padx=10, pady=10)
+
             if campos[2]>150:
                 # TEXTARE
-
                 entry_descripcion = tk.Text(self.framePrincipal)
                 entry_descripcion.grid(row=2+self.CONTADOR, column=1, padx=10, pady=10, columnspan=2)
 
                 scroll=tk.Scrollbar(self.framePrincipal, command=entry_descripcion.yview)
                 scroll.config(width=10)
-                scroll.grid(row=2, column=3, sticky="nsew")
+                scroll.grid(row=2+self.CONTADOR, column=3, sticky="nsew")
                 entry_descripcion.config(width=80, height=10, font=FONT_LABEL, yscrollcommand=scroll.set)
                 
                 self.LIST_CAMPOS.append(
@@ -119,7 +122,6 @@ class PageListTablas():
                 )
             else:
                 # ENTRY
-
                 string=tk.StringVar()
                 entry_nombre = tk.Entry(self.framePrincipal, textvariable=string)
                 entry_nombre.config(width=80, font=FONT_LABEL)

@@ -6,7 +6,7 @@ from .PageTypeEquipos import PageTypeEquipos
 from .PageCampos_tablas import PageCampos_tablas
 from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
-from .Pagebasic import PageBasic
+from .PageBasic import PageBasic
 from models.crearTablas import crearTablas
 
 # -------------------------------
@@ -15,6 +15,8 @@ from models.caracteristicas import Caracteristicas
 from models.estados import Estados
 from models.areas_trabajo import AreasTrabajo
 
+
+# La magina inicial al cargar la aplicacion
 class MainFrame():
 
     def __init__(self, root, frame):

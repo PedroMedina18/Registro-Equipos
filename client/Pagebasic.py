@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from config import FONT_LABEL,FONT_LABEL_TITULO, COLOR_BASE, COLOR_AZUL, COLOR_ROJO, COLOR_VERDE, ACTIVE_VERDE, ACTIVE_AZUL, ACTIVE_ROJO
 
+
+
+# Pagina basica de registros con solo el nombre, la descripcion
 class PageBasic():
 
     def __init__(self, root, tituloPage, modelo):
