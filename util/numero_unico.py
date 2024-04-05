@@ -1,6 +1,7 @@
 from datetime import datetime
 import random
 
+
 def numero_unico():
     current_date_time = datetime.now()
     day = current_date_time.day
@@ -10,8 +11,6 @@ def numero_unico():
     minute = current_date_time.minute
     second = current_date_time.second
 
-
     total = day + month + year + hour + minute + second
-
 
     return int(total)

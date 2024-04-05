@@ -1,10 +1,11 @@
 from .conexion import ConexionDB
 from tkinter import messagebox
 
+
 def crearTablas():
     conexion = ConexionDB()
 
-    SQL_tablaEquipos='''
+    SQL_tablaEquipos = """
         CREATE TABLE tipos_equipos(
             id INTEGER NOT NULL, 
             nombre VARCHAR(100) NOT NULL,
@@ -14,38 +15,38 @@ def crearTablas():
             descripcion VARCHAR(500),
             PRIMARY KEY(id AUTOINCREMENT)
         )
-    '''
-    SQL_estados='''
+    """
+    SQL_estados = """
         CREATE TABLE estados(
             id INTEGER NOT NULL, 
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )
-    '''
-    
-    SQL_areasTrabajo='''
+    """
+
+    SQL_areasTrabajo = """
         CREATE TABLE areas_trabajo(
             id INTEGER NOT NULL, 
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )  
-    '''
+    """
 
-    SQL_tipoRegistro='''
+    SQL_tipoRegistro = """
         CREATE TABLE tipo_registro(
             id INTEGER NOT NULL, 
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )  
-    '''
+    """
 
-    SQL_equipos='''
+    SQL_equipos = """
         CREATE TABLE equipos (
             id INTEGER NOT NULL,
-            serial VARCHAR(100) NOT NULL,
+            serial VARCHAR(100) NOT NULL UNIQUE,
             tipos_equipos_id INT NOT NULL,
             bolivar_marron BOOLEAN NOT NULL,
             estado_actual_id INT NOT NULL,
@@ -55,9 +56,9 @@ def crearTablas():
             FOREIGN KEY (estado_actual_id) REFERENCES estados(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             FOREIGN KEY (area_trabajo_id) REFERENCES areas_trabajo(id) ON DELETE RESTRICT ON UPDATE CASCADE
         );
-    '''
+    """
 
-    SQL_componentes='''
+    SQL_componentes = """
         CREATE TABLE componentes(
             id INTEGER NOT NULL, 
             componente_id INTEGER NOT NULL,
@@ -67,18 +68,18 @@ def crearTablas():
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (componente_id) REFERENCES tipos_equipos(id) ON DELETE RESTRICT ON UPDATE CASCADE 
         )  
-    '''
+    """
 
-    SQL_caracteristicas='''
+    SQL_caracteristicas = """
         CREATE TABLE caracteristicas(
             id INTEGER NOT NULL, 
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )  
-    '''
+    """
 
-    SQL_componentes_caracteristicas='''
+    SQL_componentes_caracteristicas = """
         CREATE TABLE componentes_has_caracteristicas(
             id INTEGER NOT NULL, 
             componente_id INTEGER NOT NULL,
@@ -88,9 +89,9 @@ def crearTablas():
             FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             FOREIGN KEY (caracteristica_id) REFERENCES caracteristicas(id) ON DELETE RESTRICT ON UPDATE CASCADE
         )  
-    '''
-    
-    SQL_componentes_equipos='''
+    """
+
+    SQL_componentes_equipos = """
         CREATE TABLE componentes_has_equipos(
             id INTEGER NOT NULL, 
             componente_id INTEGER NOT NULL,
@@ -99,28 +100,28 @@ def crearTablas():
             FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON DELETE RESTRICT ON UPDATE CASCADE
         )  
-    '''
+    """
 
-    SQL_tablas='''
+    SQL_tablas = """
         CREATE TABLE tablas(
             id INTEGER NOT NULL, 
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )
-    '''
+    """
 
-    SQL_campos_tablas='''
+    SQL_campos_tablas = """
         CREATE TABLE campos_tablas(
             id INTEGER NOT NULL, 
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             numero_caracteres INTEGER NOT NULL, 
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
         )
-    '''
+    """
 
-    SQL_tablas_campos_tablas='''
+    SQL_tablas_campos_tablas = """
         CREATE TABLE tablas_has_campos_tablas(
             id INTEGER NOT NULL, 
             tablas_id INTEGER NOT NULL,
@@ -129,9 +130,9 @@ def crearTablas():
             FOREIGN KEY (tablas_id) REFERENCES tablas(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             FOREIGN KEY (campos_id) REFERENCES campos_tablas(id) ON DELETE RESTRICT ON UPDATE CASCADE
         )
-    '''
+    """
 
-    SQL_registros='''
+    SQL_registros = """
         CREATE TABLE registros(
             id INTEGER NOT NULL, 
             campo_tablas_id INTEGER NOT NULL,
@@ -142,7 +143,7 @@ def crearTablas():
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (campo_tablas_id) REFERENCES tablas_has_campos_tablas(id) ON DELETE CASCADE ON UPDATE CASCADE
         )
-    '''
+    """
 
     try:
         conexion.cursor.execute(SQL_tablaEquipos)
@@ -160,11 +161,10 @@ def crearTablas():
         conexion.cursor.execute(SQL_registros)
         conexion.cerrar()
         titulo = "Crear Tablas"
-        message= "Se creo todas las tablas de la base de datos"
+        message = "Se creo todas las tablas de la base de datos"
         messagebox.showinfo(titulo, message)
     except Exception as ex:
         print(ex)
         titulo = "Crear Tablas"
-        message= "La tabla ya esta creada"
+        message = "La tabla ya esta creada"
         messagebox.showerror(titulo, message)
-
