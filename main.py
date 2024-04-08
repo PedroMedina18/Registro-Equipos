@@ -19,13 +19,9 @@ def main():
     # *para que la ventana este centrada     
     util_ventana.centrar_ventana(root, width, height)   
 
-    # *se crea el scroll
-    frame = VerticalScrolledFrame(root)
-    frame.pack(fill = tk.BOTH, expand = True)
-
 
     # *se invoca la ventana inicial
-    MainFrame(root, frame.interior)
+    MainFrame(root)
 
     root.mainloop()
 

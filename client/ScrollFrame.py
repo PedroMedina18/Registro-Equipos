@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-
+from config import COLOR_BASE
 
 class VerticalScrolledFrame(ttk.Frame):
     def __init__(self, parent, *args, **kw):
@@ -10,7 +10,7 @@ class VerticalScrolledFrame(ttk.Frame):
         vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
         vscrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
         self.canvas = tk.Canvas(
-            self, bd=0, highlightthickness=0, bg="red", yscrollcommand=vscrollbar.set
+            self, bd=0, highlightthickness=0, bg=COLOR_BASE, yscrollcommand=vscrollbar.set
         )
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
         vscrollbar.config(command=self.canvas.yview)

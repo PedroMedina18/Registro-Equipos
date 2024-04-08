@@ -8,9 +8,12 @@ from config import (
     TITULO_CAMPOS,
     COLOR_ROJO,
     COLOR_VERDE,
+    LETRA_CLARA,
     ACTIVE_VERDE,
     ACTIVE_AZUL,
+    TAMAÑO_BOTON,
     ACTIVE_ROJO,
+    TAMAÑO_ENTRYS,
 )
 from models.campos_tablas import Campos_Tabla
 
@@ -33,7 +36,7 @@ class PageCampos_tablas:
         # Titulo
         self.tituloPage = tk.Label(self.framePrincipal, text="Nombre de los campos")
         self.tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
-        self.tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
+        self.tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
 
         # Labels
         # Nombre
@@ -56,34 +59,29 @@ class PageCampos_tablas:
         self.caracteres = tk.IntVar()
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
-        self.entry_nombre.config(width=80, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
+        self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=2)
 
-        self.entry_caracteres = tk.Entry(
-            self.framePrincipal, textvariable=self.caracteres
-        )
-        self.entry_caracteres.config(width=80, font=FONT_LABEL)
-        self.entry_caracteres.grid(row=2, column=1, padx=10, pady=10, columnspan=2)
+        self.entry_caracteres = tk.Entry(self.framePrincipal, textvariable=self.caracteres)
+        self.entry_caracteres.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_caracteres.grid(row=2, column=1, pady=10, columnspan=2)
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
-        self.entry_descripcion.grid(row=3, column=1, padx=10, pady=10, columnspan=2)
+        self.entry_descripcion.config(width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL)
+        self.entry_descripcion.grid(row=3, column=1, pady=10, columnspan=2)
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
-        scroll.config(width=10)
-        scroll.grid(row=3, column=3, sticky="nsew")
-        self.entry_descripcion.config(
-            width=80, height=10, font=FONT_LABEL, yscrollcommand=scroll.set
-        )
+        scroll.grid(row=3, column=3, sticky="nsew", pady=10)
+        self.entry_descripcion.config(yscrollcommand=scroll.set)
 
         # Botones
-
         self.boton_nuevo = tk.Button(
             self.framePrincipal, text="Nuevo", command=self.habilitar_campos
         )
         self.boton_nuevo.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_VERDE,
             cursor="hand2",
             activebackground=ACTIVE_VERDE,
@@ -94,9 +92,9 @@ class PageCampos_tablas:
             self.framePrincipal, text="Guardar", command=self.guardar_campos
         )
         self.boton_guardar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_AZUL,
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
@@ -107,9 +105,9 @@ class PageCampos_tablas:
             self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
         )
         self.boton_cancelar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_ROJO,
             cursor="hand2",
             activebackground=ACTIVE_ROJO,
@@ -127,7 +125,7 @@ class PageCampos_tablas:
             columns=("Nombre", "Caracteres", "Descripcion"),
             height=20,
         )
-        self.tabla.grid(row=5, column=0, columnspan=4, sticky="NSEW")
+        self.tabla.grid(row=5, column=0, columnspan=4, sticky="NSEW", padx=10)
 
         # Scroll bar
         scroll = ttk.Scrollbar(
@@ -150,9 +148,9 @@ class PageCampos_tablas:
         # editar
         self.boton_editar = tk.Button(self.framePrincipal, text="Editar")
         self.boton_editar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_AZUL,
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
@@ -163,9 +161,9 @@ class PageCampos_tablas:
         # eliminar
         self.boton_eliminar = tk.Button(self.framePrincipal, text="Eliminar")
         self.boton_eliminar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_ROJO,
             cursor="hand2",
             activebackground=ACTIVE_ROJO,

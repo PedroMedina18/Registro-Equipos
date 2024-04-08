@@ -7,9 +7,12 @@ from config import (
     COLOR_AZUL,
     COLOR_ROJO,
     COLOR_VERDE,
+    LETRA_CLARA,
     ACTIVE_VERDE,
     ACTIVE_AZUL,
+    TAMAÑO_BOTON,
     ACTIVE_ROJO,
+    TAMAÑO_ENTRYS,
 )
 from models.tipos_equipos import TipoEquipos
 
@@ -32,36 +35,36 @@ class PageTypeEquipos:
         # Titulo
         self.tituloPage = tk.Label(self.framePrincipal, text="Tipos de Equipos")
         self.tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
-        self.tituloPage.grid(row=0, column=0, padx=10, pady=6, columnspan=4)
+        self.tituloPage.grid(row=0, column=0, padx=10, pady=7, columnspan=3)
 
         # Labels
 
         # Nombre
         self.label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
         self.label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_nombre.grid(row=1, column=0, padx=10, pady=6)
+        self.label_nombre.grid(row=1, column=0, padx=10, pady=7)
 
         # Marca
         self.label_marca = tk.Label(self.framePrincipal, text="Marca:")
         self.label_marca.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_marca.grid(row=2, column=0, padx=10, pady=6)
+        self.label_marca.grid(row=2, column=0, padx=10, pady=7)
 
         # Modelo
         self.label_modelo = tk.Label(self.framePrincipal, text="Modelo:")
         self.label_modelo.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_modelo.grid(row=3, column=0, padx=10, pady=6)
+        self.label_modelo.grid(row=3, column=0, padx=10, pady=7)
 
         # Clase de Registro
         self.label_TypeRegistro = tk.Label(
             self.framePrincipal, text="Escoja el tipo de Registro:"
         )
         self.label_TypeRegistro.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_TypeRegistro.grid(row=4, column=0, padx=10, pady=6, columnspan=4)
+        self.label_TypeRegistro.grid(row=4, column=0, padx=10, pady=7, columnspan=3)
 
         # Descripción
         self.label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
         self.label_descripcion.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_descripcion.grid(row=6, column=0, padx=10, pady=6)
+        self.label_descripcion.grid(row=6, column=0, padx=10, pady=7)
 
         # Campos de entrada
         self.mi_nombre = tk.StringVar()
@@ -70,19 +73,22 @@ class PageTypeEquipos:
         self.componente_equipo = tk.IntVar()
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
-        self.entry_nombre.config(width=80, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, padx=10, pady=6, columnspan=2)
+        self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_nombre.grid(row=1, column=1, padx=10, pady=7, columnspan=2)
 
         self.entry_marca = tk.Entry(self.framePrincipal, textvariable=self.mi_marca)
-        self.entry_marca.config(width=80, font=FONT_LABEL)
-        self.entry_marca.grid(row=2, column=1, padx=10, pady=6, columnspan=2)
+        self.entry_marca.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_marca.grid(row=2, column=1, padx=10, pady=7, columnspan=2)
 
         self.entry_modelo = tk.Entry(self.framePrincipal, textvariable=self.mi_modelo)
-        self.entry_modelo.config(width=80, font=FONT_LABEL)
-        self.entry_modelo.grid(row=3, column=1, padx=10, pady=6, columnspan=2)
+        self.entry_modelo.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_modelo.grid(row=3, column=1, padx=10, pady=7, columnspan=2)
 
         self.Boolean_Equipos = tk.Radiobutton(
-            self.framePrincipal, variable=self.componente_equipo, text="Equipo", value=1
+            self.framePrincipal, 
+            variable=self.componente_equipo, 
+            text="Equipo", 
+            value=1
         )
         self.Boolean_Equipos.config(width=10, font=FONT_LABEL, bg=COLOR_BASE)
         self.Boolean_Equipos.grid(row=5, column=1, padx=10, pady=2)
@@ -97,14 +103,12 @@ class PageTypeEquipos:
         self.Boolean_Componente.grid(row=5, column=2, padx=10, pady=2)
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
-        self.entry_descripcion.grid(row=6, column=1, padx=10, pady=6, columnspan=2)
+        self.entry_descripcion.config(width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL)
+        self.entry_descripcion.grid(row=6, column=1, pady=7, columnspan=2)
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
-        scroll.config(width=10)
-        scroll.grid(row=6, column=3, sticky="nsew")
-        self.entry_descripcion.config(
-            width=80, height=8, font=FONT_LABEL, yscrollcommand=scroll.set
-        )
+        scroll.grid(row=6, column=3, pady=7, sticky="nsew")
+        self.entry_descripcion.config(yscrollcommand=scroll.set)
 
         # Botones
 
@@ -112,43 +116,43 @@ class PageTypeEquipos:
             self.framePrincipal, text="Nuevo", command=self.habilitar_campos
         )
         self.boton_nuevo.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_VERDE,
             cursor="hand2",
             activebackground=ACTIVE_VERDE,
         )
-        self.boton_nuevo.grid(row=7, column=0, padx=8, pady=6)
+        self.boton_nuevo.grid(row=7, column=0, padx=8, pady=7)
 
         self.boton_guardar = tk.Button(
             self.framePrincipal, text="Guardar", command=self.guardar_campos
         )
         self.boton_guardar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_AZUL,
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        self.boton_guardar.grid(row=7, column=1, padx=8, pady=6)
+        self.boton_guardar.grid(row=7, column=1, padx=8, pady=7)
 
         self.boton_cancelar = tk.Button(
             self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
         )
         self.boton_cancelar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_ROJO,
             cursor="hand2",
             activebackground=ACTIVE_ROJO,
         )
-        self.boton_cancelar.grid(row=7, column=2, padx=8, pady=6)
+        self.boton_cancelar.grid(row=7, column=2, padx=8, pady=7)
 
     def tabla_lista(self):
-
+        pass
         # la lista de tipos de equipo
         self.lista_equipos = TipoEquipos.list()
         self.lista_equipos.reverse()
@@ -157,9 +161,9 @@ class PageTypeEquipos:
         self.tabla = ttk.Treeview(
             self.framePrincipal,
             columns=("Nombre", "Marca", "Modelo", "Tipo", "Descripcion"),
-            height=18,
+            height=16,
         )
-        self.tabla.grid(row=8, column=0, columnspan=4, sticky="NSEW")
+        self.tabla.grid(row=8, column=0, columnspan=4, sticky="NSEW", padx=10)
 
         # Scroll bar
         scroll = ttk.Scrollbar(
@@ -168,7 +172,7 @@ class PageTypeEquipos:
         scroll.grid(row=8, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.column("#0", width=20)
+        self.tabla.column("#0", width=TAMAÑO_BOTON)
         self.tabla.heading("#0", text="ID")
         self.tabla.column("#1", width=30)
         self.tabla.heading("#1", text="NOMBRE")
@@ -176,7 +180,7 @@ class PageTypeEquipos:
         self.tabla.heading("#2", text="MARCA")
         self.tabla.column("#3", width=30)
         self.tabla.heading("#3", text="MODELO")
-        self.tabla.column("#4", width=20)
+        self.tabla.column("#4", width=TAMAÑO_BOTON)
         self.tabla.heading("#4", text="TIPO")
         self.tabla.column("#5", width=50)
         self.tabla.heading("#5", text="DESCRIPCIÓN")
@@ -199,28 +203,28 @@ class PageTypeEquipos:
         # editar
         self.boton_editar = tk.Button(self.framePrincipal, text="Editar")
         self.boton_editar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_AZUL,
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
             command=self.editar_datos,
         )
-        self.boton_editar.grid(row=9, column=0, padx=10, pady=6)
+        self.boton_editar.grid(row=9, column=0, padx=10, pady=7)
 
         # eliminar
         self.boton_eliminar = tk.Button(self.framePrincipal, text="Eliminar")
         self.boton_eliminar.config(
-            width=20,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
-            fg="white",
+            fg=LETRA_CLARA,
             bg=COLOR_ROJO,
             cursor="hand2",
             activebackground=ACTIVE_ROJO,
             command=self.eliminar_datos,
         )
-        self.boton_eliminar.grid(row=9, column=1, padx=10, pady=6)
+        self.boton_eliminar.grid(row=9, column=1, padx=10, pady=7)
 
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")
