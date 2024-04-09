@@ -54,7 +54,7 @@ class PageListTablas:
         self.tabla = ttk.Treeview(
             self.framePrincipal, columns=("Nombre", "Descripcion"), height=30
         )
-        self.tabla.grid(row=1, column=0, sticky="NSEW", padx=1, columnspan=2)
+        self.tabla.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=2)
 
         # Scroll bar
         scroll = ttk.Scrollbar(
@@ -63,9 +63,16 @@ class PageListTablas:
         scroll.grid(row=1, column=1, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.heading("#0", text="ID")
-        self.tabla.heading("#1", text="NOMBRE")
-        self.tabla.heading("#2", text="DESCRIPCIÓN")
+        self.tabla.heading("#0", text="ID", anchor=tk.W)
+        self.tabla.heading("#1", text="NOMBRE", anchor=tk.W)
+        self.tabla.heading("#2", text="DESCRIPCIÓN", anchor=tk.W)
+
+
+        # edit column
+        self.tabla.column("#0", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla.column("#1", stretch=tk.NO, minwidth="25", width="250")
+        self.tabla.column("#2", stretch=tk.YES, minwidth="25")
+
 
         # iterar la lista de campos
         for item in self.list_tabla:
@@ -130,13 +137,13 @@ class PageListTablas:
 
             label_nombre = tk.Label(self.framePrincipal, text=f"{campos[1]}:")
             label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-            label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=8)
+            label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10)
 
             if campos[2] > 150:
                 # TEXTARE
                 entry_descripcion = tk.Text(self.framePrincipal)
                 entry_descripcion.grid(
-                    row=2 + self.CONTADOR, column=1, padx=10, pady=8, columnspan=3
+                    row=2 + self.CONTADOR, column=1, pady=10, columnspan=2
                 )
 
                 scroll = tk.Scrollbar(
@@ -144,7 +151,10 @@ class PageListTablas:
                 )
                 scroll.grid(row=2 + self.CONTADOR, column=3, sticky="nsew")
                 entry_descripcion.config(
-                    width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL, yscrollcommand=scroll.set
+                    width=TAMAÑO_ENTRYS,
+                    height=10,
+                    font=FONT_LABEL,
+                    yscrollcommand=scroll.set,
                 )
 
                 self.LIST_CAMPOS.append(
@@ -162,7 +172,7 @@ class PageListTablas:
                 entry_nombre = tk.Entry(self.framePrincipal, textvariable=string)
                 entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
                 entry_nombre.grid(
-                    row=2 + self.CONTADOR, column=1, padx=10, pady=8, columnspan=3
+                    row=2 + self.CONTADOR, column=1, pady=10, columnspan=2
                 )
 
                 self.LIST_CAMPOS.append(
@@ -223,33 +233,49 @@ class PageListTablas:
 
     def tabla_lista(self):
         pass
-        columns = ('id',)
+        columns = ("id",)
         columns += tuple(element["nombre"] for element in self.LIST_CAMPOS)
         columns += ("fecha_creacion", "fecha_actualizacion")
-        
+
+        frameTable=tk.Frame(self.framePrincipal, height=250, bg="red")
+        frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=4, sticky="NSEW", padx=10)
         self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
-        
-        tabla = ttk.Treeview(self.framePrincipal, columns=columns, height=18, show='headings')
-        tabla.grid(row=3 + self.CONTADOR, column=0, columnspan=3, sticky="NSEW", padx=10)
+
+        tabla = ttk.Treeview(
+            frameTable,
+            columns=columns,
+            show="headings",
+        )
+        tabla.place(width=950, height=250)
 
         # Scroll bar
         scrollVertical = ttk.Scrollbar(
-            self.framePrincipal, orient="vertical", command=tabla.yview
+            self.framePrincipal,
+            orient="vertical", 
+            command=tabla.yview
         )
-        scrollVertical.grid(row=3 + self.CONTADOR, column=3, sticky="nsew")
+        scrollVertical.grid(row=3 + self.CONTADOR, column=3, sticky="NS")
+
         scrollHorizontal = ttk.Scrollbar(
-            self.framePrincipal, orient="horizontal", command=tabla.yview
+            self.framePrincipal, 
+            orient="horizontal",
+            command=tabla.xview
         )
-        scrollHorizontal.grid(row=4 + self.CONTADOR, column=0, columnspan=3, sticky="ew")
-        tabla.configure(yscrollcommand=scrollVertical.set)
+        scrollHorizontal.grid(row=4 + self.CONTADOR, column=0, columnspan=4, sticky="EW", padx=10)
 
+        tabla.configure(
+            selectmode="extended", 
+            yscrollcommand=scrollVertical.set, 
+            xscrollcommand=scrollHorizontal.set
+        )
 
+        # Para insertar todas las columnas de la tabla
         for object in columns:
             tabla.heading(f"{object}", text=object.replace("_", " ").upper())
 
         for index, registros in enumerate(self.lista_registros):
-            values=tuple(values for keys, values in registros.items())
-            tabla.insert('', tk.END, values=values)
+            values = tuple(values for keys, values in registros.items())
+            tabla.insert("", tk.END, values=values)
 
         # botones finales
         # editar
