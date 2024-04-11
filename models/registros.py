@@ -118,7 +118,9 @@ class Registros:
 
             campos_tabla={keys:None for keys in campos}
             
+            
             grupo_registros = organizador_registros(registros)
+
            
             lista_registros = asignar_valores(campos_tabla, grupo_registros )
             

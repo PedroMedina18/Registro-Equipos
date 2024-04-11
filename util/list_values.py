@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def list_values(list):
     lista = []
     for element in list:
@@ -43,19 +45,24 @@ def organizador_registros(tuples_list):
 
 
 def asignar_valores(object_campos, group_tuplas):
-    
-    registros = []
+    list_registros = []
     for key, value in group_tuplas.items():
-
-        campos = object_campos
-        campos["id"] = key
+        
+        valores_registros = object_campos.copy()
+        valores_registros["id"] = key
 
         for index, registro in enumerate(value, start=1):
-            if index==1:
-                campos["fecha_creacion"] = registro[2]
-                campos["fecha_actualizacion"] = registro[3]
-            campos[f"{registro[5]}"] = registro[1]
+            if index == 1:
+                valores_registros["fecha_creacion"] = formatoFecha(registro[2])
+            valores_registros["fecha_actualizacion"] = formatoFecha(registro[3])
+            valores_registros[f"{registro[5]}"] = registro[1]
 
-        registros.append(campos)
+        list_registros.append(valores_registros)
 
-    return registros
+    return list_registros
+
+def formatoFecha(fecha):
+    formatoDateTime="%Y-%m-%d %H:%M:%S.%f"
+    fechaStr=datetime.strptime(fecha, formatoDateTime)
+    stringFecha=f"{fechaStr.day:02}/{fechaStr.month:02}/{fechaStr.year}    {fechaStr.hour if fechaStr.hour <= 12 else fechaStr.hour - 12}:{fechaStr.minute:02} {'am' if fechaStr.hour <= 12 else 'pm'}"
+    return stringFecha

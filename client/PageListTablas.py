@@ -51,32 +51,32 @@ class PageListTablas:
         self.list_tabla = Tablas.list()
         self.list_tabla.reverse()
 
-        self.tabla = ttk.Treeview(
+        self.tabla_listTablas = ttk.Treeview(
             self.framePrincipal, columns=("Nombre", "Descripcion"), height=30
         )
-        self.tabla.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=2)
+        self.tabla_listTablas.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=2)
 
         # Scroll bar
         scroll = ttk.Scrollbar(
-            self.framePrincipal, orient="vertical", command=self.tabla.yview
+            self.framePrincipal, orient="vertical", command=self.tabla_listTablas.yview
         )
         scroll.grid(row=1, column=1, sticky="nsew")
-        self.tabla.configure(yscrollcommand=scroll.set)
+        self.tabla_listTablas.configure(yscrollcommand=scroll.set)
 
-        self.tabla.heading("#0", text="ID", anchor=tk.W)
-        self.tabla.heading("#1", text="NOMBRE", anchor=tk.W)
-        self.tabla.heading("#2", text="DESCRIPCIÓN", anchor=tk.W)
+        self.tabla_listTablas.heading("#0", text="ID", anchor=tk.W)
+        self.tabla_listTablas.heading("#1", text="NOMBRE", anchor=tk.W)
+        self.tabla_listTablas.heading("#2", text="DESCRIPCIÓN", anchor=tk.W)
 
 
         # edit column
-        self.tabla.column("#0", stretch=tk.NO, minwidth="25", width="150")
-        self.tabla.column("#1", stretch=tk.NO, minwidth="25", width="250")
-        self.tabla.column("#2", stretch=tk.YES, minwidth="25")
+        self.tabla_listTablas.column("#0", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla_listTablas.column("#1", stretch=tk.NO, minwidth="25", width="250")
+        self.tabla_listTablas.column("#2", stretch=tk.YES, minwidth="25")
 
 
         # iterar la lista de campos
         for item in self.list_tabla:
-            self.tabla.insert("", 0, text=item[0], values=(item[1], item[2]))
+            self.tabla_listTablas.insert("", 0, text=item[0], values=(item[1], item[2]))
 
         # botones finales
 
@@ -96,8 +96,8 @@ class PageListTablas:
     # *la que destrulle y crea el nuevo frame
     def buscarDataTabla(self):
         try:
-            self.id_table = self.tabla.item(self.tabla.selection())["text"]
-            name_tabla = self.tabla.item(self.tabla.selection())["values"][0]
+            self.id_table = self.tabla_listTablas.item(self.tabla_listTablas.selection())["text"]
+            name_tabla = self.tabla_listTablas.item(self.tabla_listTablas.selection())["values"][0]
             self.framePrincipal.destroy()
             self.framePrincipal = None
             self.crearCuerpo()
@@ -133,14 +133,14 @@ class PageListTablas:
         self.LIST_CAMPOS = []
         self.CONTADOR = 0
         for campos in list_campos:
-            # EL LABEL
+            # # EL LABEL
 
             label_nombre = tk.Label(self.framePrincipal, text=f"{campos[1]}:")
             label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
             label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10)
 
             if campos[2] > 150:
-                # TEXTARE
+                # # TEXTARE
                 entry_descripcion = tk.Text(self.framePrincipal)
                 entry_descripcion.grid(
                     row=2 + self.CONTADOR, column=1, pady=10, columnspan=2
@@ -167,7 +167,7 @@ class PageListTablas:
                     }
                 )
             else:
-                # ENTRY
+                # # ENTRY
                 string = tk.StringVar()
                 entry_nombre = tk.Entry(self.framePrincipal, textvariable=string)
                 entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
@@ -232,21 +232,22 @@ class PageListTablas:
         self.tabla_lista()
 
     def tabla_lista(self):
-        pass
         columns = ("id",)
         columns += tuple(element["nombre"] for element in self.LIST_CAMPOS)
         columns += ("fecha_creacion", "fecha_actualizacion")
 
-        frameTable=tk.Frame(self.framePrincipal, height=250, bg="red")
-        frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=4, sticky="NSEW", padx=10)
         self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
+        
+
+        frameTable=tk.Frame(self.framePrincipal, height=300, bg=COLOR_BASE)
+        frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=4, sticky="NSEW", padx=10)
 
         tabla = ttk.Treeview(
             frameTable,
             columns=columns,
             show="headings",
         )
-        tabla.place(width=950, height=250)
+        tabla.place(width=950, height=300)
 
         # Scroll bar
         scrollVertical = ttk.Scrollbar(
@@ -273,6 +274,7 @@ class PageListTablas:
         for object in columns:
             tabla.heading(f"{object}", text=object.replace("_", " ").upper())
 
+        # Para insertar los registros en al tabla
         for index, registros in enumerate(self.lista_registros):
             values = tuple(values for keys, values in registros.items())
             tabla.insert("", tk.END, values=values)
@@ -344,7 +346,7 @@ class PageListTablas:
             Registros.update(campos=list_campos)
 
         self.desabilitar_campos()
-        self.tabla_lista()
+        self.tabla_listTablas_lista()
 
     def habilitar_campos(self):
         for campos in self.LIST_CAMPOS:
@@ -359,3 +361,18 @@ class PageListTablas:
         self.crearCuerpo()
         self.cambio_cuerpo(self.framePrincipal)
         self.lista_tablas()
+
+    def eliminar_datos(self):
+        try:
+            valor = messagebox.askquestion(
+                "Eliminar Registro", "Desea Eliminar el registro seleccionado"
+            )
+            if valor == "yes":
+                self.id_model = self.tabla_listTablas.item(self.tabla_listTablas.selection())["text"]
+                self.model.delete(self.id_model)
+                self.tabla_listTablas_lista()
+                self.desabilitar_campos()
+        except:
+            titulo = "Eliminar de Registro"
+            message = "No ha seleccionado ningun registro"
+            messagebox.showerror(titulo, message)

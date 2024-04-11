@@ -276,6 +276,7 @@ class MainFrame:
         else:
             self.menu_lateral.pack(side=tk.LEFT, fill="y")
 
+    # *Funcion que destruye el frame principal para remplazarlo por otro de la iterfaz elejida
     def destroyCuerpo(self, object_page=object, atributos={}):
         self.cuerpo_principal.destroy()
         if "titulo" in atributos and "model" in atributos:
