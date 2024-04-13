@@ -26,12 +26,12 @@ class PageListTablas:
         self.root = root
         self.framePrincipal = None
         self.cambio_cuerpo = args[0]
-        self.numero_registro = None
         self.id_table = None
+        self.numero_registro = 0
         self.crearCuerpo()
         self.lista_tablas()
 
-    # para crear el cuerpo principal
+    # *para crear el cuerpo principal
     def crearCuerpo(self):
         if self.framePrincipal:
             self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True)
@@ -139,7 +139,11 @@ class PageListTablas:
             label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
             label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10)
 
-            if campos[2] > 150:
+            object_campos={
+
+            }
+
+            if campos[2] >= 150:
                 # # TEXTARE
                 entry_descripcion = tk.Text(self.framePrincipal)
                 entry_descripcion.grid(
@@ -179,10 +183,10 @@ class PageListTablas:
                     {
                         "type": "input",
                         "entrada": entry_nombre,
-                        "variable": string,
                         "id": campos[0],
                         "caracteres": campos[2],
                         "nombre": campos[1],
+                        "variable": string,
                     }
                 )
 
@@ -238,33 +242,32 @@ class PageListTablas:
 
         self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
         
-
         frameTable=tk.Frame(self.framePrincipal, height=300, bg=COLOR_BASE)
         frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=4, sticky="NSEW", padx=10)
 
-        tabla = ttk.Treeview(
+        self.tabla_registros = ttk.Treeview(
             frameTable,
             columns=columns,
             show="headings",
         )
-        tabla.place(width=950, height=300)
+        self.tabla_registros.place(width=950, height=300)
 
         # Scroll bar
         scrollVertical = ttk.Scrollbar(
             self.framePrincipal,
             orient="vertical", 
-            command=tabla.yview
+            command=self.tabla_registros.yview
         )
         scrollVertical.grid(row=3 + self.CONTADOR, column=3, sticky="NS")
 
         scrollHorizontal = ttk.Scrollbar(
             self.framePrincipal, 
             orient="horizontal",
-            command=tabla.xview
+            command=self.tabla_registros.xview
         )
         scrollHorizontal.grid(row=4 + self.CONTADOR, column=0, columnspan=4, sticky="EW", padx=10)
 
-        tabla.configure(
+        self.tabla_registros.configure(
             selectmode="extended", 
             yscrollcommand=scrollVertical.set, 
             xscrollcommand=scrollHorizontal.set
@@ -272,16 +275,21 @@ class PageListTablas:
 
         # Para insertar todas las columnas de la tabla
         for object in columns:
-            tabla.heading(f"{object}", text=object.replace("_", " ").upper())
+            self.tabla_registros.heading(f"{object}", text=object.replace("_", " ").upper())
 
         # Para insertar los registros en al tabla
         for index, registros in enumerate(self.lista_registros):
-            values = tuple(values for keys, values in registros.items())
-            tabla.insert("", tk.END, values=values)
+            values = list(values for keys, values in registros.items())
+            idRegistro=values[0]
+            values[0]=index+1
+            values=tuple(values)
+            self.tabla_registros.insert("", tk.END, text=idRegistro, values=values)
+
+
 
         # botones finales
         # editar
-        self.boton_editar = tk.Button(self.framePrincipal, text="Editar")
+        self.boton_editar = tk.Button(self.framePrincipal, text="Editar", command=self.editar_datos)
         self.boton_editar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -293,7 +301,7 @@ class PageListTablas:
         self.boton_editar.grid(row=5 + self.CONTADOR, column=0, padx=10, pady=10)
 
         # eliminar
-        self.boton_eliminar = tk.Button(self.framePrincipal, text="Eliminar")
+        self.boton_eliminar = tk.Button(self.framePrincipal, text="Eliminar", command=self.eliminar_datos)
         self.boton_eliminar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -315,6 +323,7 @@ class PageListTablas:
                 campos["entrada"].delete(1.0, tk.END)
                 campos["entrada"].config(state="disabled")
 
+        self.numero_registro = None
         self.boton_guardar.config(state="disabled")
         self.boton_cancelar.config(state="disabled")
 
@@ -325,28 +334,28 @@ class PageListTablas:
             if element["type"] == "input":
                 list_campos.append(
                     {
+                        "id": element["id"],
                         "value": element["variable"].get(),
                         "caracteres": element["caracteres"],
                         "nombre": element["nombre"],
-                        "id": element["id"],
                     }
                 )
             else:
                 list_campos.append(
                     {
+                        "id": element["id"],
                         "value": element["entrada"].get(1.0, tk.END),
                         "caracteres": element["caracteres"],
                         "nombre": element["nombre"],
-                        "id": element["id"],
                     }
                 )
         if self.numero_registro == None:
             Registros.create(campos=list_campos)
         else:
-            Registros.update(campos=list_campos)
+            Registros.update(campos=list_campos, numero_registro=self.numero_registro)
 
         self.desabilitar_campos()
-        self.tabla_listTablas_lista()
+        self.tabla_lista()
 
     def habilitar_campos(self):
         for campos in self.LIST_CAMPOS:
@@ -368,11 +377,33 @@ class PageListTablas:
                 "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )
             if valor == "yes":
-                self.id_model = self.tabla_listTablas.item(self.tabla_listTablas.selection())["text"]
-                self.model.delete(self.id_model)
-                self.tabla_listTablas_lista()
+                self.numero_registro = self.tabla_registros.item(self.tabla_registros.selection())["text"]
+                Registros.delete(self.numero_registro)
+                self.tabla_lista()
                 self.desabilitar_campos()
-        except:
+        except Exception as error:
+            print(error)
             titulo = "Eliminar de Registro"
             message = "No ha seleccionado ningun registro"
             messagebox.showerror(titulo, message)
+    
+    def editar_datos(self):
+        try:
+            self.desabilitar_campos()
+            self.numero_registro = self.tabla_registros.item(self.tabla_registros.selection())["text"]
+            
+            dataSeleccionada = self.tabla_registros.item(self.tabla_registros.selection())
+            self.habilitar_campos()
+
+            for index, campo in enumerate(self.LIST_CAMPOS, start = 1):
+                if campo["caracteres"] >= 150:
+                    campo["entrada"].insert(1.0, dataSeleccionada["values"][index])
+                else:
+                    campo["entrada"].insert(0, dataSeleccionada["values"][index])
+            
+
+        except Exception as error:
+            print(error)
+            titulo = "Edicion de datos"
+            message = "No ha seleccionado ningun registro"
+            messagebox.showerror(titulo, message) 

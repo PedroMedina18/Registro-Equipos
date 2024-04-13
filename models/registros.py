@@ -47,8 +47,9 @@ class Registros:
         finally:
             conexion.cerrar()
 
-    def update(campos=[]):
+    def update(campos=[],  numero_registro=0):
         conexion = ConexionDB()
+        fecha_hora_actual = datetime.now()
 
         for campo in campos:
             comprobacionValue = comprobacionString(campo["value"], campo["caracteres"])
@@ -61,13 +62,13 @@ class Registros:
                 return None
 
         sql = """
-            UPDATE campos_tablas
-            SET value=?
-            WHERE id = ?
+            UPDATE registros
+            SET value=?, fecha_actualizacion=?
+            WHERE numero_registro=? AND  campo_tablas_id=?
         """
         try:
             for campo in campos:
-                conexion.cursor.execute(sql, [campo["value"], campo["id"]])
+                conexion.cursor.execute(sql, [campo["value"], fecha_hora_actual, numero_registro, campo["id"]])
         except Exception as error:
             print(error)
             titulo = "Edicion de datos"

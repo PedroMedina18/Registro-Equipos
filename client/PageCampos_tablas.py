@@ -226,6 +226,7 @@ class PageCampos_tablas:
 
     def editar_datos(self):
         try:
+            self.desabilitar_campos()
             self.id_campos_tabla = self.tabla.item(self.tabla.selection())["text"]
             nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][0]
             descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][

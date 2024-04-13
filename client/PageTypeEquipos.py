@@ -287,6 +287,7 @@ class PageTypeEquipos:
 
     def editar_datos(self):
         try:
+            self.desabilitar_campos()
             self.id_tipo_equipo = self.tabla.item(self.tabla.selection())["text"]
             nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][0]
             marca_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
@@ -316,7 +317,6 @@ class PageTypeEquipos:
             messagebox.showerror(titulo, message)
 
     def eliminar_datos(self):
-
         try:
             self.id_tipo_equipo = self.tabla.item(self.tabla.selection())["text"]
             TipoEquipos.delete(self.id_tipo_equipo)

@@ -15,7 +15,6 @@ from config import (
     TAMAÑO_ENTRYS,
 )
 
-
 # Pagina basica de registros con solo el nombre, la descripcion
 class PageBasic:
 
@@ -107,7 +106,6 @@ class PageBasic:
         self.boton_cancelar.grid(row=3, column=2, padx=8, pady=10)
 
     def tabla_lista(self):
-        pass
         # la lista de areas de trabao
 
         lista_areas_trabajo = self.model.list()
@@ -136,7 +134,6 @@ class PageBasic:
             self.tabla.insert("", 0, text=item[0], values=(item[1], item[2]))
 
         # botones finales
-
         # editar
         boton_editar = tk.Button(self.framePrincipal, text="Editar")
         boton_editar.config(
@@ -190,7 +187,6 @@ class PageBasic:
                     nombre=tipo_equipo["nombre"],
                     descripcion=tipo_equipo["descripcion"],
                 )
-
         self.desabilitar_campos()
         self.tabla_lista()
 
@@ -207,11 +203,10 @@ class PageBasic:
 
     def editar_datos(self):
         try:
+            self.desabilitar_campos()
             self.id_model = self.tabla.item(self.tabla.selection())["text"]
             nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][0]
-            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][
-                1
-            ]
+            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
 
             self.habilitar_campos()
 
