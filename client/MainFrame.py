@@ -14,7 +14,7 @@ from .PageTypeEquipos import PageTypeEquipos
 from .PageCampos_tablas import PageCampos_tablas
 from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
-from .PageBasic import PageBasic
+from .Pagebasic import PageBasic
 from models.crearTablas import crearTablas
 from .ScrollFrame import VerticalScrolledFrame
 # -------------------------------
