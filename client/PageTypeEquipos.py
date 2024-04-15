@@ -104,10 +104,10 @@ class PageTypeEquipos:
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
         self.entry_descripcion.config(width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=6, column=1, pady=7, columnspan=2)
+        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=3)
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
-        scroll.grid(row=6, column=3, pady=7, sticky="nsew")
+        scroll.grid(row=6, column=3, sticky="nsew", pady=10)
         self.entry_descripcion.config(yscrollcommand=scroll.set)
 
         # Botones

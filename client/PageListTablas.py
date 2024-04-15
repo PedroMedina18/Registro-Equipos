@@ -22,10 +22,10 @@ from models.registros import Registros
 # la pagina en donde se encuentran todas las tablas
 class PageListTablas:
 
-    def __init__(self, root, *args):
+    def __init__(self, root, cambio_cuerpo):
         self.root = root
         self.framePrincipal = None
-        self.cambio_cuerpo = args[0]
+        self.cambio_cuerpo = cambio_cuerpo
         self.id_table = None
         self.numero_registro = 0
         self.crearCuerpo()

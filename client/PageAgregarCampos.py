@@ -37,9 +37,6 @@ class PageAgregarCampos:
         self.tablas = Tablas.list()
         self.campos = Campos_Tabla.list()
 
-        # *lista de las tablas
-        self.list_values_tablas = list_values(Tablas.list())
-
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Agregar Campos a la Tabla")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
@@ -58,7 +55,7 @@ class PageAgregarCampos:
 
         # # Select
         self.select_tabla = ttk.Combobox(
-            self.framePrincipal, state="readonly", values=self.list_values_tablas
+            self.framePrincipal, state="readonly", values=list_values(self.tablas)
         )
         self.select_tabla.grid(row=1, column=2, padx=5, pady=10)
 

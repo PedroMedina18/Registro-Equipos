@@ -152,13 +152,42 @@ class TipoEquipos:
         finally:
             conexion.cerrar()
 
-    def list():
+    def list(equipo_componente=None):
         conexion = ConexionDB()
 
         lista = []
         sql = """
             SELECT id, nombre, marca, modelo, equipo_componente, descripcion FROM tipos_equipos ORDER BY id ASC;
         """
+        if equipo_componente==True:
+            sql = """
+                SELECT 
+                    id, 
+                    nombre, 
+                    marca, 
+                    modelo, 
+                    equipo_componente, 
+                    descripcion 
+                FROM 
+                    tipos_equipos 
+                WHERE equipo_componente=1
+                ORDER BY id ASC;
+            """
+
+        if equipo_componente==False:
+            sql = """
+                SELECT 
+                    id, 
+                    nombre, 
+                    marca, 
+                    modelo, 
+                    equipo_componente, 
+                    descripcion 
+                FROM 
+                    tipos_equipos 
+                WHERE equipo_componente=0
+                ORDER BY id ASC;
+            """
 
         try:
             conexion.cursor.execute(sql)

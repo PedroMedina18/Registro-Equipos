@@ -14,7 +14,9 @@ from .PageTypeEquipos import PageTypeEquipos
 from .PageCampos_tablas import PageCampos_tablas
 from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
-from .Pagebasic import PageBasic
+from .PageBasic import PageBasic
+from .PageEquipos import PageEquipos
+from .PageComponent import PageEquipos
 from models.crearTablas import crearTablas
 from .ScrollFrame import VerticalScrolledFrame
 # -------------------------------
@@ -159,6 +161,7 @@ class MainFrame:
         self.destokp = util_img.leer_imagen("./img/destokp.png", (50, 50))
         self.devices = util_img.leer_imagen("./img/devices.png", (50, 50))
         self.tables = util_img.leer_imagen("./img/table.png", (50, 50))
+        self.component = util_img.leer_imagen("./img/componente.png", (50, 50))
 
         # Botones del menú lateral
         self.buttonHome = ttk.Button(
@@ -167,7 +170,7 @@ class MainFrame:
             image=self.home,
             compound="left",
             cursor="hand2",
-            command=lambda: self.create_cuerpo_principal(),
+            command=lambda: self.create_cuerpo_principal()
         )
         self.buttonDevices = ttk.Button(
             self.menu_lateral,
@@ -175,7 +178,16 @@ class MainFrame:
             image=self.devices,
             compound="left",
             cursor="hand2",
-            command=lambda: self.destroyCuerpo(object_page=PageTypeEquipos),
+            command=lambda: self.destroyCuerpo(object_page=PageTypeEquipos)
+        )
+        self.buttonComponent = ttk.Button(
+            self.menu_lateral,
+            text="Componente",
+            image=self.component,
+            compound="left",
+            cursor="hand2",
+            command=lambda: self.destroyCuerpo(object_page=PageEquipos)
+            
         )
         self.buttonDestokp = ttk.Button(
             self.menu_lateral,
@@ -183,6 +195,9 @@ class MainFrame:
             image=self.destokp,
             compound="left",
             cursor="hand2",
+            command=lambda: self.destroyCuerpo(
+                object_page=PageEquipos, atributos={"funtion_cambio_cuerpo": True}
+            )
         )
         self.buttonTable = ttk.Button(
             self.menu_lateral,
@@ -192,12 +207,12 @@ class MainFrame:
             cursor="hand2",
             command=lambda: self.destroyCuerpo(
                 object_page=PageListTablas, atributos={"funtion_cambio_cuerpo": True}
-            ),
+            )
         )
-
         buttons_info = [
             (self.buttonHome),
             (self.buttonDevices),
+            (self.buttonComponent),
             (self.buttonDestokp),
             (self.buttonTable),
         ]
