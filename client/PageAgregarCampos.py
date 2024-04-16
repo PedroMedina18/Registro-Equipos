@@ -127,7 +127,7 @@ class PageAgregarCampos:
             lista_campos_elejidos = []
 
         self.list_values_campos = verificacion_campos(
-            self.campos, lista_campos_elejidos
+            [self.campos, 0], [lista_campos_elejidos, 3]
         )
         self.select_campos.config(values=self.list_values_campos)
         CONTADOR = 1
@@ -190,7 +190,7 @@ class PageAgregarCampos:
                 return
 
             campo_select = determinar_campo(
-                self.campos, self.list_values_campos, value_campo
+                self.campos, self.list_values_campos[value_campo]
             )
             Tablas_has_Campos.create(
                 tablas=int(self.tablas[value_tabla][0]), campos=int(campo_select[0])

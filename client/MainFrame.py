@@ -16,7 +16,7 @@ from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
 from .PageBasic import PageBasic
 from .PageEquipos import PageEquipos
-from .PageComponent import PageEquipos
+from .PageComponent import PageComponent
 from models.crearTablas import crearTablas
 from .ScrollFrame import VerticalScrolledFrame
 # -------------------------------
@@ -114,15 +114,15 @@ class MainFrame:
 
     # *Opciones de a barra superior
     def barra_superior(self):
-        self.barra_superior = tk.Frame(self.root, bg=COLOR_BARRA_SUPERIOR, height=60)
-        self.barra_superior.pack(side=tk.TOP, fill=tk.BOTH)
+        self.frame_barra_superior = tk.Frame(self.root, bg=COLOR_BARRA_SUPERIOR, height=60)
+        self.frame_barra_superior.pack(side=tk.TOP, fill=tk.BOTH)
 
         font_awesome = font.Font(family="FontAwesome", size=12)
         self.menu = util_img.leer_imagen("./img/menu.png", (50, 50))
 
         # Etiqueta de título
         self.labelTitulo = tk.Label(
-            self.barra_superior, text="Control de Equipos Locatel"
+            self.frame_barra_superior, text="Control de Equipos Locatel"
         )
         self.labelTitulo.config(
             fg=LETRA_CLARA, font=FONT_ROBOTO_MEDIUN, bg=COLOR_BARRA_SUPERIOR, pady=10, width=25
@@ -131,7 +131,7 @@ class MainFrame:
 
         # Botón del menú lateral
         self.buttonMenuLateral = tk.Button(
-            self.barra_superior,
+            self.frame_barra_superior,
             font=font_awesome,
             command=self.toggle_panel,
             bd=0,
@@ -142,7 +142,7 @@ class MainFrame:
         self.buttonMenuLateral.pack(side=tk.LEFT)
 
         # Etiqueta de informacion
-        self.labelTitulo = tk.Label(self.barra_superior, text="Bienvenido")
+        self.labelTitulo = tk.Label(self.frame_barra_superior, text="Bienvenido")
         self.labelTitulo.config(
             fg=LETRA_CLARA, font=FONT_ROBOTO_SMALL, bg=COLOR_BARRA_SUPERIOR, padx=10, width=20
         )
@@ -186,7 +186,7 @@ class MainFrame:
             image=self.component,
             compound="left",
             cursor="hand2",
-            command=lambda: self.destroyCuerpo(object_page=PageEquipos)
+            command=lambda: self.destroyCuerpo(object_page=PageComponent)
             
         )
         self.buttonDestokp = ttk.Button(

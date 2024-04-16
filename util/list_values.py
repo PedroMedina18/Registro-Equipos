@@ -10,10 +10,10 @@ def list_values(list):
 
 def verificacion_campos(list_principal, list_secundaria):
     list = []
-    for tupla_principal in list_principal:
+    for tupla_principal in list_principal[0]:
         exists = False
-        for tupla_secundaria in list_secundaria:
-            if tupla_principal[0] == tupla_secundaria[3]:
+        for tupla_secundaria in list_secundaria[0]:
+            if tupla_principal[list_principal[1]] == tupla_secundaria[list_secundaria[1]]:
                 exists = True
         if not exists:
             list.append(tupla_principal[1])
@@ -21,8 +21,7 @@ def verificacion_campos(list_principal, list_secundaria):
     return list
 
 
-def determinar_campo(list_campos_sql, list_campos_select, value_select):
-    campo_select = list_campos_select[value_select]
+def determinar_campo(list_campos_sql, campo_select):
 
     result = False
     for tupla in list_campos_sql:
