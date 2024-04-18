@@ -14,7 +14,7 @@ from .PageTypeEquipos import PageTypeEquipos
 from .PageCampos_tablas import PageCampos_tablas
 from .PageAgregarCampos import PageAgregarCampos
 from .PageListTablas import PageListTablas
-from .Pagebasic import PageBasic
+from .PageBasic import PageBasic
 from .PageEquipos import PageEquipos
 from .PageComponent import PageComponent
 from models.crearTablas import crearTablas

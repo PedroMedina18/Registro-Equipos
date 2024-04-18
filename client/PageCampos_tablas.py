@@ -16,7 +16,7 @@ from config import (
     TAMAÑO_ENTRYS,
 )
 from models.campos_tablas import Campos_Tabla
-
+from util.util_error import controlError
 
 class PageCampos_tablas:
 
@@ -203,14 +203,10 @@ class PageCampos_tablas:
                 )
 
         except Exception as error:
-            if "expected floating-point number but got" in str(error):
-                messagebox.showwarning(
-                    TITULO_CAMPOS, f"Campo Caracteres. Solo se permiten numeros"
-                )
-            else:
-                titulo="Error Desconocido"
-                message=error
-                messagebox.showerror(titulo, message)
+            controlError(
+                error,
+                messageNumber="Campo Caracteres. Solo se permiten numeros"
+            )
             return
         finally:
             self.desabilitar_campos()
@@ -234,27 +230,37 @@ class PageCampos_tablas:
             self.desabilitar_campos()
             self.id_campos_tabla = self.tabla.item(self.tabla.selection())["text"]
             nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][0]
-            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][
-                1
-            ]
+            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
 
             self.habilitar_campos()
 
             self.entry_nombre.insert(0, nombre_tipo_equipo)
             self.entry_descripcion.insert(1.0, descripcion_tipo_equipo)
 
-        except:
-            titulo = "Edicion de datos"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleSelection="Edición de Registro"
+            )
 
     def eliminar_datos(self):
         try:
-            self.id_campos_tabla = self.tabla.item(self.tabla.selection())["text"]
-            Campos_Tabla.delete(self.id_campos_tabla)
-            self.tabla_lista()
-            self.desabilitar_campos()
-        except:
-            titulo = "Eliminar de Registro"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
+            valor = messagebox.askquestion(
+                "Eliminar Registro", "Desea Eliminar el registro seleccionado cccc"
+            )
+            if valor == "yes":
+                self.id_campos_tabla = self.tabla.item(self.tabla.selection())["text"]
+                if self.id_campos_tabla=="":
+                    titulo="Eliminación de Registro"
+                    message="No a seleccionado el registro que desea eliminar"
+                    messagebox.showwarning(titulo, message)
+                else:
+                    Campos_Tabla.delete(self.id_campos_tabla)
+                self.tabla_lista()
+                self.desabilitar_campos()
+        except Exception as error:
+             controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )

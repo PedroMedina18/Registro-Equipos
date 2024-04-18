@@ -24,6 +24,7 @@ from models.caracteristicas import Caracteristicas
 from models.componentes import Componentes
 from util.util_img import leer_imagen
 from util.list_values import list_values, verificacion_campos, determinar_campo
+from util.util_error import controlError
 
 class   PageComponent:
     def __init__(self, root):
@@ -231,14 +232,10 @@ class   PageComponent:
             self.select_caracteristicas.config(values=self.list_values_caracteristicas)
         
         except Exception as error:
-            if error=="list index out of range":
-                titulo="Error"
-                message="No hay mas Caracteristicas par agregar"
-                messagebox.showwarning(titulo, message)
-            else:
-                titulo="Error Desconocido"
-                message=error
-                messagebox.showerror(titulo, message)
+            controlError(
+                error, 
+                messageRange="No hay mas Caracteristicas par agregar"
+            )
 
     def eliminarCaracteristica(self, caracteristica):
 
@@ -317,11 +314,7 @@ class   PageComponent:
             Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=coracteristicas)
         
         except Exception as error:
-            if "expected floating-point number but got" in str(error):
-                messagebox.showwarning(
-                    TITULO_CAMPOS, f"Solo se permiten números en los campos de almacen y dañados"
-                )
-            else:
-                titulo="Error Desconocido"
-                message=error
-                messagebox.showerror(titulo, message)
+            controlError(
+                error, 
+                messageNumber="Solo se permiten números en los campos de almacen y dañados"
+            )

@@ -14,6 +14,7 @@ from config import (
     ACTIVE_ROJO,
     TAMAÑO_ENTRYS,
 )
+from util.util_error import controlError
 
 # Pagina basica de registros con solo el nombre, la descripcion
 class PageBasic:
@@ -213,22 +214,31 @@ class PageBasic:
             self.entry_nombre.insert(0, nombre_tipo_equipo)
             self.entry_descripcion.insert(1.0, descripcion_tipo_equipo)
 
-        except:
-            titulo = "Edicion de datos"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleSelection="Edicion de Registro"
+            )
 
     def eliminar_datos(self):
         try:
             valor = messagebox.askquestion(
-                "Eliminar Registro", "Desea Eliminar el registro seleccionado"
+                "Eliminar Registro", "Desea Eliminar el registro seleccionado cccc"
             )
             if valor == "yes":
                 self.id_model = self.tabla.item(self.tabla.selection())["text"]
-                self.model.delete(self.id_model)
-                self.tabla_lista()
+                if self.id_model=="":
+                    titulo="Eliminación de Registro"
+                    message="No a seleccionado el registro que desea eliminar"
+                    messagebox.showwarning(titulo, message)
+                else:
+                    self.model.delete(self.id_model)
                 self.desabilitar_campos()
-        except:
-            titulo = "Eliminar de Registro"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
+                self.tabla_lista()
+
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )

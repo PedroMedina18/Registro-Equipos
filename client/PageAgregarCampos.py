@@ -16,7 +16,7 @@ from models.campos_tablas import Campos_Tabla
 from models.tablas_has_campos import Tablas_has_Campos
 from util.util_img import leer_imagen
 from util.list_values import list_values, verificacion_campos, determinar_campo
-
+from util.util_error import controlError
 
 class PageAgregarCampos:
 
@@ -199,10 +199,11 @@ class PageAgregarCampos:
             self.frameCampos()
 
         except Exception as error:
-            if error == "list index out of range":
-                titulo = "Seleccion de campos"
-                message = "No hay campos para seleccionar"
-                messagebox.showerror(titulo, message)
+            controlError(
+                error,
+                titleRange="Seleccion de campos",
+                messageRange="No hay campos para seleccionar"
+            )
 
     def habilitar_campos(self):
         self.select_campos.config(state="readonly")
