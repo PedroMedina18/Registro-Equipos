@@ -44,7 +44,7 @@ class Campos_Tabla:
 
         try:
             conexion.cursor.execute(
-                sql, (str(nombre), str(descripcion), int(caracteres))
+                sql, (str(nombre).capitalize(), str(descripcion), int(caracteres))
             )
         except Exception as error:
             print(error)

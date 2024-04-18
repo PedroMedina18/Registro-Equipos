@@ -182,7 +182,7 @@ class PageCampos_tablas:
 
     def guardar_campos(self):
         try:
-            tipo_equipo = {
+            campo = {
                 "nombre": self.mi_nombre.get(),
                 "caracteres": self.caracteres.get(),
                 "descripcion": self.entry_descripcion.get(1.0, tk.END),
@@ -190,23 +190,28 @@ class PageCampos_tablas:
 
             if self.id_campos_tabla == None:
                 Campos_Tabla.create(
-                    nombre=tipo_equipo["nombre"],
-                    descripcion=tipo_equipo["descripcion"],
-                    caracteres=tipo_equipo["caracteres"],
+                    nombre=campo["nombre"],
+                    descripcion=campo["descripcion"],
+                    caracteres=campo["caracteres"],
                 )
             else:
                 Campos_Tabla.update(
                     id=self.id_campos_tabla,
-                    nombre=tipo_equipo["nombre"],
-                    descripcion=tipo_equipo["descripcion"],
-                    caracteres=tipo_equipo["caracteres"],
+                    nombre=campo["nombre"],
+                    descripcion=campo["descripcion"],
+                    caracteres=campo["caracteres"],
                 )
 
-        except:
-            messagebox.showwarning(
-                TITULO_CAMPOS, f"Campo Caracteres. Solo se permiten numeros"
-            )
-            return None
+        except Exception as error:
+            if "expected floating-point number but got" in str(error):
+                messagebox.showwarning(
+                    TITULO_CAMPOS, f"Campo Caracteres. Solo se permiten numeros"
+                )
+            else:
+                titulo="Error Desconocido"
+                message=error
+                messagebox.showerror(titulo, message)
+            return
         finally:
             self.desabilitar_campos()
             self.tabla_lista()

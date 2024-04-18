@@ -29,7 +29,7 @@ class Tablas:
         """
 
         try:
-            conexion.cursor.execute(sql, (str(nombre), str(descripcion)))
+            conexion.cursor.execute(sql, (str(nombre).capitalize(), str(descripcion)))
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
@@ -62,7 +62,7 @@ class Tablas:
         """
 
         try:
-            conexion.cursor.execute(sql, (str(nombre), str(descripcion), int(id)))
+            conexion.cursor.execute(sql, (str(nombre).capitalize(), str(descripcion), int(id)))
         except Exception as error:
             print(error)
             titulo = "Edicion de datos"

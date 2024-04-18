@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from util.comprobacionCampos import comprobacionString
 from config import (
     FONT_LABEL,
     FONT_LABEL_TITULO,
@@ -14,12 +15,13 @@ from config import (
     TAMAÑO_ENTRYS,
     COLOR_ROJO,
     LETRA_OSCURA,
-    TAMAÑO_MEDIUN_ENTRYS
+    TAMAÑO_MEDIUN_ENTRYS,
+    TITULO_CAMPOS
     
 )
-from models.equipos import Equipos
 from models.tipos_equipos import TipoEquipos
 from models.caracteristicas import Caracteristicas
+from models.componentes import Componentes
 from util.util_img import leer_imagen
 from util.list_values import list_values, verificacion_campos, determinar_campo
 
@@ -30,6 +32,7 @@ class   PageComponent:
         self.id_componente = None
         self.crearCuerpo()
         self.controles()
+        self.desabilitar_campos()
 
     def crearCuerpo(self):
         self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
@@ -75,7 +78,6 @@ class   PageComponent:
 
         self.frameData = tk.Frame(self.framePrincipal, height=20, bg=COLOR_BASE)
         self.frameData.grid(row=3, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
-        self.dataComponente()
 
         self.frameCaracteristicas = tk.Frame(self.framePrincipal, bg=COLOR_BASE, height=30)
         self.frameCaracteristicas.grid(row=8, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
@@ -119,19 +121,19 @@ class   PageComponent:
             values=self.list_values_caracteristicas
         )
         self.select_caracteristicas.grid(row=7, column=1, padx=10, pady=7)
-        boton_agregar = tk.Button(self.framePrincipal, text="Agregar", command=self.agregarCaracteristica)
-        boton_agregar.config(
+        self.boton_agregar = tk.Button(self.framePrincipal, text="Agregar", command=self.agregarCaracteristica)
+        self.boton_agregar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
             fg=LETRA_CLARA,
             bg=COLOR_AZUL,
             cursor="hand2",
             activebackground=ACTIVE_AZUL)
-        boton_agregar.grid(row=7, column=2, padx=10, pady=10)
+        self.boton_agregar.grid(row=7, column=2, padx=10, pady=10)
 
         # Botones
         self.boton_nuevo = tk.Button(
-            self.framePrincipal, text="Nuevo"
+            self.framePrincipal, text="Nuevo", command=self.habilitar_campos
         )
         self.boton_nuevo.config(
             width=TAMAÑO_BOTON,
@@ -144,7 +146,7 @@ class   PageComponent:
         self.boton_nuevo.grid(row=9, column=0, padx=8, pady=10)
 
         self.boton_guardar = tk.Button(
-            self.framePrincipal, text="Guardar"
+            self.framePrincipal, text="Guardar", command=self.guardar
         )
         self.boton_guardar.config(
             width=TAMAÑO_BOTON,
@@ -157,7 +159,7 @@ class   PageComponent:
         self.boton_guardar.grid(row=9, column=1, padx=8, pady=10)
 
         self.boton_cancelar = tk.Button(
-            self.framePrincipal, text="Cancelar"
+            self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
         )
         self.boton_cancelar.config(
             width=TAMAÑO_BOTON,
@@ -169,8 +171,7 @@ class   PageComponent:
         )
         self.boton_cancelar.grid(row=9, column=2, padx=8, pady=10)
 
-
-    def dataComponente(self, data=None):
+    def dataComponente(self):
         label_nombre = tk.Label(self.frameData, font=FONT_LABEL, bg=COLOR_BASE, text="Nombre:")
         label_marca = tk.Label(self.frameData, font=FONT_LABEL, bg=COLOR_BASE, text="Marca:")
         label_modelo = tk.Label(self.frameData, font=FONT_LABEL, bg=COLOR_BASE, text="Modelo:")
@@ -192,6 +193,7 @@ class   PageComponent:
         self.label_value_descripcion.grid(row=3, column=0, padx=60, sticky="w", columnspan=3)
 
     def selectComponent(self, event):
+        self.dataComponente()
         valores=self.list_componentes[self.select_componente.current()]
         self.label_value_nombre.config(text=f"{valores[1]}")
         self.label_value_marca.config(text=f"{valores[2]}")
@@ -199,44 +201,127 @@ class   PageComponent:
         self.label_value_descripcion.config(text=f"{valores[5]}")
 
     def agregarCaracteristica(self):
+        try:
+            seleccionado=self.select_caracteristicas.current()
+            caracteristica_seleccionada=determinar_campo(self.list_caracteristicas, self.list_values_caracteristicas[seleccionado])
         
-        seleccionado=self.select_caracteristicas.current()
-        caracteristica_seleccionada=determinar_campo(self.list_caracteristicas, self.list_values_caracteristicas[seleccionado])
+            frame=tk.Frame(self.frameCaracteristicas, bg=COLOR_BASE)
+            frame.pack(side=tk.TOP, fill=tk.BOTH, ipady=10, ipadx=10)
+            mi_caracteristica = tk.StringVar()
+            caracteristica=[
+                caracteristica_seleccionada[0],
+                caracteristica_seleccionada[1],
+                caracteristica_seleccionada[2],
+                mi_caracteristica,
+                frame
+            ]
+
+            label = tk.Label(frame, text=f"{caracteristica_seleccionada[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
+            label.pack(side=tk.LEFT, padx=10)
+
+            buton_eliminar = tk.Button(frame, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO, command=lambda:self.eliminarCaracteristica(caracteristica))
+            buton_eliminar.pack(side=tk.RIGHT, padx=10)
+
+            entry_nombre = tk.Entry(frame, textvariable=mi_caracteristica, width=TAMAÑO_MEDIUN_ENTRYS, font=FONT_LABEL)
+            entry_nombre.pack(side=tk.RIGHT, padx=10)
+
+            self.caracteristicas.append(caracteristica)
+
+            self.list_values_caracteristicas=verificacion_campos([self.list_caracteristicas, 0], [self.caracteristicas, 0])
+            self.select_caracteristicas.config(values=self.list_values_caracteristicas)
         
-        frame=tk.Frame(self.frameCaracteristicas, bg="red")
-        frame.pack(side=tk.TOP, fill=tk.BOTH, ipady=10, ipadx=10)
-        mi_caracteristica = tk.StringVar()
-        caracteristica=[
-            caracteristica_seleccionada[0],
-            caracteristica_seleccionada[1],
-            caracteristica_seleccionada[2],
-            mi_caracteristica,
-            frame
-        ]
+        except Exception as error:
+            if error=="list index out of range":
+                titulo="Error"
+                message="No hay mas Caracteristicas par agregar"
+                messagebox.showwarning(titulo, message)
+            else:
+                titulo="Error Desconocido"
+                message=error
+                messagebox.showerror(titulo, message)
 
-
-        label = tk.Label(frame, text=f"{caracteristica_seleccionada[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
-        label.pack(side=tk.LEFT, padx=10)
-
-        buton_eliminar = tk.Button(frame, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO, command=lambda:self.eliminarCaracteristica(caracteristica))
-        buton_eliminar.pack(side=tk.RIGHT, padx=10)
-
-        entry_nombre = tk.Entry(frame, textvariable=mi_caracteristica, width=TAMAÑO_MEDIUN_ENTRYS, font=FONT_LABEL)
-        entry_nombre.pack(side=tk.RIGHT, padx=10)
-        
-        self.caracteristicas.append(caracteristica)
-
-        new_list=verificacion_campos([self.list_caracteristicas, 0], [self.caracteristicas, 0])
-        self.select_caracteristicas.config(values=new_list)
-    
     def eliminarCaracteristica(self, caracteristica):
+
         caracteristica[4].destroy()
-        for index, campo in enumerate(self.select_caracteristicas):
+        for index, campo in enumerate(self.caracteristicas):
             if campo[0] == caracteristica[0]:
-                self.select_caracteristicas.pop(index)
-            
+                self.caracteristicas.pop(index)
 
+        self.list_values_caracteristicas=verificacion_campos([self.list_caracteristicas, 0], [self.caracteristicas, 0])
+        self.select_caracteristicas.config(values=self.list_values_caracteristicas)
 
+    def desabilitar_campos(self):
+        self.frameData.destroy()
+        self.entry_nombre.config(state="disabled")
+        self.entry_usados.config(state="disabled")
+        self.entry_almacen.config(state="disabled")
+        self.entry_dañados.config(state="disabled")
+        self.select_caracteristicas.config(state="disabled")
+        self.select_componente.config(state="disabled")
 
-    
-    
+        self.mi_nombre.set("")
+        self.almacen.set("")
+        self.dañados.set("")
+        self.select_caracteristicas.set("")
+        self.select_componente.set("")
+
+        self.frameData.destroy()
+
+        for campo in self.caracteristicas:
+            campo[4].destroy()
+
+        self.caracteristicas.clear()
+
+        self.boton_guardar.config(state="disabled")
+        self.boton_cancelar.config(state="disabled")
+        self.boton_agregar.config(state="disabled")
+
+    def habilitar_campos(self):
+        self.entry_nombre.config(state="normal")
+        self.entry_almacen.config(state="normal")
+        self.entry_dañados.config(state="normal")
+        self.select_caracteristicas.config(state="readonly")
+        self.select_componente.config(state="readonly")
+
+        self.boton_guardar.config(state="normal")
+        self.boton_cancelar.config(state="normal")
+        self.boton_agregar.config(state="normal")
+
+        self.frameData = tk.Frame(self.framePrincipal, height=20, bg=COLOR_BASE)
+        self.frameData.grid(row=3, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
+
+    def guardar(self):
+        try:
+            tipo_componente=self.select_componente.current()
+            if tipo_componente < 0:
+                titulo = "Campos"
+                message = "Seleccione algun componente"
+                messagebox.showwarning(titulo, message)
+                return
+
+            almacen=self.almacen.get()
+            id_componente=self.list_componentes[tipo_componente][0]
+            dañados = self.dañados.get()
+            nombre=self.mi_nombre.get()
+
+            coracteristicas=[]
+            for caracteristica in self.caracteristicas:
+                comprobacion=comprobacionString(str(caracteristica[3].get()), 200)
+                if not comprobacion["status"]:
+                    messagebox.showwarning(
+                    TITULO_CAMPOS, f'Las caracteristicas {comprobacion["message"]}'
+                    )
+                    return None
+                coracteristicas.append({"id":caracteristica[0], "value":str(caracteristica[3].get())})
+
+            Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=coracteristicas)
+        
+        except Exception as error:
+            if "expected floating-point number but got" in str(error):
+                messagebox.showwarning(
+                    TITULO_CAMPOS, f"Solo se permiten números en los campos de almacen y dañados"
+                )
+            else:
+                titulo="Error Desconocido"
+                message=error
+                messagebox.showerror(titulo, message)

@@ -61,6 +61,7 @@ def crearTablas():
     SQL_componentes = """
         CREATE TABLE componentes(
             id INTEGER NOT NULL, 
+            nombre VARCHAR(100) NOT NULL UNIQUE,
             componente_id INTEGER NOT NULL,
             uso INTEGER NOT NULL DEFAULT 0,
             dañados INTEGER NOT NULL,

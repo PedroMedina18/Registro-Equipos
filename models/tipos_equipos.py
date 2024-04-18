@@ -53,9 +53,9 @@ class TipoEquipos:
             conexion.cursor.execute(
                 sql,
                 (
-                    str(nombre),
-                    str(marca),
-                    str(modelo),
+                    str(nombre).capitalize(),
+                    str(marca).capitalize(),
+                    str(modelo).capitalize(),
                     str(descripcion),
                     int(equipo_componente),
                 ),
@@ -119,9 +119,9 @@ class TipoEquipos:
             conexion.cursor.execute(
                 sql,
                 (
-                    str(nombre),
-                    str(marca),
-                    str(modelo),
+                    str(nombre).capitalize(),
+                    str(marca).capitalize(),
+                    str(modelo).capitalize(),
                     str(descripcion),
                     int(equipo_componente),
                     int(id),

@@ -4,20 +4,34 @@ from tkinter import messagebox
 from config import TITULO_CAMPOS
 
 
-class Estados:
+class Componentes:
 
-    def create(componente_id=0, dañados=0, almacen=0, caracteristicas=[]):
+    def create(nombre="", componente_id=0, dañados=0, almacen=0, caracteristicas=[]):
         conexion = ConexionDB()
+        comprobacionNombre = comprobacionString(nombre, 100)
 
-        sql_create = """
-            INSERT INTO componentes (componente_id, uso, dañados, almacen)
-            VALUES(?, 0, ?, ?)
+        if not comprobacionNombre["status"]:
+            messagebox.showwarning(
+                TITULO_CAMPOS, f'Campo Nombre {comprobacionNombre["message"]}'
+            )
+            return None
+
+        sql_componente = """
+            INSERT INTO componentes (nombre, componente_id, uso, dañados, almacen)
+            VALUES(?, ?, 0, ?, ?)
         """
 
+        sql_componente_caracteristica='''
+            INSERT INTO componentes_has_caracteristicas (componente_id, caracteristica_id, value)
+            VALUES(?, ?, ?)
+        '''
+
         try:
-            conexion.cursor.execute(sql_create)
-            ultimo_registro = conexion.cursor.lastrowid()
-            print(ultimo_registro)
+            conexion.cursor.execute(sql_componente, (str(nombre).capitalize(), int(componente_id), int(dañados), int(almacen)))
+            ultimo_registro_component = conexion.cursor.lastrowid
+            for caracteristica_component in caracteristicas:
+                conexion.cursor.execute(sql_componente_caracteristica, (int(ultimo_registro_component), int(caracteristica_component["id"]), caracteristica_component["value"]))
+        
         except Exception as error:
             print(error)
             titulo = "Conexion al registro"
@@ -50,7 +64,7 @@ class Estados:
         """
 
         try:
-            conexion.cursor.execute(sql, (str(nombre), str(descripcion), int(id)))
+            conexion.cursor.execute(sql, (str(nombre).capitalize(), str(descripcion), int(id)))
         except Exception as error:
             print(error)
             titulo = "Edicion de datos"
