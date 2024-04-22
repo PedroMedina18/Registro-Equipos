@@ -48,35 +48,34 @@ class   PageComponent:
         # Nombre
         label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
         label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_nombre.grid(row=1, column=0, padx=10, pady=10)
+        label_nombre.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
         # Componente
         label_componente = tk.Label(self.framePrincipal, text="Componente:")
         label_componente.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_componente.grid(row=2, column=0, padx=10, pady=10)
+        label_componente.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # usados
         label_usados = tk.Label(self.framePrincipal, text="Usados:")
         label_usados.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_usados.grid(row=4, column=0, padx=10, pady=10)
+        label_usados.grid(row=4, column=0, padx=10, pady=10, sticky="w")
         
         # almacen
         label_almacen = tk.Label(self.framePrincipal, text="Almacen:")
         label_almacen.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_almacen.grid(row=5, column=0, padx=10, pady=10)
+        label_almacen.grid(row=5, column=0, padx=10, pady=10, sticky="w")
 
         # dañados
         label_dañados = tk.Label(self.framePrincipal, text="Dañados:")
         label_dañados.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_dañados.grid(row=6, column=0, padx=10, pady=10)
+        label_dañados.grid(row=6, column=0, padx=10, pady=10, sticky="w")
 
         # Caracteristicas
         label_caracteristicas = tk.Label(self.framePrincipal, text="Caracteristicas")
         label_caracteristicas.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_caracteristicas.grid(row=7, column=0, padx=10, pady=10)
+        label_caracteristicas.grid(row=7, column=0, padx=10, pady=10, sticky="w")
 
         # Frame
-
         self.frameData = tk.Frame(self.framePrincipal, height=20, bg=COLOR_BASE)
         self.frameData.grid(row=3, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
 
@@ -234,7 +233,7 @@ class   PageComponent:
         except Exception as error:
             controlError(
                 error, 
-                messageRange="No hay mas Caracteristicas par agregar"
+                messageRange="No hay mas caracteristicas para agregar"
             )
 
     def eliminarCaracteristica(self, caracteristica):
@@ -292,7 +291,7 @@ class   PageComponent:
             tipo_componente=self.select_componente.current()
             if tipo_componente < 0:
                 titulo = "Campos"
-                message = "Seleccione algun componente"
+                message = "Seleccione un componente"
                 messagebox.showwarning(titulo, message)
                 return
 
@@ -312,7 +311,6 @@ class   PageComponent:
                 coracteristicas.append({"id":caracteristica[0], "value":str(caracteristica[3].get())})
 
             Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=coracteristicas)
-        
         except Exception as error:
             controlError(
                 error, 

@@ -1,7 +1,7 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
-
+from util.util_error import controlError
 
 class Tablas_has_Campos:
 
@@ -16,12 +16,11 @@ class Tablas_has_Campos:
         try:
             conexion.cursor.execute(sql_create, [int(tablas), int(campos)])
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = (
-                "La tabla tablas_has_campos_tablas no esta creada en la base de datos"
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="La tabla tablas_has_campos_tablas no esta creada en la base de datos"
             )
-            messagebox.showwarning(titulo, message)
         finally:
             conexion.cerrar()
 
@@ -35,10 +34,12 @@ class Tablas_has_Campos:
 
         try:
             conexion.cursor.execute(sql, [int(id)])
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
         finally:
             conexion.cerrar()
 
@@ -62,10 +63,11 @@ class Tablas_has_Campos:
             lista = conexion.cursor.fetchall()
 
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = "Crea la tabla en la base de datos"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla tanlas_has_campos en la base de datos"
+            )
         finally:
             conexion.cerrar()
         return lista

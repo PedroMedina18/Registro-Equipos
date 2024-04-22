@@ -2,7 +2,7 @@ from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
 from config import TITULO_CAMPOS
-
+from util.util_error import controlError
 
 class Campos_Tabla:
 
@@ -47,10 +47,12 @@ class Campos_Tabla:
                 sql, (str(nombre).capitalize(), str(descripcion), int(caracteres))
             )
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = "La tabla campos_tablas no esta creada en la base de datos"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="La tabla campos_tabla no esta creada en la base de datos",
+                messageUnique="El valor del campo Nombre debe ser Unico"
+            )
         finally:
             conexion.cerrar()
 
@@ -96,10 +98,12 @@ class Campos_Tabla:
                 (str(nombre.capitalize()), str(descripcion), int(caracteres), int(id)),
             )
         except Exception as error:
-            print(error)
-            titulo = "Edicion de datos"
-            message = "No se a podido editar el registro"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Edicion de datos",
+                messageTable="No se a podido editar el registro",
+                messageUnique="El valor del campo Nombre debe ser Unico"
+            )
         finally:
             conexion.cerrar()
 
@@ -113,10 +117,12 @@ class Campos_Tabla:
 
         try:
             conexion.cursor.execute(sql, [int(id)])
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
         finally:
             conexion.cerrar()
 
@@ -132,10 +138,12 @@ class Campos_Tabla:
             conexion.cursor.execute(sql)
             lista = conexion.cursor.fetchall()
 
-        except:
-            titulo = "Conexion al registro"
-            message = "Crea la tabla en la base de datos"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla campos_tablas en la base de datos"
+            )
         finally:
             conexion.cerrar()
         return lista

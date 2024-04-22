@@ -4,10 +4,23 @@ from config import (
     
 )
 
-def controlError(error, messageTable=None, titleTable=None, messageNumber=None, titleNumber=None, messageRange=None, titleRange=None, messageSelection=None, titleSelection=None,):
+def controlError(error, messageTable=None, titleTable=None, messageUnique=None, titleUnique=None, messageNumber=None, titleNumber=None, messageRange=None, titleRange=None, messageSelection=None, titleSelection=None, errors=[]):
+    if len(errors)>0:
+        for data in errors:
+            if data["error"]==error:
+                titulo= data["title"]
+                mensage= data["mesage"]
+                messagebox.showwarning(titulo, mensage)
+                return
+    
     if "no such table" in str(error):
         titulo= "Conexion al registro" if not titleTable else str(titleTable)
         mensage= "Crea la tabla en la base de datos" if not messageTable  else str(messageTable)
+        messagebox.showwarning(titulo, mensage)
+
+    elif "UNIQUE constraint failed" in str(error):
+        titulo= "Campo Unico" if not titleUnique else str(titleUnique)
+        mensage= "Valor de campo repetido. Debe ser Unico" if not messageUnique  else str(messageUnique)
         messagebox.showwarning(titulo, mensage)
 
     elif "expected floating-point number but got" in str(error):

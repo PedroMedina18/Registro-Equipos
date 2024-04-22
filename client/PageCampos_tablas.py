@@ -34,25 +34,25 @@ class PageCampos_tablas:
 
     def controles(self):
         # Titulo
-        self.tituloPage = tk.Label(self.framePrincipal, text="Nombre de los campos")
-        self.tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
-        self.tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
+        tituloPage = tk.Label(self.framePrincipal, text="Nombre de los campos")
+        tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
+        tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
 
         # Labels
         # Nombre
-        self.label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
-        self.label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_nombre.grid(row=1, column=0, padx=10, pady=10)
+        label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
+        label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_nombre.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
         # Caracteres
-        self.label_caracteres = tk.Label(self.framePrincipal, text="Caracteres:")
-        self.label_caracteres.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_caracteres.grid(row=2, column=0, padx=10, pady=10)
+        label_caracteres = tk.Label(self.framePrincipal, text="Caracteres:")
+        label_caracteres.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_caracteres.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # Descripción
-        self.label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
-        self.label_descripcion.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_descripcion.grid(row=3, column=0, padx=10, pady=10)
+        label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
+        label_descripcion.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_descripcion.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         # Campos de entrada
         self.mi_nombre = tk.StringVar()

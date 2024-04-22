@@ -5,7 +5,7 @@ from config import TITULO_CAMPOS
 from util.numero_unico import numero_unico
 from util.list_values import organizador_registros, asignar_valores
 from datetime import datetime
-
+from util.util_error import controlError
 
 class Registros:
     def create(campos=[]):
@@ -40,10 +40,11 @@ class Registros:
                     ],
                 )
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = "La tabla registro no esta creada en la base de datos"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="La tabla registros no esta creada en la base de datos",
+            )
         finally:
             conexion.cerrar()
 
@@ -70,10 +71,12 @@ class Registros:
             for campo in campos:
                 conexion.cursor.execute(sql, [campo["value"], fecha_hora_actual, numero_registro, campo["id"]])
         except Exception as error:
-            print(error)
-            titulo = "Edicion de datos"
-            message = "No se a podido editar el registro"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Edicion de datos",
+                messageTable="No se a podido editar el registro",
+                messageUnique="El valor del campo Nombre debe ser Unico"
+            )
         finally:
             conexion.cerrar()
 
@@ -87,10 +90,12 @@ class Registros:
 
         try:
             conexion.cursor.execute(sql, [int(numero_registro)])
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
         finally:
             conexion.cerrar()
 
@@ -128,10 +133,11 @@ class Registros:
             return lista_registros
 
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = "Crea la tabla en la base de datos"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla registros en la base de datos"
+            )
         finally:
             conexion.cerrar()
         return []

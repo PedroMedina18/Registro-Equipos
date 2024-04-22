@@ -161,7 +161,7 @@ class PageAgregarCampos:
         if value < 0:
             self.id_tabla = None
             titulo = "Tablas"
-            message = "Seleccione alguna tabla"
+            message = "Seleccione una tabla"
             messagebox.showwarning(titulo, message)
             return
 
@@ -178,14 +178,14 @@ class PageAgregarCampos:
             if value_campo < 0:
                 self.id_tabla = None
                 titulo = "Campos"
-                message = "Seleccione algun campo"
+                message = "Seleccione un campo"
                 messagebox.showwarning(titulo, message)
                 return
 
             if value_tabla < 0:
                 self.id_tabla = None
                 titulo = "Tabla"
-                message = "Seleccione alguna tabla"
+                message = "Seleccione una tabla"
                 messagebox.showwarning(titulo, message)
                 return
 

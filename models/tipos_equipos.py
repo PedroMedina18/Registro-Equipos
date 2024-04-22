@@ -2,7 +2,7 @@ from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString, comprobacionBoolean
 from tkinter import messagebox
 from config import TITULO_CAMPOS
-
+from util.util_error import controlError
 
 class TipoEquipos:
 
@@ -61,10 +61,11 @@ class TipoEquipos:
                 ),
             )
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = "La tabla tipo de equipos no esta creada en la base de datos"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="La tabla tipos_equipos no esta creada en la base de datos",
+            )
         finally:
             conexion.cerrar()
 
@@ -128,10 +129,11 @@ class TipoEquipos:
                 ),
             )
         except Exception as error:
-            print(error)
-            titulo = "Edicion de datos"
-            message = "No se a podido editar el registro"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Edicion de datos",
+                messageTable="No se a podido editar el registro",
+            )
         finally:
             conexion.cerrar()
 
@@ -145,10 +147,12 @@ class TipoEquipos:
 
         try:
             conexion.cursor.execute(sql, [int(id)])
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
         finally:
             conexion.cerrar()
 
@@ -193,10 +197,12 @@ class TipoEquipos:
             conexion.cursor.execute(sql)
             lista = conexion.cursor.fetchall()
 
-        except:
-            titulo = "Conexion al registro"
-            message = "Crea la tabla en la base de datos"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla estados en la base de datos"
+            )
         finally:
             conexion.cerrar()
         return lista

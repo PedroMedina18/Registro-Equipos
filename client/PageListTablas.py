@@ -17,7 +17,7 @@ from config import (
 from models.tablas import Tablas
 from models.tablas_has_campos import Tablas_has_Campos
 from models.registros import Registros
-
+from util.util_error import controlError
 
 # la pagina en donde se encuentran todas las tablas
 class PageListTablas:
@@ -104,11 +104,11 @@ class PageListTablas:
             self.cambio_cuerpo(self.framePrincipal)
             self.frameTableData(id_table=int(self.id_table), name_tabla=name_tabla)
         except Exception as error:
-            print(error)
-            titulo = "Buscar tabla"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
-
+            controlError(
+                error,
+                titleTable="Buscar Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )
     def frameTableData(self, id_table=0, name_tabla=""):
         list_campos = Tablas_has_Campos.list(id_tabla=id_table)
 
@@ -137,7 +137,7 @@ class PageListTablas:
 
             label_nombre = tk.Label(self.framePrincipal, text=f"{campos[1]}:")
             label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-            label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10)
+            label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10, sticky="w")
 
             object_campos={
 
@@ -285,8 +285,6 @@ class PageListTablas:
             values=tuple(values)
             self.tabla_registros.insert("", tk.END, text=idRegistro, values=values)
 
-
-
         # botones finales
         # editar
         self.boton_editar = tk.Button(self.framePrincipal, text="Editar", command=self.editar_datos)
@@ -382,11 +380,12 @@ class PageListTablas:
                 self.tabla_lista()
                 self.desabilitar_campos()
         except Exception as error:
-            print(error)
-            titulo = "Eliminar de Registro"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
-    
+            controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )
+
     def editar_datos(self):
         try:
             self.desabilitar_campos()
@@ -400,10 +399,8 @@ class PageListTablas:
                     campo["entrada"].insert(1.0, dataSeleccionada["values"][index])
                 else:
                     campo["entrada"].insert(0, dataSeleccionada["values"][index])
-            
-
         except Exception as error:
-            print(error)
-            titulo = "Edicion de datos"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message) 
+            controlError(
+                error,
+                titleSelection="Edicion de Registro"
+            )

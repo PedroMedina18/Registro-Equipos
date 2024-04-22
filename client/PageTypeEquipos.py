@@ -15,7 +15,7 @@ from config import (
     TAMAÑO_ENTRYS,
 )
 from models.tipos_equipos import TipoEquipos
-
+from util.util_error import controlError
 
 class PageTypeEquipos:
 
@@ -33,38 +33,38 @@ class PageTypeEquipos:
 
     def controles(self):
         # Titulo
-        self.tituloPage = tk.Label(self.framePrincipal, text="Tipos de Equipos")
-        self.tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
-        self.tituloPage.grid(row=0, column=0, padx=10, pady=7, columnspan=3)
+        tituloPage = tk.Label(self.framePrincipal, text="Tipos de Equipos")
+        tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
+        tituloPage.grid(row=0, column=0, padx=10, pady=7, columnspan=3)
 
         # Labels
 
         # Nombre
-        self.label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
-        self.label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_nombre.grid(row=1, column=0, padx=10, pady=7)
+        label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
+        label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_nombre.grid(row=1, column=0, padx=10, pady=7, sticky="w")
 
         # Marca
-        self.label_marca = tk.Label(self.framePrincipal, text="Marca:")
-        self.label_marca.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_marca.grid(row=2, column=0, padx=10, pady=7)
+        label_marca = tk.Label(self.framePrincipal, text="Marca:")
+        label_marca.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_marca.grid(row=2, column=0, padx=10, pady=7, sticky="w")
 
         # Modelo
-        self.label_modelo = tk.Label(self.framePrincipal, text="Modelo:")
-        self.label_modelo.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_modelo.grid(row=3, column=0, padx=10, pady=7)
+        label_modelo = tk.Label(self.framePrincipal, text="Modelo:")
+        label_modelo.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_modelo.grid(row=3, column=0, padx=10, pady=7, sticky="w")
 
         # Clase de Registro
-        self.label_TypeRegistro = tk.Label(
+        label_TypeRegistro = tk.Label(
             self.framePrincipal, text="Escoja el tipo de Registro:"
         )
-        self.label_TypeRegistro.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_TypeRegistro.grid(row=4, column=0, padx=10, pady=7, columnspan=3)
+        label_TypeRegistro.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_TypeRegistro.grid(row=4, column=0, padx=10, pady=7, columnspan=3)
 
         # Descripción
-        self.label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
-        self.label_descripcion.config(font=FONT_LABEL, bg=COLOR_BASE)
-        self.label_descripcion.grid(row=6, column=0, padx=10, pady=7)
+        label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
+        label_descripcion.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_descripcion.grid(row=6, column=0, padx=10, pady=7, sticky="w")
 
         # Campos de entrada
         self.mi_nombre = tk.StringVar()
@@ -310,11 +310,11 @@ class PageTypeEquipos:
             self.componente_equipo.set(int(tipo_equipo))
             self.entry_descripcion.insert(1.0, descripcion_tipo_equipo)
 
-        except Exception as es:
-            print(es)
-            titulo = "Edicion de datos"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleSelection="Edicion de Registro"
+            )
 
     def eliminar_datos(self):
         try:
@@ -322,7 +322,9 @@ class PageTypeEquipos:
             TipoEquipos.delete(self.id_tipo_equipo)
             self.tabla_lista()
             self.desabilitar_campos()
-        except:
-            titulo = "Eliminar de Registro"
-            message = "No ha seleccionado ningun registro"
-            messagebox.showerror(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )

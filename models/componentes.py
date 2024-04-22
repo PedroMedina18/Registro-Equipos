@@ -2,7 +2,7 @@ from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
 from config import TITULO_CAMPOS
-
+from util.util_error import controlError
 
 class Componentes:
 
@@ -29,14 +29,17 @@ class Componentes:
         try:
             conexion.cursor.execute(sql_componente, (str(nombre).capitalize(), int(componente_id), int(dañados), int(almacen)))
             ultimo_registro_component = conexion.cursor.lastrowid
+            
             for caracteristica_component in caracteristicas:
                 conexion.cursor.execute(sql_componente_caracteristica, (int(ultimo_registro_component), int(caracteristica_component["id"]), caracteristica_component["value"]))
         
         except Exception as error:
-            print(error)
-            titulo = "Conexion al registro"
-            message = "La tabla componentes no esta creada en la base de datos"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="La tabla componentes no esta creada en la base de datos",
+                messageUnique="El valor del campo Nombre debe ser Unico"
+            )
         finally:
             conexion.cerrar()
 
@@ -66,10 +69,12 @@ class Componentes:
         try:
             conexion.cursor.execute(sql, (str(nombre).capitalize(), str(descripcion), int(id)))
         except Exception as error:
-            print(error)
-            titulo = "Edicion de datos"
-            message = "No se a podido editar el registro"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Edicion de datos",
+                messageTable="No se a podido editar el registro",
+                messageUnique="El valor del campo Nombre debe ser Unico"
+            )
         finally:
             conexion.cerrar()
 
@@ -83,10 +88,12 @@ class Componentes:
 
         try:
             conexion.cursor.execute(sql, [int(id)])
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
         finally:
             conexion.cerrar()
 
@@ -102,10 +109,12 @@ class Componentes:
             conexion.cursor.execute(sql)
             lista = conexion.cursor.fetchall()
 
-        except:
-            titulo = "Conexion al registro"
-            message = "Crea la tabla en la base de datos"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla componentes en la base de datos"
+            )
         finally:
             conexion.cerrar()
         return lista

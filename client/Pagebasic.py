@@ -43,12 +43,12 @@ class PageBasic:
         # Nombre
         label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
         label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_nombre.grid(row=1, column=0, padx=10, pady=10)
+        label_nombre.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
         # Descripción
         label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
         label_descripcion.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_descripcion.grid(row=2, column=0, padx=10, pady=10)
+        label_descripcion.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # Campos de entrada
         self.mi_nombre = tk.StringVar()
@@ -223,7 +223,7 @@ class PageBasic:
     def eliminar_datos(self):
         try:
             valor = messagebox.askquestion(
-                "Eliminar Registro", "Desea Eliminar el registro seleccionado cccc"
+                "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )
             if valor == "yes":
                 self.id_model = self.tabla.item(self.tabla.selection())["text"]
