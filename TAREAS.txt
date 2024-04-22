@@ -1,7 +1,9 @@
 culminar las secciones de eliminar y editar de los equipos y componentes
 poder ver su historial de los equipos
+cULMINAR LAS SECCION DE COMPONENTES
 corregir el tamaño de la ventana
 revisar el orden de los id
+Terminar la seccio de almacenamiento
 colocar confirmaciones para editar y guardar
 colocar los comentariot (OPCIONAL)
 arreglar las apariencias

@@ -7,7 +7,7 @@ from config import (
 def controlError(error, messageTable=None, titleTable=None, messageUnique=None, titleUnique=None, messageNumber=None, titleNumber=None, messageRange=None, titleRange=None, messageSelection=None, titleSelection=None, errors=[]):
     if len(errors)>0:
         for data in errors:
-            if data["error"]==error:
+            if data["error"]==str(error):
                 titulo= data["title"]
                 mensage= data["mesage"]
                 messagebox.showwarning(titulo, mensage)
@@ -28,12 +28,12 @@ def controlError(error, messageTable=None, titleTable=None, messageUnique=None, 
         mensage= "Solo se permiten números en los campos" if not messageNumber  else str(messageNumber)
         messagebox.showwarning(titulo, mensage)
 
-    elif "list index out of range" == error:
+    elif "list index out of range" == str(error):
         titulo= "Error de selección" if not titleRange else str(titleRange)
         mensage= "No hay mas valores para agregar" if not messageRange  else str(messageRange)
         messagebox.showwarning(titulo, mensage)
 
-    elif "string index out of range" == error:
+    elif "string index out of range" == str(error):
         titulo= "Seleccion de campos" if not titleSelection else str(titleSelection)
         mensage= "No ha seleccionado ningun registro" if not messageSelection  else str(messageSelection)
         messagebox.showwarning(titulo, mensage)

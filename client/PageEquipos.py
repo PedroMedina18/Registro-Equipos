@@ -137,13 +137,13 @@ class PageEquipos:
 
         # iterar la lista de campos
         for item in self.list_equipos:
-            ubicacion="Plaza Bolívar" if item[3]==0 else "La Marron"
+            ubicacion="Plaza Bolívar" if item[3]==0 else "La Marrón"
             self.tabla_listEquipos.insert("", 0, text=item[0], values=(item[1], item[2], ubicacion, item[4], item[5]))
 
         # botones finales
 
         # Buscar
-        boton_buscar = tk.Button(self.framePrincipal, text="Buscar")
+        boton_buscar = tk.Button(self.framePrincipal, text="Buscar", command=self.infoEquipo)
         boton_buscar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -155,7 +155,7 @@ class PageEquipos:
         boton_buscar.grid(row=4, column=0, padx=10, pady=10)
 
         # Crear
-        boton_crear = tk.Button(self.framePrincipal, text="Registrar", command=self.crearEquipos)
+        boton_crear = tk.Button(self.framePrincipal, text="Registrar", command=lambda:self.cambioInterfaz(self.frameRegisterEquipos))
         boton_crear.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -166,13 +166,13 @@ class PageEquipos:
         )
         boton_crear.grid(row=4, column=3, padx=10, pady=10)
 
-     # *la que destrulle y crea el para registrar equipos
-    def crearEquipos(self):
+    # *la que destrulle y crea una nueva interfaz
+    def cambioInterfaz(self, interfaz):
         self.framePrincipal.destroy()
         self.framePrincipal = None
         self.crearCuerpo()
         self.cambio_cuerpo(self.framePrincipal)
-        self.frameRegisterEquipos()
+        interfaz()
 
     def frameRegisterEquipos(self):
         self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))
@@ -186,7 +186,7 @@ class PageEquipos:
             bg=COLOR_VERDE,
             cursor="hand2",
             activebackground=ACTIVE_VERDE,
-            command=self.regresar,
+            command=lambda:self.cambioInterfaz(self.lista_Equipos)
         )
         buttonRegresar.grid(row=0, column=0, padx=10, pady=10)
         # Titulo
@@ -355,7 +355,7 @@ class PageEquipos:
                 if valor == "yes":
                     self.reset()
                 else:
-                    self.regresar()
+                    self.cambioInterfaz(self.lista_Equipos)
                 
             else:
                 titulo="Error"
@@ -367,13 +367,6 @@ class PageEquipos:
                 error
             )
 
-    def regresar(self):
-        self.framePrincipal.destroy()
-        self.framePrincipal = None
-        self.crearCuerpo()
-        self.cambio_cuerpo(self.framePrincipal)
-        self.lista_Equipos()
-    
     def reset(self):
         self.mi_serial.set("")
         self.select_area_trabajo.set("")
@@ -384,3 +377,21 @@ class PageEquipos:
 
         for componente in self.componentes:
             componente[2].destroy()
+
+    def infoEquipo(self):
+        try:
+            id_equipo=self.tabla_listEquipos.item(self.tabla_listEquipos.selection())["text"]
+            print(id_equipo)
+            if id_equipo=="":
+                messagebox.showwarning("Buscar Equipo", "No ha seleccionado ningun registro")
+                return
+            
+            dataEquipo=Equipos.list(id=int(id_equipo))
+            print(dataEquipo)
+
+        except Exception as error:
+            controlError(
+                error,
+                titleSelection="Busquedad de Registro"
+            )
+        pass

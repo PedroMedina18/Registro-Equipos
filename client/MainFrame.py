@@ -25,6 +25,8 @@ from models.caracteristicas import Caracteristicas
 from models.estados import Estados
 from models.areas_trabajo import AreasTrabajo
 
+from prueba import pruebasql
+
 
 # La magina inicial al cargar la aplicacion
 class MainFrame:
@@ -50,6 +52,7 @@ class MainFrame:
 
         menu_inicio.add_command(label="Crear Base de Datos", command=crearTablas)
         menu_inicio.add_command(label="Salir", command=self.root.destroy)
+        menu_inicio.add_command(label="Prueba", command=pruebasql)
 
         menu_tablas.add_command(
             label="Tablas",
@@ -186,7 +189,9 @@ class MainFrame:
             image=self.component,
             compound="left",
             cursor="hand2",
-            command=lambda: self.destroyCuerpo(object_page=PageComponent)
+            command=lambda: self.destroyCuerpo(
+                object_page=PageComponent, atributos={"funtion_cambio_cuerpo": True}
+            )
             
         )
         self.buttonDestokp = ttk.Button(

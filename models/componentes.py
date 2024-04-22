@@ -102,7 +102,13 @@ class Componentes:
 
         lista = []
         sql = """
-            SELECT * FROM estados ORDER BY id ASC;
+            SELECT 
+                id,
+                nombre,
+                uso,
+                dañados,
+                almacen 
+            FROM componentes ORDER BY id ASC;
         """
 
         try:

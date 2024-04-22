@@ -3,6 +3,7 @@ from util.comprobacionCampos import comprobacionString, comprobacionBoolean
 from tkinter import messagebox
 from config import TITULO_CAMPOS
 from util.util_error import controlError
+from .componentes_has_equipos import Componentes_has_Equipos
 
 class Equipos:
 
@@ -102,7 +103,7 @@ class Equipos:
         finally:
             conexion.cerrar()
 
-    def list():
+    def list(id=0):
         conexion = ConexionDB()
 
         lista = []
@@ -121,9 +122,33 @@ class Equipos:
             ORDER BY equi.id ASC;
         """
 
+        if id>0:
+            sql = """
+            SELECT 
+                equi.id,
+                equi.serial,
+                tip.nombre AS tipo_equipo,
+                equi.bolivar_marron,
+                es.nombre AS estado,
+                art.nombre AS area_trabajo
+            FROM equipos AS equi 
+            INNER JOIN estados AS es ON equi.estado_actual_id=es.id
+            INNER JOIN areas_trabajo AS art ON equi.area_trabajo_id=art.id
+            INNER JOIN tipos_equipos AS tip ON equi.tipos_equipos_id=tip.id
+            WHERE equi.id=?;
+        """
+
+
         try:
-            conexion.cursor.execute(sql)
-            lista = conexion.cursor.fetchall()
+            if id>0:
+                conexion.cursor.execute(sql, [id])
+                lista = conexion.cursor.fetchall()
+                lista = [list(tupla) for tupla in lista]
+                componentes= Componentes_has_Equipos.list(id_equipo=lista[0][0])
+                lista[0].append(componentes)
+            else:
+                conexion.cursor.execute(sql)
+                lista = conexion.cursor.fetchall()
 
         except Exception as error:
             controlError(

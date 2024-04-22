@@ -246,16 +246,18 @@ class PageCampos_tablas:
     def eliminar_datos(self):
         try:
             valor = messagebox.askquestion(
-                "Eliminar Registro", "Desea Eliminar el registro seleccionado cccc"
+                "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )
             if valor == "yes":
                 self.id_campos_tabla = self.tabla.item(self.tabla.selection())["text"]
+
                 if self.id_campos_tabla=="":
                     titulo="Eliminación de Registro"
-                    message="No a seleccionado el registro que desea eliminar"
+                    message="No ha seleccionado ningun registro"
                     messagebox.showwarning(titulo, message)
                 else:
                     Campos_Tabla.delete(self.id_campos_tabla)
+
                 self.tabla_lista()
                 self.desabilitar_campos()
         except Exception as error:

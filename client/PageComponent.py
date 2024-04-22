@@ -27,18 +27,98 @@ from util.list_values import list_values, verificacion_campos, determinar_campo
 from util.util_error import controlError
 
 class   PageComponent:
-    def __init__(self, root):
+    def __init__(self, root, cambio_cuerpo):
         self.root = root
         self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
         self.id_componente = None
+        self.cambio_cuerpo = cambio_cuerpo
         self.crearCuerpo()
-        self.controles()
-        self.desabilitar_campos()
+        self.listComponentes()
 
     def crearCuerpo(self):
-        self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
+        if self.framePrincipal:
+            self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
+        else:
+            self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
+            self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
 
-    def controles(self):
+    def listComponentes(self):
+        self.framePrincipal.columnconfigure(0, weight=1)
+        # Titulo
+        tituloPage = tk.Label(self.framePrincipal, text="Lista de componentes")
+        tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
+        tituloPage.grid(row=0, column=0, padx=10, pady=10)
+
+        self.list_componentes = Componentes.list()
+        self.list_componentes.reverse()
+
+        self.tabla_listComponentes = ttk.Treeview(
+            self.framePrincipal, columns=("ID","Nombre", "Almacen",  "Dañados", "Usados"), height=30, show='headings'
+        )
+        self.tabla_listComponentes.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=2)
+
+        # Scroll bar
+        scroll = ttk.Scrollbar(
+            self.framePrincipal, orient="vertical", command=self.tabla_listComponentes.yview
+        )
+        scroll.grid(row=1, column=1, sticky="nsew")
+        self.tabla_listComponentes.configure(yscrollcommand=scroll.set)
+
+        self.tabla_listComponentes.heading("ID", text="ID", anchor=tk.W)
+        self.tabla_listComponentes.heading("Nombre", text="NOMBRE", anchor=tk.W)
+        self.tabla_listComponentes.heading("Almacen", text="ALMACEN", anchor=tk.W)
+        self.tabla_listComponentes.heading("Dañados", text="DAÑADOS", anchor=tk.W)
+        self.tabla_listComponentes.heading("Usados", text="USADOS", anchor=tk.W)
+
+        # edit column
+
+        # iterar la lista de campos
+        for index, item in enumerate(self.list_componentes):
+            id_component=item[0]
+            items=list(item)
+            items[0]=index
+            print(items)
+            self.tabla_listComponentes.insert("", 0, text=id_component, values=tuple(items))
+        
+
+        # botones finales
+
+        # Buscar
+        boton_buscar = tk.Button(self.framePrincipal, text="Buscar", command=self.infoComponente)
+        boton_buscar.config(
+            width=TAMAÑO_BOTON,
+            font=FONT_LABEL,
+            fg=LETRA_CLARA,
+            bg=COLOR_VERDE,
+            cursor="hand2",
+            activebackground=ACTIVE_VERDE,
+        )
+        boton_buscar.grid(row=1, column=0, padx=10, pady=10)
+
+        # Crear
+        boton_crear = tk.Button(self.framePrincipal, text="Registrar", command=lambda:self.cambioInterfaz(self.registrarComponente))
+        boton_crear.config(
+            width=TAMAÑO_BOTON,
+            font=FONT_LABEL,
+            fg=LETRA_CLARA,
+            bg=COLOR_AZUL,
+            cursor="hand2",
+            activebackground=ACTIVE_AZUL,
+        )
+        boton_crear.grid(row=1, column=3, padx=10, pady=10)
+
+    # *la que destrulle y crea una nueva interfaz
+    def cambioInterfaz(self, interfaz):
+        self.framePrincipal.destroy()
+        self.framePrincipal = None
+        self.crearCuerpo()
+        self.cambio_cuerpo(self.framePrincipal)
+        interfaz()
+
+    def infoComponente(self, interfaz):
+        pass
+
+    def registrarComponente(self):
         self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Componentes")

@@ -79,7 +79,6 @@ class PageListTablas:
             self.tabla_listTablas.insert("", 0, text=item[0], values=(item[1], item[2]))
 
         # botones finales
-
         # Ir
         self.boton_buscar = tk.Button(self.framePrincipal, text="Buscar")
         self.boton_buscar.config(
@@ -98,6 +97,12 @@ class PageListTablas:
         try:
             self.id_table = self.tabla_listTablas.item(self.tabla_listTablas.selection())["text"]
             name_tabla = self.tabla_listTablas.item(self.tabla_listTablas.selection())["values"][0]
+            self.list_campos = Tablas_has_Campos.list(id_tabla=self.id_table)
+            if len(self.list_campos) == 0:
+                respuesta=messagebox.showwarning(f"Tabla {name_tabla}", "No hay ningun campo agregado a esta tabla")
+                if respuesta=="ok":
+                    return
+                
             self.framePrincipal.destroy()
             self.framePrincipal = None
             self.crearCuerpo()
@@ -106,11 +111,11 @@ class PageListTablas:
         except Exception as error:
             controlError(
                 error,
-                titleTable="Buscar Registro",
-                messageTable="El registro no se ha podido eliminar"
+                titleSelection="Buscar Registro"
             )
+    
     def frameTableData(self, id_table=0, name_tabla=""):
-        list_campos = Tablas_has_Campos.list(id_tabla=id_table)
+        self.list_campos = Tablas_has_Campos.list(id_tabla=id_table)
 
         # # Button Regresar
         buttonRegresar = tk.Button(self.framePrincipal, text="Regresar")
@@ -132,16 +137,14 @@ class PageListTablas:
 
         self.LIST_CAMPOS = []
         self.CONTADOR = 0
-        for campos in list_campos:
+        for campos in self.list_campos:
             # # EL LABEL
 
             label_nombre = tk.Label(self.framePrincipal, text=f"{campos[1]}:")
             label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
             label_nombre.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10, sticky="w")
 
-            object_campos={
-
-            }
+            object_campos={}
 
             if campos[2] >= 150:
                 # # TEXTARE
@@ -193,9 +196,7 @@ class PageListTablas:
             self.CONTADOR = self.CONTADOR + 1
 
         # Botones
-        self.boton_nuevo = tk.Button(
-            self.framePrincipal, text="Nuevo", command=self.habilitar_campos
-        )
+        self.boton_nuevo = tk.Button(self.framePrincipal, text="Nuevo", command=self.habilitar_campos)
         self.boton_nuevo.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -204,11 +205,9 @@ class PageListTablas:
             cursor="hand2",
             activebackground=ACTIVE_VERDE,
         )
-        self.boton_nuevo.grid(row=2 + self.CONTADOR, column=0, padx=8, pady=10)
+        self.boton_nuevo.grid(row=2 + self.CONTADOR, column=0, padx=10, pady=10)
 
-        self.boton_guardar = tk.Button(
-            self.framePrincipal, text="Guardar", command=self.guardar_campos
-        )
+        self.boton_guardar = tk.Button(self.framePrincipal, text="Guardar", command=self.guardar_campos)
         self.boton_guardar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -217,11 +216,9 @@ class PageListTablas:
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        self.boton_guardar.grid(row=2 + self.CONTADOR, column=1, padx=8, pady=10)
+        self.boton_guardar.grid(row=2 + self.CONTADOR, column=1, padx=10, pady=10)
 
-        self.boton_cancelar = tk.Button(
-            self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
-        )
+        self.boton_cancelar = tk.Button(self.framePrincipal, text="Cancelar", command=self.desabilitar_campos)
         self.boton_cancelar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -230,20 +227,21 @@ class PageListTablas:
             cursor="hand2",
             activebackground=ACTIVE_ROJO,
         )
-        self.boton_cancelar.grid(row=2 + self.CONTADOR, column=2, padx=8, pady=10)
+        self.boton_cancelar.grid(row=2 + self.CONTADOR, column=2, padx=10, pady=10)
 
         self.desabilitar_campos()
         self.tabla_lista()
 
     def tabla_lista(self):
+        self.framePrincipal.columnconfigure(3, weight=1)
         columns = ("id",)
         columns += tuple(element["nombre"] for element in self.LIST_CAMPOS)
         columns += ("fecha_creacion", "fecha_actualizacion")
-
+        print(columns)
         self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
         
-        frameTable=tk.Frame(self.framePrincipal, height=300, bg=COLOR_BASE)
-        frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=4, sticky="NSEW", padx=10)
+        frameTable=tk.Frame(self.framePrincipal, height=300, bg="red", width=200)
+        frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=5, sticky="NSEW", padx=10)
 
         self.tabla_registros = ttk.Treeview(
             frameTable,
@@ -258,7 +256,7 @@ class PageListTablas:
             orient="vertical", 
             command=self.tabla_registros.yview
         )
-        scrollVertical.grid(row=3 + self.CONTADOR, column=3, sticky="NS")
+        scrollVertical.grid(row=3 + self.CONTADOR, column=4, sticky="NS")
 
         scrollHorizontal = ttk.Scrollbar(
             self.framePrincipal, 
@@ -275,6 +273,7 @@ class PageListTablas:
 
         # Para insertar todas las columnas de la tabla
         for object in columns:
+            print(object)
             self.tabla_registros.heading(f"{object}", text=object.replace("_", " ").upper())
 
         # Para insertar los registros en al tabla

@@ -217,7 +217,7 @@ class PageBasic:
         except Exception as error:
             controlError(
                 error,
-                titleSelection="Edicion de Registro"
+                titleSelection="Edición de Registro"
             )
 
     def eliminar_datos(self):
