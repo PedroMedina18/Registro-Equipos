@@ -17,7 +17,6 @@ from config import (
     LETRA_OSCURA,
     TAMAÑO_MEDIUN_ENTRYS,
     TITULO_CAMPOS
-    
 )
 from models.tipos_equipos import TipoEquipos
 from models.caracteristicas import Caracteristicas
@@ -47,7 +46,7 @@ class   PageComponent:
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Lista de componentes")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
-        tituloPage.grid(row=0, column=0, padx=10, pady=10)
+        tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
         self.list_componentes = Componentes.list()
         self.list_componentes.reverse()
@@ -55,13 +54,13 @@ class   PageComponent:
         self.tabla_listComponentes = ttk.Treeview(
             self.framePrincipal, columns=("ID","Nombre", "Almacen",  "Dañados", "Usados"), height=30, show='headings'
         )
-        self.tabla_listComponentes.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=2)
+        self.tabla_listComponentes.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=4)
 
         # Scroll bar
         scroll = ttk.Scrollbar(
             self.framePrincipal, orient="vertical", command=self.tabla_listComponentes.yview
         )
-        scroll.grid(row=1, column=1, sticky="nsew")
+        scroll.grid(row=1, column=3, sticky="nsew")
         self.tabla_listComponentes.configure(yscrollcommand=scroll.set)
 
         self.tabla_listComponentes.heading("ID", text="ID", anchor=tk.W)
@@ -76,15 +75,15 @@ class   PageComponent:
         for index, item in enumerate(self.list_componentes):
             id_component=item[0]
             items=list(item)
-            items[0]=index
+            items[0]=index + 1
             print(items)
-            self.tabla_listComponentes.insert("", 0, text=id_component, values=tuple(items))
+            self.tabla_listComponentes.insert("", tk.END, text=id_component, values=tuple(items))
         
 
         # botones finales
 
         # Buscar
-        boton_buscar = tk.Button(self.framePrincipal, text="Buscar", command=self.infoComponente)
+        boton_buscar = tk.Button(self.framePrincipal, text="Buscar", command=lambda:self.cambioInterfaz(self.infoComponente))
         boton_buscar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -93,7 +92,7 @@ class   PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_VERDE,
         )
-        boton_buscar.grid(row=1, column=0, padx=10, pady=10)
+        boton_buscar.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # Crear
         boton_crear = tk.Button(self.framePrincipal, text="Registrar", command=lambda:self.cambioInterfaz(self.registrarComponente))
@@ -105,7 +104,7 @@ class   PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        boton_crear.grid(row=1, column=3, padx=10, pady=10)
+        boton_crear.grid(row=2, column=2, padx=10, pady=10)
 
     # *la que destrulle y crea una nueva interfaz
     def cambioInterfaz(self, interfaz):
@@ -115,8 +114,13 @@ class   PageComponent:
         self.cambio_cuerpo(self.framePrincipal)
         interfaz()
 
-    def infoComponente(self, interfaz):
-        pass
+    def infoComponente(self):
+        id_componente = self.tabla_listComponentes.item(self.tabla_listTablas.selection())["text"]
+        if id_componente == "":
+            respuesta=messagebox.showwarning("Buscar Componente", "No ha seleccionado ningun registro")
+            if respuesta=="ok":
+                return
+        data_component = Componentes.list(id_componente=id_componente)
 
     def registrarComponente(self):
         self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))

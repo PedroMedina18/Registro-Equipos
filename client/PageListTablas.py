@@ -237,7 +237,6 @@ class PageListTablas:
         columns = ("id",)
         columns += tuple(element["nombre"] for element in self.LIST_CAMPOS)
         columns += ("fecha_creacion", "fecha_actualizacion")
-        print(columns)
         self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
         
         frameTable=tk.Frame(self.framePrincipal, height=300, bg="red", width=200)
@@ -273,7 +272,6 @@ class PageListTablas:
 
         # Para insertar todas las columnas de la tabla
         for object in columns:
-            print(object)
             self.tabla_registros.heading(f"{object}", text=object.replace("_", " ").upper())
 
         # Para insertar los registros en al tabla

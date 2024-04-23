@@ -97,7 +97,7 @@ class Componentes:
         finally:
             conexion.cerrar()
 
-    def list():
+    def list(id_componente=0):
         conexion = ConexionDB()
 
         lista = []
