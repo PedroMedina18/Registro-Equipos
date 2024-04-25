@@ -5,6 +5,7 @@ from .componentes_has_caracteristicas import Componentes_has_Caracteristicas
 
 class Componentes_has_Equipos:
 
+    
     def list(id_equipo=0):
         conexion = ConexionDB()
 

@@ -20,9 +20,10 @@ from config import (
 )
 from models.tipos_equipos import TipoEquipos
 from models.caracteristicas import Caracteristicas
+from models.componentes_has_caracteristicas import Componentes_has_Caracteristicas
 from models.componentes import Componentes
 from util.util_img import leer_imagen
-from util.list_values import list_values, verificacion_campos, determinar_campo
+from util.list_values import list_values, verificacion_campos, determinar_campo, determinar_indice
 from util.util_error import controlError
 
 class   PageComponent:
@@ -31,6 +32,7 @@ class   PageComponent:
         self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
         self.id_componente = None
         self.cambio_cuerpo = cambio_cuerpo
+        self.data_component=None
         self.crearCuerpo()
         self.listComponentes()
 
@@ -43,13 +45,13 @@ class   PageComponent:
 
     def listComponentes(self):
         self.framePrincipal.columnconfigure(0, weight=1)
+        self.data_component=None
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Lista de componentes")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
         self.list_componentes = Componentes.list()
-        self.list_componentes.reverse()
 
         self.tabla_listComponentes = ttk.Treeview(
             self.framePrincipal, columns=("ID","Nombre", "Almacen",  "Dañados", "Usados"), height=30, show='headings'
@@ -76,14 +78,12 @@ class   PageComponent:
             id_component=item[0]
             items=list(item)
             items[0]=index + 1
-            print(items)
             self.tabla_listComponentes.insert("", tk.END, text=id_component, values=tuple(items))
-        
 
         # botones finales
 
         # Buscar
-        boton_buscar = tk.Button(self.framePrincipal, text="Buscar", command=lambda:self.cambioInterfaz(self.infoComponente))
+        boton_buscar = tk.Button(self.framePrincipal, text="Buscar", command=self.buscarComponente)
         boton_buscar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -95,7 +95,7 @@ class   PageComponent:
         boton_buscar.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # Crear
-        boton_crear = tk.Button(self.framePrincipal, text="Registrar", command=lambda:self.cambioInterfaz(self.registrarComponente))
+        boton_crear = tk.Button(self.framePrincipal, text="Registrar", command=lambda:self.cambioInterfaz(self.controlComponent))
         boton_crear.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -114,57 +114,72 @@ class   PageComponent:
         self.cambio_cuerpo(self.framePrincipal)
         interfaz()
 
-    def infoComponente(self):
-        id_componente = self.tabla_listComponentes.item(self.tabla_listTablas.selection())["text"]
+    def buscarComponente(self):
+        id_componente = self.tabla_listComponentes.item(self.tabla_listComponentes.selection())["text"]
         if id_componente == "":
             respuesta=messagebox.showwarning("Buscar Componente", "No ha seleccionado ningun registro")
             if respuesta=="ok":
                 return
-        data_component = Componentes.list(id_componente=id_componente)
+        
+        self.data_component = Componentes.list(id_componente=int(id_componente))
+        self.cambioInterfaz(self.controlComponent)
 
-    def registrarComponente(self):
+    def controlComponent(self):
         self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))
+
+        buttonRegresar = tk.Button(self.framePrincipal, text="Regresar")
+        buttonRegresar.config(
+            width=TAMAÑO_BOTON,
+            font=FONT_LABEL,
+            fg=LETRA_CLARA,
+            bg=COLOR_VERDE,
+            cursor="hand2",
+            activebackground=ACTIVE_VERDE,
+            command=lambda:self.cambioInterfaz(self.listComponentes),
+        )
+        buttonRegresar.grid(row=0, column=0, padx=10, pady=10)
+
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Componentes")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
-        tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
+        tituloPage.grid(row=1, column=0, padx=10, pady=10, columnspan=3)
 
         # Nombre
         label_nombre = tk.Label(self.framePrincipal, text="Nombre:")
         label_nombre.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_nombre.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        label_nombre.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # Componente
         label_componente = tk.Label(self.framePrincipal, text="Componente:")
         label_componente.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_componente.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        label_componente.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         # usados
         label_usados = tk.Label(self.framePrincipal, text="Usados:")
         label_usados.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_usados.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        label_usados.grid(row=5, column=0, padx=10, pady=10, sticky="w")
         
         # almacen
         label_almacen = tk.Label(self.framePrincipal, text="Almacen:")
         label_almacen.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_almacen.grid(row=5, column=0, padx=10, pady=10, sticky="w")
+        label_almacen.grid(row=6, column=0, padx=10, pady=10, sticky="w")
 
         # dañados
         label_dañados = tk.Label(self.framePrincipal, text="Dañados:")
         label_dañados.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_dañados.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+        label_dañados.grid(row=7, column=0, padx=10, pady=10, sticky="w")
 
         # Caracteristicas
         label_caracteristicas = tk.Label(self.framePrincipal, text="Caracteristicas")
         label_caracteristicas.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_caracteristicas.grid(row=7, column=0, padx=10, pady=10, sticky="w")
+        label_caracteristicas.grid(row=8, column=0, padx=10, pady=10, sticky="w")
 
         # Frame
-        self.frameData = tk.Frame(self.framePrincipal, height=20, bg=COLOR_BASE)
-        self.frameData.grid(row=3, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
+        self.frameData = tk.Frame(self.framePrincipal, bg=COLOR_BASE)
+        self.frameData.grid(row=4, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
 
         self.frameCaracteristicas = tk.Frame(self.framePrincipal, bg=COLOR_BASE, height=30)
-        self.frameCaracteristicas.grid(row=8, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
+        self.frameCaracteristicas.grid(row=9, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
         self.caracteristicas=[]
         self.contador_caracteristicas=0
 
@@ -176,27 +191,29 @@ class   PageComponent:
         
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
         self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_nombre.grid(row=2, column=1, padx=10, pady=7, columnspan=2)
 
         self.list_componentes = TipoEquipos.list(equipo_componente=False)
         self.select_componente = ttk.Combobox(
             self.framePrincipal, state="readonly",
             values=list_values(self.list_componentes)
         )
-        self.select_componente.grid(row=2, column=1, padx=10, pady=7, columnspan=2)
+        self.select_componente.grid(row=3, column=1, padx=10, pady=7, columnspan=2)
         self.select_componente.bind("<<ComboboxSelected>>", self.selectComponent)
+
 
         self.entry_usados = tk.Entry(self.framePrincipal, textvariable=self.usados)
         self.entry_usados.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_usados.grid(row=4, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_usados.grid(row=5, column=1, padx=10, pady=7, columnspan=2)
 
         self.entry_almacen = tk.Entry(self.framePrincipal, textvariable=self.almacen)
         self.entry_almacen.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_almacen.grid(row=5, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_almacen.grid(row=6, column=1, padx=10, pady=7, columnspan=2)
 
         self.entry_dañados = tk.Entry(self.framePrincipal, textvariable=self.dañados)
         self.entry_dañados.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_dañados.grid(row=6, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_dañados.grid(row=7, column=1, padx=10, pady=7, columnspan=2)
+
 
         self.list_caracteristicas = Caracteristicas.list()
         self.list_values_caracteristicas=list_values(self.list_caracteristicas)
@@ -204,7 +221,8 @@ class   PageComponent:
             self.framePrincipal, state="readonly",
             values=self.list_values_caracteristicas
         )
-        self.select_caracteristicas.grid(row=7, column=1, padx=10, pady=7)
+
+        self.select_caracteristicas.grid(row=8, column=1, padx=10, pady=7)
         self.boton_agregar = tk.Button(self.framePrincipal, text="Agregar", command=self.agregarCaracteristica)
         self.boton_agregar.config(
             width=TAMAÑO_BOTON,
@@ -213,12 +231,72 @@ class   PageComponent:
             bg=COLOR_AZUL,
             cursor="hand2",
             activebackground=ACTIVE_AZUL)
-        self.boton_agregar.grid(row=7, column=2, padx=10, pady=10)
+        self.boton_agregar.grid(row=8, column=2, padx=10, pady=10)
 
-        # Botones
-        self.boton_nuevo = tk.Button(
-            self.framePrincipal, text="Nuevo", command=self.habilitar_campos
-        )
+        if self.data_component:
+            self.mi_nombre.set(f"{self.data_component[1]}")
+            self.usados.set(f"{self.data_component[2]}")
+            self.dañados.set(f"{self.data_component[3]}")
+            self.almacen.set(f"{self.data_component[4]}")
+            indice_data=determinar_indice(self.list_componentes, self.data_component[5])
+            self.select_componente.current(indice_data)
+            self.dataComponente()
+            valores=self.list_componentes[self.select_componente.current()]
+            self.label_value_nombre.config(text=f"{valores[1]}")
+            self.label_value_marca.config(text=f"{valores[2]}")
+            self.label_value_modelo.config(text=f"{valores[3]}")
+            self.label_value_descripcion.config(text=f"{valores[5]}")
+
+            for caracteristicas in self.data_component[10]:
+                frame=tk.Frame(self.frameCaracteristicas, bg=COLOR_BASE)
+                frame.pack(side=tk.TOP, fill=tk.BOTH, ipady=10, ipadx=10)
+                mi_caracteristica = tk.StringVar()
+                mi_caracteristica.set(f"{caracteristicas[4]}")
+                entry_nombre = tk.Entry(frame, textvariable=mi_caracteristica, width=TAMAÑO_MEDIUN_ENTRYS, font=FONT_LABEL)
+                buton_eliminar = tk.Button(frame, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO)
+                
+                caracteristica=[
+                    caracteristicas[2], #id caracteristica
+                    caracteristicas[3], #nombre
+                    caracteristicas[0], #id tabla componetens_has_caracteristicas
+                    mi_caracteristica,  #Strinvar
+                    frame,              #Frame
+                    "update",           #Tipo
+                    entry_nombre,       #Entry
+                    buton_eliminar      #Button
+                ]
+
+                label = tk.Label(frame, text=f"{caracteristicas[3]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
+                label.pack(side=tk.LEFT, padx=10)
+
+                buton_eliminar.config(command=lambda:self.deleteTableCaracteristica(caracteristica))
+                buton_eliminar.pack(side=tk.RIGHT, padx=10)
+
+                entry_nombre.pack(side=tk.RIGHT, padx=10)
+
+                self.caracteristicas.append(caracteristica)
+
+            self.list_values_caracteristicas=verificacion_campos([self.list_caracteristicas, 0], [self.caracteristicas, 0])
+            self.select_caracteristicas.config(values=self.list_values_caracteristicas)
+            
+            # Botones
+            self.boton_nuevo = tk.Button(
+                self.framePrincipal, text="Editar", command=self.habilitar_campos
+            )
+            self.boton_cancelar = tk.Button(
+            self.framePrincipal, text="Eliminar", command=self.deleteComponent
+            )
+        
+        else:
+            # Botones
+            self.boton_nuevo = tk.Button(
+                self.framePrincipal, text="Nuevo", command=self.habilitar_campos
+            )
+            
+            self.boton_cancelar = tk.Button(
+            self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
+            )
+        
         self.boton_nuevo.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -227,7 +305,7 @@ class   PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_VERDE,
         )
-        self.boton_nuevo.grid(row=9, column=0, padx=8, pady=10)
+        self.boton_nuevo.grid(row=10, column=0, padx=8, pady=10)
 
         self.boton_guardar = tk.Button(
             self.framePrincipal, text="Guardar", command=self.guardar
@@ -240,11 +318,8 @@ class   PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        self.boton_guardar.grid(row=9, column=1, padx=8, pady=10)
+        self.boton_guardar.grid(row=10, column=1, padx=8, pady=10)
 
-        self.boton_cancelar = tk.Button(
-            self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
-        )
         self.boton_cancelar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,
@@ -253,7 +328,9 @@ class   PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_ROJO,
         )
-        self.boton_cancelar.grid(row=9, column=2, padx=8, pady=10)
+        self.boton_cancelar.grid(row=10, column=2, padx=8, pady=10)
+        
+        self.desabilitar_campos()
 
     def dataComponente(self):
         label_nombre = tk.Label(self.frameData, font=FONT_LABEL, bg=COLOR_BASE, text="Nombre:")
@@ -277,6 +354,9 @@ class   PageComponent:
         self.label_value_descripcion.grid(row=3, column=0, padx=60, sticky="w", columnspan=3)
 
     def selectComponent(self, event):
+        self.frameData.destroy()
+        self.frameData = tk.Frame(self.framePrincipal, bg=COLOR_BASE)
+        self.frameData.grid(row=4, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
         self.dataComponente()
         valores=self.list_componentes[self.select_componente.current()]
         self.label_value_nombre.config(text=f"{valores[1]}")
@@ -292,21 +372,25 @@ class   PageComponent:
             frame=tk.Frame(self.frameCaracteristicas, bg=COLOR_BASE)
             frame.pack(side=tk.TOP, fill=tk.BOTH, ipady=10, ipadx=10)
             mi_caracteristica = tk.StringVar()
+            buton_eliminar = tk.Button(frame, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO)
+            entry_nombre = tk.Entry(frame, textvariable=mi_caracteristica, width=TAMAÑO_MEDIUN_ENTRYS, font=FONT_LABEL)
             caracteristica=[
-                caracteristica_seleccionada[0],
-                caracteristica_seleccionada[1],
-                caracteristica_seleccionada[2],
-                mi_caracteristica,
-                frame
+                caracteristica_seleccionada[0], #id
+                caracteristica_seleccionada[1], #nombre
+                caracteristica_seleccionada[2], #descripcion
+                mi_caracteristica,              #strinvar
+                frame,                          #frame
+                "new",                           #tipo
+                entry_nombre,
+                buton_eliminar,
             ]
 
             label = tk.Label(frame, text=f"{caracteristica_seleccionada[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
             label.pack(side=tk.LEFT, padx=10)
 
-            buton_eliminar = tk.Button(frame, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO, command=lambda:self.eliminarCaracteristica(caracteristica))
+            buton_eliminar.config(command=lambda:self.eliminarCaracteristica(caracteristica))
             buton_eliminar.pack(side=tk.RIGHT, padx=10)
 
-            entry_nombre = tk.Entry(frame, textvariable=mi_caracteristica, width=TAMAÑO_MEDIUN_ENTRYS, font=FONT_LABEL)
             entry_nombre.pack(side=tk.RIGHT, padx=10)
 
             self.caracteristicas.append(caracteristica)
@@ -330,32 +414,55 @@ class   PageComponent:
         self.list_values_caracteristicas=verificacion_campos([self.list_caracteristicas, 0], [self.caracteristicas, 0])
         self.select_caracteristicas.config(values=self.list_values_caracteristicas)
 
+    def deleteTableCaracteristica(self, caracteristica):
+        try:
+            valor = messagebox.askquestion(
+                "Eliminar Caracteristica", "Desea eliminar la caracteristica seleccionada"
+            )
+            if valor == "yes":
+                Componentes_has_Caracteristicas.delete(caracteristica[2])
+                caracteristica[4].destroy()
+                for index, campo in enumerate(self.caracteristicas):
+                    if campo[0] == caracteristica[0]:
+                        self.caracteristicas.pop(index)
+
+                self.list_values_caracteristicas=verificacion_campos([self.list_caracteristicas, 0], [self.caracteristicas, 0])
+                self.select_caracteristicas.config(values=self.list_values_caracteristicas)
+
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )
+
     def desabilitar_campos(self):
-        self.frameData.destroy()
         self.entry_nombre.config(state="disabled")
         self.entry_usados.config(state="disabled")
         self.entry_almacen.config(state="disabled")
         self.entry_dañados.config(state="disabled")
         self.select_caracteristicas.config(state="disabled")
         self.select_componente.config(state="disabled")
-
-        self.mi_nombre.set("")
-        self.almacen.set("")
-        self.dañados.set("")
-        self.select_caracteristicas.set("")
-        self.select_componente.set("")
-
-        self.frameData.destroy()
-
-        for campo in self.caracteristicas:
-            campo[4].destroy()
-
-        self.caracteristicas.clear()
-
         self.boton_guardar.config(state="disabled")
-        self.boton_cancelar.config(state="disabled")
         self.boton_agregar.config(state="disabled")
 
+        if self.data_component: 
+            for campo in self.caracteristicas:
+                campo[6].config(state="disabled")
+                campo[7].config(state="disabled")
+        else:
+            self.frameData.destroy()
+            self.mi_nombre.set("")
+            self.almacen.set("")
+            self.dañados.set("")
+            self.select_caracteristicas.set("")
+            self.select_componente.set("")
+            self.boton_cancelar.config(state="disabled")
+
+            for campo in self.caracteristicas:
+                campo[4].destroy()
+                self.caracteristicas.clear()
+    
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")
         self.entry_almacen.config(state="normal")
@@ -366,9 +473,14 @@ class   PageComponent:
         self.boton_guardar.config(state="normal")
         self.boton_cancelar.config(state="normal")
         self.boton_agregar.config(state="normal")
-
-        self.frameData = tk.Frame(self.framePrincipal, height=20, bg=COLOR_BASE)
-        self.frameData.grid(row=3, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
+        
+        if self.data_component: 
+            for campo in self.caracteristicas:
+                campo[6].config(state="normal")
+                campo[7].config(state="normal")
+        else:
+            self.frameData = tk.Frame(self.framePrincipal, height=20, bg=COLOR_BASE)
+            self.frameData.grid(row=4, column=0, padx=10, pady=5, columnspan=3, sticky="NSEW")
 
     def guardar(self):
         try:
@@ -384,19 +496,76 @@ class   PageComponent:
             dañados = self.dañados.get()
             nombre=self.mi_nombre.get()
 
-            coracteristicas=[]
+            caracteristicas=[]
             for caracteristica in self.caracteristicas:
-                comprobacion=comprobacionString(str(caracteristica[3].get()), 200)
+                comprobacion=comprobacionString(caracteristica[3].get(), 200)
                 if not comprobacion["status"]:
                     messagebox.showwarning(
                     TITULO_CAMPOS, f'Las caracteristicas {comprobacion["message"]}'
                     )
                     return None
-                coracteristicas.append({"id":caracteristica[0], "value":str(caracteristica[3].get())})
+                if caracteristica[5]=="new":
+                    caracteristicas.append({
+                        "id_caracteristica":caracteristica[0], 
+                        "value":str(caracteristica[3].get()), 
+                        "tipo":"new"})
+                
+                if caracteristica[5]=="update":
+                    caracteristicas.append({
+                        "id_caracteristica":caracteristica[0], 
+                        "value":str(caracteristica[3].get()), 
+                        "id_caracteristica_component":caracteristica[2], 
+                        "tipo":"update"})
+                    
+            if self.data_component:
+                componente=Componentes.update(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas, id=self.data_component[0])
+                if componente:
+                    titulo="Exito"
+                    message="Desea crear otro registro"
+                    valor=messagebox.askquestion(titulo, message)
+                    if valor == "yes":
+                        self.reset()
+                    else:
+                        self.cambioInterfaz(self.listComponentes)
+            else:
+                componente=Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas)
+                if componente:
+                    titulo="Exito"
+                    message="Registro Completado"
+                    valor=messagebox.showinfo(titulo, message)
+                    print(valor)
+                    if valor == "ok":
+                        self.cambioInterfaz(self.listComponentes)
 
-            Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=coracteristicas)
         except Exception as error:
             controlError(
                 error, 
                 messageNumber="Solo se permiten números en los campos de almacen y dañados"
+            )
+
+    def reset(self):
+        self.almacen.set("")
+        self.dañados.set("")
+        self.mi_nombre.set("")
+        self.select_componente.set("")
+        self.select_caracteristicas.set("")
+        self.frameData.destroy()
+
+        for caracteristica in self.caracteristicas:
+            caracteristica[5].destroy()
+
+    def deleteComponent(self):
+        try:
+            valor = messagebox.askquestion(
+                "Eliminar Registro", "Desea Eliminar el componente"
+            )
+            if valor == "yes":
+                Componentes.delete(self.data_component[0])
+                self.cambioInterfaz(self.listComponentes)
+
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
             )

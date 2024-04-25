@@ -31,6 +31,11 @@ def determinar_campo(list_campos_sql, campo_select):
     if not result:
         return None
 
+def determinar_indice(list_campos_sql, id_campo_select):
+    for index, tupla in enumerate(list_campos_sql):
+        if tupla[0] == id_campo_select:
+            return index
+
 
 def organizador_registros(tuples_list):
     grouped_tuples = {}

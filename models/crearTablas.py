@@ -87,8 +87,8 @@ def crearTablas():
             caracteristica_id INTEGER NOT NULL,
             value VARCHAR(200) NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT),
-            FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-            FOREIGN KEY (caracteristica_id) REFERENCES caracteristicas(id) ON DELETE RESTRICT ON UPDATE CASCADE
+            FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE UPDATE ON UPDATE CASCADE,
+            FOREIGN KEY (caracteristica_id) REFERENCES caracteristicas(id) ON DELETE UPDATE ON UPDATE CASCADE
         )  
     """
 
