@@ -22,11 +22,19 @@ class Componentes:
             INSERT INTO componentes (nombre, componente_id, uso, dañados, almacen)
             VALUES(?, ?, 0, ?, ?)
         """
-        ultimo_registro_component = None
+
+        sql_componente_caracteristica='''
+            INSERT INTO componentes_has_caracteristicas (componente_id, caracteristica_id, value)
+            VALUES(?, ?, ?)
+        '''
         try:
             conexion.cursor.execute(sql_componente, (str(nombre).capitalize(), int(componente_id), int(dañados), int(almacen)))
             ultimo_registro_component = conexion.cursor.lastrowid
+
+            for caracteristica_component in caracteristicas:
+                conexion.cursor.execute(sql_componente_caracteristica, (int(ultimo_registro_component), int(caracteristica_component["id_caracteristica"]), caracteristica_component["value"]))
             
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -36,8 +44,6 @@ class Componentes:
             )
             return False
         finally:
-            for caracteristica_component in caracteristicas:
-                Componentes_has_Caracteristicas.create(componente_id=int(ultimo_registro_component), caracteristica_id=int(caracteristica_component["id_caracteristica"]), value=caracteristica_component["value"])
             conexion.cerrar()
 
     def update(nombre="", componente_id=0, dañados=0, almacen=0, caracteristicas=[], id=0):
@@ -50,22 +56,32 @@ class Componentes:
             )
             return None
 
-        sql_componente = """
+        sql_componente_update = """
             UPDATE componentes
             SET nombre = ?, componente_id = ?, dañados = ?, almacen = ?
             WHERE id = ?
         """
 
+        sql_componente_caracteristica='''
+            INSERT INTO componentes_has_caracteristicas (componente_id, caracteristica_id, value)
+            VALUES(?, ?, ?)
+        '''
+        sql_componente_caracteristica_update='''
+            UPDATE componentes_has_caracteristicas 
+            SET value = ?
+            WHERE id = ?
+        '''
+
         try:
-            conexion.cursor.execute(sql_componente, [str(nombre).capitalize(), int(componente_id), int(dañados), int(almacen), int(id)])
+            conexion.cursor.execute(sql_componente_update, [str(nombre).capitalize(), int(componente_id), int(dañados), int(almacen), int(id)])
             
             for caracteristica in caracteristicas:
                 if caracteristica["tipo"]=="new":
-                    Componentes_has_Caracteristicas.create(componente_id=int(id), caracteristica_id=int(caracteristica["id_caracteristica"]), value=caracteristica["value"])
-                else:
-                    Componentes_has_Caracteristicas.update(id=int(caracteristica["id_caracteristica_component"]), value=caracteristica["value"])
-
-
+                    conexion.cursor.execute(sql_componente_caracteristica, [int(id), int(caracteristica["id_caracteristica"]), caracteristica["value"]])
+                
+                if caracteristica["tipo"]=="update":
+                    conexion.cursor.execute(sql_componente_caracteristica_update, [caracteristica["value"], int(caracteristica["id_caracteristica_component"])])
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -73,6 +89,7 @@ class Componentes:
                 messageTable="No se a podido editar el registro",
                 messageUnique="El valor del campo Nombre debe ser Unico"
             )
+            return False
         finally:
             conexion.cerrar()
 
@@ -102,9 +119,9 @@ class Componentes:
             SELECT 
                 id,
                 nombre,
-                uso,
+                almacen,
                 dañados,
-                almacen 
+                uso
             FROM componentes ORDER BY id ASC;
         """
 

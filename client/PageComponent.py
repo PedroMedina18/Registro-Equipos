@@ -74,10 +74,10 @@ class   PageComponent:
         # edit column
 
         # iterar la lista de campos
-        for index, item in enumerate(self.list_componentes):
+        for index, item in enumerate(self.list_componentes, start=1):
             id_component=item[0]
             items=list(item)
-            items[0]=index + 1
+            items[0]=index
             self.tabla_listComponentes.insert("", tk.END, text=id_component, values=tuple(items))
 
         # botones finales
@@ -380,9 +380,9 @@ class   PageComponent:
                 caracteristica_seleccionada[2], #descripcion
                 mi_caracteristica,              #strinvar
                 frame,                          #frame
-                "new",                           #tipo
-                entry_nombre,
-                buton_eliminar,
+                "new",                          #tipo
+                entry_nombre,                   #Entry
+                buton_eliminar,                 #boton
             ]
 
             label = tk.Label(frame, text=f"{caracteristica_seleccionada[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
@@ -461,7 +461,7 @@ class   PageComponent:
 
             for campo in self.caracteristicas:
                 campo[4].destroy()
-                self.caracteristicas.clear()
+            self.caracteristicas.clear()
     
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")
@@ -518,7 +518,16 @@ class   PageComponent:
                         "tipo":"update"})
                     
             if self.data_component:
+                print("sdasdsd")
                 componente=Componentes.update(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas, id=self.data_component[0])
+                if componente:
+                    titulo="Exito"
+                    message="Registro Completado"
+                    valor=messagebox.showinfo(titulo, message)
+                    if valor == "ok":
+                        self.cambioInterfaz(self.listComponentes)
+            else:
+                componente=Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas)
                 if componente:
                     titulo="Exito"
                     message="Desea crear otro registro"
@@ -526,15 +535,6 @@ class   PageComponent:
                     if valor == "yes":
                         self.reset()
                     else:
-                        self.cambioInterfaz(self.listComponentes)
-            else:
-                componente=Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas)
-                if componente:
-                    titulo="Exito"
-                    message="Registro Completado"
-                    valor=messagebox.showinfo(titulo, message)
-                    print(valor)
-                    if valor == "ok":
                         self.cambioInterfaz(self.listComponentes)
 
         except Exception as error:
