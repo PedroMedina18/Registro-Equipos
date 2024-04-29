@@ -235,9 +235,9 @@ class   PageComponent:
 
         if self.data_component:
             self.mi_nombre.set(f"{self.data_component[1]}")
-            self.usados.set(f"{self.data_component[2]}")
+            self.usados.set(f"{self.data_component[4]}")
             self.dañados.set(f"{self.data_component[3]}")
-            self.almacen.set(f"{self.data_component[4]}")
+            self.almacen.set(f"{self.data_component[2]}")
             indice_data=determinar_indice(self.list_componentes, self.data_component[5])
             self.select_componente.current(indice_data)
             self.dataComponente()

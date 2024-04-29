@@ -127,10 +127,13 @@ class Equipos:
             SELECT 
                 equi.id,
                 equi.serial,
-                tip.tipos_equipos_id,
+                equi.tipos_equipos_id,
+                tip.nombre,
                 equi.bolivar_marron,
-                tip.estado_actual_id,
-                tip.area_trabajo_id,
+                equi.estado_actual_id,
+                es.nombre,
+                equi.area_trabajo_id,
+                art.nombre
             FROM equipos AS equi 
             INNER JOIN estados AS es ON equi.estado_actual_id=es.id
             INNER JOIN areas_trabajo AS art ON equi.area_trabajo_id=art.id
@@ -142,9 +145,9 @@ class Equipos:
             if id>0:
                 conexion.cursor.execute(sql, [id])
                 lista = conexion.cursor.fetchall()
-                lista = [list(tupla) for tupla in lista]
+                lista = [tupla for tupla in lista]
                 componentes= Componentes_has_Equipos.list(id_equipo=lista[0][0])
-                lista[0].append(componentes)
+                lista.append(componentes)
             else:
                 conexion.cursor.execute(sql)
                 lista = conexion.cursor.fetchall()

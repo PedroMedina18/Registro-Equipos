@@ -112,27 +112,34 @@ class Componentes:
         finally:
             conexion.cerrar()
 
-    def list(id_componente=0):
+    def list(id_componente=0, almacen=False):
         conexion = ConexionDB()
 
         sql = """
             SELECT 
-                id,
-                nombre,
-                almacen,
-                dañados,
-                uso
-            FROM componentes ORDER BY id ASC;
+                com.id,
+                com.nombre,
+                com.almacen,
+                com.dañados,
+                com.uso,
+                tir.id,
+                tir.nombre,
+                tir.marca,
+                tir.modelo,
+                tir.descripcion
+            FROM componentes AS com
+            LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
+            ORDER BY com.id ASC;
         """
 
-        if id_componente>0:
+        if id_componente>0 and not almacen:
             sql = """
             SELECT 
                 com.id,
                 com.nombre,
-                com.uso,
-                com.dañados,
                 com.almacen,
+                com.dañados,
+                com.uso,
                 tir.id,
                 tir.nombre,
                 tir.marca,
@@ -142,10 +149,28 @@ class Componentes:
             LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
             WHERE com.id = ?;
             """
-            
+
+        if almacen:
+            sql = """
+            SELECT 
+                com.id,
+                com.nombre,
+                com.almacen,
+                com.dañados,
+                com.uso,
+                tir.id,
+                tir.nombre,
+                tir.marca,
+                tir.modelo,
+                tir.descripcion
+            FROM componentes AS com
+            LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
+            WHERE com.almacen > 0 
+            ORDER BY com.id ASC;
+            """
 
         try:
-            if id_componente>0:
+            if id_componente>0 and not almacen:
                 conexion.cursor.execute(sql, [int(id_componente)])
                 componente=conexion.cursor.fetchall()
                 caracteristicas = Componentes_has_Caracteristicas.list(id_componente=componente[0][0])
@@ -157,6 +182,36 @@ class Componentes:
                 conexion.cursor.execute(sql)
                 lista = conexion.cursor.fetchall()
                 return lista
+
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla componentes en la base de datos"
+            )
+        finally:
+            conexion.cerrar()
+
+    def consultAlmacen(id_componente=0):
+        conexion = ConexionDB()
+        componente=None
+        sql = """
+            SELECT 
+                id,
+                nombre,
+                almacen
+            FROM componentes ORDER BY id ASC;
+        """
+        try:
+            conexion.cursor.execute(sql, [int(id_componente)])
+            componente=conexion.cursor.fetchall()
+            if componente[0][2]<=0:
+                title="Componentes"
+                message=f"No quedan {componente[0][2]} en el almacen. Por favor verificar"
+                messagebox.showwarning(title, message)
+                return False
+            else:
+                return componente[0]
 
         except Exception as error:
             controlError(

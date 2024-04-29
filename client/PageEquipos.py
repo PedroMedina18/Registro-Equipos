@@ -23,6 +23,7 @@ from models.estados import Estados
 from models.tipos_equipos import TipoEquipos
 from models.areas_trabajo import AreasTrabajo
 from models.componentes import Componentes
+from models.componentes_has_equipos import Componentes_has_Equipos
 
 class PageEquipos:
     def __init__(self, root, cambio_cuerpo):
@@ -41,8 +42,7 @@ class PageEquipos:
         self.list_tipos_equipos=TipoEquipos.list(equipo_componente=True)
         self.list_areas_trabajos=AreasTrabajo.list()
         self.list_estados=Estados.list()
-        self.list_componentes=Componentes.list()
-        
+        self.list_componentes=Componentes.list(almacen=True)
         self.list_ubicacion=["Plaza Bolivar", "La Marrón"]
 
 
@@ -276,7 +276,6 @@ class PageEquipos:
         self.select_area_trabajo = ttk.Combobox(self.framePrincipal, state="readonly", values=list_values(self.list_areas_trabajos))
         self.select_area_trabajo.grid(row=6, column=1, padx=10, pady=10, columnspan=2)
 
-        
 
         label_componente = tk.Label(self.framePrincipal, text="Componentes")
         label_componente.config(font=FONT_LABEL, bg=COLOR_BASE)
@@ -285,7 +284,6 @@ class PageEquipos:
         self.list_values_componentes=list_values(self.list_componentes)
         self.select_componente = ttk.Combobox(self.framePrincipal, state="readonly", values=self.list_values_componentes)
         self.select_componente.grid(row=7, column=1, padx=10, pady=10)
-        
         
         self.boton_agregar = tk.Button(self.framePrincipal, text="Agregar")
         self.boton_agregar.config(
@@ -303,14 +301,13 @@ class PageEquipos:
         self.frameComponentes.grid(row=8, column=0, pady=5, padx=10, columnspan=3, sticky="NSEW")
 
         if self.dataEquipo:
-            self.mi_serial.set(f"{self.dataEquipo[1]}")
-            indice_tipo_equipo=determinar_indice(self.list_tipos_equipos, self.dataEquipo[2])
+            self.mi_serial.set(f"{self.dataEquipo[0][1]}")
+            indice_tipo_equipo=determinar_indice(self.list_tipos_equipos, self.dataEquipo[0][2])
             self.select_tipo_equipo.current(indice_tipo_equipo)
-            indice_ubicacion=determinar_indice(self.list_ubicacion, self.dataEquipo[3])
-            self.select_ubicacion.current(indice_ubicacion)
-            indice_estado=determinar_indice(self.list_estados, self.dataEquipo[4])
+            self.select_ubicacion.current(self.dataEquipo[0][4])
+            indice_estado=determinar_indice(self.list_estados, self.dataEquipo[0][5])
             self.select_estado.current(indice_estado)
-            indice_area_trabajo=determinar_indice(self.list_areas_trabajos, self.dataEquipo[5])
+            indice_area_trabajo=determinar_indice(self.list_areas_trabajos, self.dataEquipo[0][7])
             self.select_area_trabajo.current(indice_area_trabajo)
 
             # Botones
@@ -320,6 +317,46 @@ class PageEquipos:
             self.boton_cancelar = tk.Button(
             self.framePrincipal, text="Eliminar", command=self.deleteEquipo
             )
+            for componente in self.dataEquipo[1]:
+                frame=tk.Frame(self.frameComponentes, bg=COLOR_BASE)
+                frame.pack(side=tk.TOP, fill=tk.BOTH, ipadx=10)
+                buton_eliminar = tk.Button(frameOption, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO)
+                componente=[
+                    componente[1],  #Id componente
+                    componente[2],  #Nombre
+                    frame,          #Frame
+                    "old",          #Tipo
+                    buton_eliminar, #Boton
+                    componente[0],  #id_equipo_componente
+
+                ]
+
+                frameOption=tk.Frame(frame, bg=COLOR_BASE)
+                frameOption.pack(side=tk.TOP, fill=tk.BOTH)
+
+                label = tk.Label(frameOption, text=f"{componente[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
+                label.pack(side=tk.LEFT)
+
+                buton_eliminar.pack(side=tk.RIGHT, padx=10)
+                buton_eliminar.config(state="disabled", command=lambda:self.deleteEquipoComponent(componente))
+
+                frameData=tk.Frame(frame, bg=COLOR_BASE)
+                frameData.pack(side=tk.BOTTOM, fill=tk.BOTH)
+
+                labelNombre=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Tipo de Componente:  {componente[3]}")
+                labelMarca=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Marca:  {componente[4]}")
+                labelModelo=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Modelo:  {componente[5]}")
+                labelDescripcion=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Descripción:  {componente[6]}")
+
+                labelNombre.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+                labelMarca.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+                labelModelo.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+                labelDescripcion.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+
+                self.componentes.append(componente)
+            self.list_values_componentes=verificacion_campos([self.list_componentes, 0], [self.componentes, 0])
+            self.select_componente.config(values=self.list_values_componentes)
+        
         else:
             # Botones
             self.boton_nuevo = tk.Button(
@@ -329,6 +366,7 @@ class PageEquipos:
             self.boton_cancelar = tk.Button(
             self.framePrincipal, text="Cancelar", command=self.desabilitar_campos
             )
+
 
         self.boton_nuevo.config(
             width=TAMAÑO_BOTON,
@@ -371,18 +409,35 @@ class PageEquipos:
             componente_seleccionada =  determinar_campo(self.list_componentes, self.list_values_componentes[seleccionado])
         
             frame=tk.Frame(self.frameComponentes, bg=COLOR_BASE)
-            frame.pack(side=tk.TOP, fill=tk.BOTH, ipady=10, ipadx=10)
+            frame.pack(side=tk.TOP, fill=tk.BOTH, ipadx=10)
             componente=[
                 componente_seleccionada[0],
                 componente_seleccionada[1],
-                frame
+                frame,
+                "new",       #Tipo
             ]
 
-            label = tk.Label(frame, text=f"{componente[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
-            label.pack(side=tk.LEFT, padx=10)
+            frameOption=tk.Frame(frame, bg=COLOR_BASE)
+            frameOption.pack(side=tk.TOP, fill=tk.BOTH)
 
-            buton_eliminar = tk.Button(frame, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO, command=lambda:self.eliminarComponente(componente))
+            label = tk.Label(frameOption, text=f"{componente[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
+            label.pack(side=tk.LEFT)
+
+            buton_eliminar = tk.Button(frameOption, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO, command=lambda:self.eliminarComponente(componente))
             buton_eliminar.pack(side=tk.RIGHT, padx=10)
+
+            frameData=tk.Frame(frame, bg=COLOR_BASE)
+            frameData.pack(side=tk.BOTTOM, fill=tk.BOTH)
+
+            labelNombre=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Tipo de Componente:  {componente_seleccionada[6]}")
+            labelMarca=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Marca:  {componente_seleccionada[7]}")
+            labelModelo=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Modelo:  {componente_seleccionada[8]}")
+            labelDescripcion=tk.Label(frame, font=FONT_LABEL, bg=COLOR_BASE, anchor="w", text=f"Descripción:  {componente_seleccionada[9]}")
+
+            labelNombre.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+            labelMarca.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+            labelModelo.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
+            labelDescripcion.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
 
             self.componentes.append(componente)
 
@@ -404,6 +459,28 @@ class PageEquipos:
 
         self.list_values_componentes=verificacion_campos([self.list_componentes, 0], [self.componentes, 0])
         self.select_componente.config(values=self.list_values_componentes)
+
+    def deleteEquipoComponent(self, componente):
+        try:
+            valor = messagebox.askquestion(
+                "Eliminar Componente", "Desea eliminar el componente seleccionada"
+            )
+            if valor == "yes":
+                Componentes_has_Equipos.delete(componente[5])
+                componente[2].destroy()
+                for index, campo in enumerate(self.componentes):
+                    if campo[0] == componente[0]:
+                        self.componentes.pop(index)
+
+                self.list_values_componentes=verificacion_campos([self.list_componentes, 0], [self.componentes, 0])
+                self.select_componente.config(values=self.list_values_componentes)
+
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar de Registro",
+                messageTable="El registro no se ha podido eliminar"
+            )
 
     def guardar(self):
         try:
@@ -441,7 +518,10 @@ class PageEquipos:
             id_estado=self.list_estados[estado][0]
             id_area_trabajo=self.list_areas_trabajos[area_trabajo][0]
             
-            componentes=[data[0] for data in self.componentes]
+            componentes=[]
+            for data in self.componentes:
+                if data[3]=="new":
+                    componentes.append(data[0])
 
             crear_equipo=Equipos.create(serial=serial, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
 
@@ -483,11 +563,12 @@ class PageEquipos:
                 return
             
             self.dataEquipo=Equipos.list(id=int(id_equipo))
+            print(self.dataEquipo)
             self.cambioInterfaz(self.frameEquipos)
         except Exception as error:
             controlError(
                 error,
-                titleSelection="Busquedad de Registro"
+                titleSelection="Busquedad de Equipo"
             )
     
     def deleteEquipo(self):
@@ -517,6 +598,10 @@ class PageEquipos:
         self.boton_agregar.config(state="normal")
         self.boton_cancelar.config(state="normal")
 
+        if self.data_component: 
+            for campo in self.componentes:
+                campo[4].config(state="normal")
+
     def desabilitar_campos(self):
         self.entry_serial.config(state="disabled")
         self.select_area_trabajo.config(state="disabled")
@@ -527,6 +612,10 @@ class PageEquipos:
         self.boton_guardar.config(state="disabled")
         self.boton_agregar.config(state="disabled")
         self.boton_cancelar.config(state="disabled")
+
+        if self.data_component: 
+            for campo in self.componentes:
+                campo[4].config(state="disabled")
 
         if not self.dataEquipo:
             self.mi_serial.set("")
@@ -539,5 +628,4 @@ class PageEquipos:
             for campo in self.componentes:
                 campo[2].destroy()
             self.componentes.clear()
-        
         

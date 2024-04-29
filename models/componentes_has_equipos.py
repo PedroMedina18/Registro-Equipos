@@ -5,7 +5,6 @@ from .componentes_has_caracteristicas import Componentes_has_Caracteristicas
 
 class Componentes_has_Equipos:
 
-    
     def list(id_equipo=0):
         conexion = ConexionDB()
 
@@ -13,11 +12,16 @@ class Componentes_has_Equipos:
         sql = """
             SELECT 
                 ce.id AS id_componentes_has_equipos,
-                com.id AS id_componete,
-                com.nombre
+                com.id AS id_componente,
+                com.nombre,
+                tir.nombre,
+                tir.marca,
+                tir.modelo,
+                tir.descripcion
             FROM componentes_has_equipos AS ce
-            INNER JOIN componentes AS com ON ce.componente_id = com.id
             INNER JOIN equipos AS equi ON ce.equipo_id = equi.id
+            INNER JOIN componentes AS com ON ce.componente_id = com.id
+            LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
             WHERE equi.id = ?;
         """
         try:
@@ -39,3 +43,22 @@ class Componentes_has_Equipos:
             conexion.cerrar()
 
         return lista_componentes
+
+    def delete(id_componente_has_equipo):
+        conexion = ConexionDB()
+
+        sql = """
+            DELETE FROM componentes_has_equipos
+            WHERE id = ?;
+        """
+
+        try:
+            conexion.cursor.execute(sql, [int(id)])
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
+        finally:
+            conexion.cerrar()
