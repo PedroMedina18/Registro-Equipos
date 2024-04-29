@@ -122,8 +122,9 @@ class PageCampos_tablas:
 
         self.tabla = ttk.Treeview(
             self.framePrincipal,
-            columns=("Nombre", "Caracteres", "Descripcion"),
+            columns=("ID","Nombre", "Caracteres", "Descripcion"),
             height=20,
+            show='headings'
         )
         self.tabla.grid(row=5, column=0, columnspan=4, sticky="NSEW", padx=10)
 
@@ -134,14 +135,16 @@ class PageCampos_tablas:
         scroll.grid(row=5, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.heading("#0", text="ID")
-        self.tabla.heading("#1", text="NOMBRE")
-        self.tabla.heading("#2", text="CARACTERES")
-        self.tabla.heading("#3", text="DESCRIPCIÓN")
+        self.tabla.heading("ID", text="ID")
+        self.tabla.heading("Nombre", text="NOMBRE")
+        self.tabla.heading("Caracteres", text="CARACTERES")
+        self.tabla.heading("Descripcion", text="DESCRIPCIÓN")
 
         # iterar la lista d epeliculas
-        for item in self.lista_campos:
-            self.tabla.insert("", 0, text=item[0], values=(item[1], item[2], item[3]))
+        for index, item in enumerate(self.lista_campos):
+            id=item[0]
+            tupla=(index, item[1], item[2], item[3])
+            self.tabla.insert("", tk.END, text=id, values=tupla)
 
         # botones finales
 
@@ -189,18 +192,26 @@ class PageCampos_tablas:
             }
 
             if self.id_campos_tabla == None:
-                Campos_Tabla.create(
-                    nombre=campo["nombre"],
-                    descripcion=campo["descripcion"],
-                    caracteres=campo["caracteres"],
+                valor = messagebox.askquestion(
+                "Registro Nuevo", "Desea ingresar nuevo registro"
                 )
+                if valor == "yes":
+                    Campos_Tabla.create(
+                        nombre=campo["nombre"],
+                        descripcion=campo["descripcion"],
+                        caracteres=campo["caracteres"],
+                    )
             else:
-                Campos_Tabla.update(
-                    id=self.id_campos_tabla,
-                    nombre=campo["nombre"],
-                    descripcion=campo["descripcion"],
-                    caracteres=campo["caracteres"],
+                valor = messagebox.askquestion(
+                    "Editar Registro", "Desea editar este registro"
                 )
+                if valor == "yes":
+                    Campos_Tabla.update(
+                        id=self.id_campos_tabla,
+                        nombre=campo["nombre"],
+                        descripcion=campo["descripcion"],
+                        caracteres=campo["caracteres"],
+                    )
 
         except Exception as error:
             controlError(

@@ -518,24 +518,31 @@ class   PageComponent:
                         "tipo":"update"})
                     
             if self.data_component:
-                print("sdasdsd")
-                componente=Componentes.update(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas, id=self.data_component[0])
-                if componente:
-                    titulo="Exito"
-                    message="Registro Completado"
-                    valor=messagebox.showinfo(titulo, message)
-                    if valor == "ok":
-                        self.cambioInterfaz(self.listComponentes)
+                valor = messagebox.askquestion(
+                    "Editar Registro", "Desea editar este registro"
+                )
+                if valor == "yes":
+                    componente=Componentes.update(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas, id=self.data_component[0])
+                    if componente:
+                        titulo="Exito"
+                        message="Registro Completado"
+                        valor=messagebox.showinfo(titulo, message)
+                        if valor == "ok":
+                            self.cambioInterfaz(self.listComponentes)
             else:
-                componente=Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas)
-                if componente:
-                    titulo="Exito"
-                    message="Desea crear otro registro"
-                    valor=messagebox.askquestion(titulo, message)
-                    if valor == "yes":
-                        self.reset()
-                    else:
-                        self.cambioInterfaz(self.listComponentes)
+                valor = messagebox.askquestion(
+                    "Registro Nuevo", "Desea ingresar nuevo registro"
+                )
+                if valor == "yes":
+                    componente=Componentes.create(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas)
+                    if componente:
+                        titulo="Exito"
+                        message="Desea crear otro registro"
+                        valor=messagebox.askquestion(titulo, message)
+                        if valor == "yes":
+                            self.reset()
+                        else:
+                            self.cambioInterfaz(self.listComponentes)
 
         except Exception as error:
             controlError(

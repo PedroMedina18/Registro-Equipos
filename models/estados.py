@@ -86,6 +86,7 @@ class Estados:
         try:
             conexion.cursor.execute(sql, [int(id)])
         except Exception as error:
+            print(error)
             controlError(
                 error,
                 titleTable="Eliminar Datos",

@@ -2,6 +2,7 @@ from .conexion import ConexionDB
 from tkinter import messagebox
 from util.util_error import controlError
 from .componentes_has_caracteristicas import Componentes_has_Caracteristicas
+from .componentes import Componentes
 
 class Componentes_has_Equipos:
 
@@ -44,7 +45,7 @@ class Componentes_has_Equipos:
 
         return lista_componentes
 
-    def delete(id_componente_has_equipo):
+    def delete(id_componente_has_equipo, id_componente):
         conexion = ConexionDB()
 
         sql = """
@@ -53,6 +54,7 @@ class Componentes_has_Equipos:
         """
 
         try:
+            Componentes.sumarUsados(int(id_componente))
             conexion.cursor.execute(sql, [int(id)])
         except Exception as error:
             controlError(

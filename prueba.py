@@ -1,5 +1,6 @@
 from models.conexion import ConexionDB
 from util.util_error import controlError
+from models.equipos import Equipos
 # array=["hola", "prueba", 5, "sasas", "normal"]
 
 # print(*array)
@@ -83,16 +84,17 @@ from util.util_error import controlError
 
 def pruebasql():
     conexion = ConexionDB()
-    sql='''
-        SELECT *
-        FROM equipos
-        WHERE id = 1;
-    '''
+    # sql='''
+    #     SELECT *
+    #     FROM equipos
+    #     WHERE id = 1;
+    # '''
 
     try:
-        conexion.cursor.execute(sql)
-        lista = conexion.cursor.fetchall()
-        print(lista)
+        equipos=Equipos.list()
+        print(equipos)
+        equipo=Equipos.list(id=1)
+        print(equipo)
     except Exception as error:
         controlError(
             error,

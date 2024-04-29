@@ -320,8 +320,11 @@ class PageEquipos:
             for componente in self.dataEquipo[1]:
                 frame=tk.Frame(self.frameComponentes, bg=COLOR_BASE)
                 frame.pack(side=tk.TOP, fill=tk.BOTH, ipadx=10)
+
+                frameOption=tk.Frame(frame, bg=COLOR_BASE)
+                frameOption.pack(side=tk.TOP, fill=tk.BOTH)
                 buton_eliminar = tk.Button(frameOption, image=self.icon_papelera,  bg=COLOR_ROJO, width=40, pady=10, cursor="hand2", activebackground=COLOR_ROJO)
-                componente=[
+                componenteData=[
                     componente[1],  #Id componente
                     componente[2],  #Nombre
                     frame,          #Frame
@@ -331,10 +334,7 @@ class PageEquipos:
 
                 ]
 
-                frameOption=tk.Frame(frame, bg=COLOR_BASE)
-                frameOption.pack(side=tk.TOP, fill=tk.BOTH)
-
-                label = tk.Label(frameOption, text=f"{componente[1]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
+                label = tk.Label(frameOption, text=f"{componente[2]}", font=FONT_LABEL, bg=COLOR_BASE, anchor="w")
                 label.pack(side=tk.LEFT)
 
                 buton_eliminar.pack(side=tk.RIGHT, padx=10)
@@ -353,7 +353,7 @@ class PageEquipos:
                 labelModelo.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
                 labelDescripcion.pack(side=tk.TOP, fill=tk.BOTH, ipady=3)
 
-                self.componentes.append(componente)
+                self.componentes.append(componenteData)
             self.list_values_componentes=verificacion_campos([self.list_componentes, 0], [self.componentes, 0])
             self.select_componente.config(values=self.list_values_componentes)
         
@@ -466,7 +466,7 @@ class PageEquipos:
                 "Eliminar Componente", "Desea eliminar el componente seleccionada"
             )
             if valor == "yes":
-                Componentes_has_Equipos.delete(componente[5])
+                Componentes_has_Equipos.delete(componente[5], componente[0])
                 componente[2].destroy()
                 for index, campo in enumerate(self.componentes):
                     if campo[0] == componente[0]:
@@ -522,22 +522,37 @@ class PageEquipos:
             for data in self.componentes:
                 if data[3]=="new":
                     componentes.append(data[0])
-
-            crear_equipo=Equipos.create(serial=serial, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
-
-            if crear_equipo:
-                titulo="Exito"
-                message="Desea crear otro registro"
-                valor=messagebox.askquestion(titulo, message)
+            
+            if self.dataEquipo:
+                valor = messagebox.askquestion(
+                    "Editar Registro", "Desea editar este registro"
+                )
                 if valor == "yes":
-                    self.reset()
-                else:
-                    self.cambioInterfaz(self.lista_Equipos)
-                
+                    actualizar_equipo=Equipos.update(id=self.dataEquipo[0][0], serial=serial, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
+                    if actualizar_equipo:
+                        titulo="Exito"
+                        message="Registro Completado"
+                        valor=messagebox.showinfo(titulo, message)
+                        if valor == "ok":
+                            self.cambioInterfaz(self.lista_Equipos)
             else:
-                titulo="Error"
-                message="Error en el registro"
-                messagebox.showerror(titulo, message)
+                valor = messagebox.askquestion(
+                    "Registro Nuevo", "Desea ingresar nuevo registro"
+                )
+                if valor == "yes":
+                    crear_equipo=Equipos.create(serial=serial, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
+                    if crear_equipo:
+                        titulo="Exito"
+                        message="Desea crear otro registro"
+                        valor=messagebox.askquestion(titulo, message)
+                        if valor == "yes":
+                            self.reset()
+                        else:
+                            self.cambioInterfaz(self.lista_Equipos)
+                else:
+                    titulo="Error"
+                    message="Error en el registro"
+                    messagebox.showerror(titulo, message)
 
         except Exception as error:
             controlError(
@@ -563,7 +578,6 @@ class PageEquipos:
                 return
             
             self.dataEquipo=Equipos.list(id=int(id_equipo))
-            print(self.dataEquipo)
             self.cambioInterfaz(self.frameEquipos)
         except Exception as error:
             controlError(
@@ -577,7 +591,7 @@ class PageEquipos:
                 "Eliminar Registro", "Desea Eliminar el equipo"
             )
             if valor == "yes":
-                Equipos.delete(self.data_component[0])
+                Equipos.delete(self.dataEquipo[0][0])
                 self.cambioInterfaz(self.listComponentes)
 
         except Exception as error:
@@ -598,7 +612,7 @@ class PageEquipos:
         self.boton_agregar.config(state="normal")
         self.boton_cancelar.config(state="normal")
 
-        if self.data_component: 
+        if self.dataEquipo: 
             for campo in self.componentes:
                 campo[4].config(state="normal")
 
@@ -613,7 +627,7 @@ class PageEquipos:
         self.boton_agregar.config(state="disabled")
         self.boton_cancelar.config(state="disabled")
 
-        if self.data_component: 
+        if self.dataEquipo: 
             for campo in self.componentes:
                 campo[4].config(state="disabled")
 

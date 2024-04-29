@@ -52,7 +52,7 @@ class PageListTablas:
         self.list_tabla.reverse()
 
         self.tabla_listTablas = ttk.Treeview(
-            self.framePrincipal, columns=("Nombre", "Descripcion"), height=30
+            self.framePrincipal, columns=("ID", "Nombre", "Descripcion"), height=30, show='headings'
         )
         self.tabla_listTablas.grid(row=1, column=0, sticky="NSEW", padx=10, columnspan=2)
 
@@ -63,20 +63,22 @@ class PageListTablas:
         scroll.grid(row=1, column=1, sticky="nsew")
         self.tabla_listTablas.configure(yscrollcommand=scroll.set)
 
-        self.tabla_listTablas.heading("#0", text="ID", anchor=tk.W)
-        self.tabla_listTablas.heading("#1", text="NOMBRE", anchor=tk.W)
-        self.tabla_listTablas.heading("#2", text="DESCRIPCIÓN", anchor=tk.W)
+        self.tabla_listTablas.heading("ID", text="ID", anchor=tk.W)
+        self.tabla_listTablas.heading("Nombre", text="NOMBRE", anchor=tk.W)
+        self.tabla_listTablas.heading("Descripcion", text="DESCRIPCIÓN", anchor=tk.W)
 
 
         # edit column
-        self.tabla_listTablas.column("#0", stretch=tk.NO, minwidth="25", width="150")
-        self.tabla_listTablas.column("#1", stretch=tk.NO, minwidth="25", width="250")
-        self.tabla_listTablas.column("#2", stretch=tk.YES, minwidth="25")
+        self.tabla_listTablas.column("ID", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla_listTablas.column("Nombre", stretch=tk.NO, minwidth="25", width="250")
+        self.tabla_listTablas.column("Descripcion", stretch=tk.YES, minwidth="25")
 
 
         # iterar la lista de campos
-        for item in self.list_tabla:
-            self.tabla_listTablas.insert("", 0, text=item[0], values=(item[1], item[2]))
+        for index, item in enumerate(self.list_tabla, start=1):
+            id=item[0]
+            tupla=(index, item[1], item[2])
+            self.tabla_listTablas.insert("", tk.END, text=id, values=tupla)
 
         # botones finales
         # Ir
@@ -345,9 +347,17 @@ class PageListTablas:
                     }
                 )
         if self.numero_registro == None:
-            Registros.create(campos=list_campos)
+            valor = messagebox.askquestion(
+                "Registro Nuevo", "Desea ingresar nuevo registro"
+            )
+            if valor == "yes":
+                Registros.create(campos=list_campos)
         else:
-            Registros.update(campos=list_campos, numero_registro=self.numero_registro)
+            valor = messagebox.askquestion(
+                "Editar Registro", "Desea editar este registro"
+            )
+            if valor == "yes":
+                Registros.update(campos=list_campos, numero_registro=self.numero_registro)
 
         self.desabilitar_campos()
         self.tabla_lista()
@@ -368,11 +378,11 @@ class PageListTablas:
 
     def eliminar_datos(self):
         try:
+            self.numero_registro = self.tabla_registros.item(self.tabla_registros.selection())["text"]
             valor = messagebox.askquestion(
                 "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )
             if valor == "yes":
-                self.numero_registro = self.tabla_registros.item(self.tabla_registros.selection())["text"]
                 Registros.delete(self.numero_registro)
                 self.tabla_lista()
                 self.desabilitar_campos()

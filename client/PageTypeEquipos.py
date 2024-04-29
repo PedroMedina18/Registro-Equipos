@@ -160,8 +160,9 @@ class PageTypeEquipos:
 
         self.tabla = ttk.Treeview(
             self.framePrincipal,
-            columns=("Nombre", "Marca", "Modelo", "Tipo", "Descripcion"),
+            columns=("ID", "Nombre", "Marca", "Modelo", "Tipo", "Descripcion"),
             height=16,
+            show='headings'
         )
         self.tabla.grid(row=8, column=0, columnspan=4, sticky="NSEW", padx=10)
 
@@ -172,30 +173,31 @@ class PageTypeEquipos:
         scroll.grid(row=8, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.column("#0", width=TAMAÑO_BOTON)
-        self.tabla.heading("#0", text="ID")
-        self.tabla.column("#1", width=30)
-        self.tabla.heading("#1", text="NOMBRE")
-        self.tabla.column("#2", width=30)
-        self.tabla.heading("#2", text="MARCA")
-        self.tabla.column("#3", width=30)
-        self.tabla.heading("#3", text="MODELO")
-        self.tabla.column("#4", width=TAMAÑO_BOTON)
-        self.tabla.heading("#4", text="TIPO")
-        self.tabla.column("#5", width=50)
-        self.tabla.heading("#5", text="DESCRIPCIÓN")
+        self.tabla.column("ID", width=TAMAÑO_BOTON)
+        self.tabla.heading("ID", text="ID")
+        self.tabla.column("Nombre", width=30)
+        self.tabla.heading("Nombre", text="NOMBRE")
+        self.tabla.column("Marca", width=30)
+        self.tabla.heading("Marca", text="MARCA")
+        self.tabla.column("Modelo", width=30)
+        self.tabla.heading("Modelo", text="MODELO")
+        self.tabla.column("Tipo", width=TAMAÑO_BOTON)
+        self.tabla.heading("Tipo", text="TIPO")
+        self.tabla.column("Descripcion", width=50)
+        self.tabla.heading("Descripcion", text="DESCRIPCIÓN")
 
         # iterar la lista de tipos de equipo
 
-        for item in self.lista_equipos:
+        for index, item in enumerate(self.lista_equipos, start=1):
 
             if item[4]:
                 tipo = "Equipo"
             else:
                 tipo = "Componente"
-
+            id_registro=item[0]
+            tupla=(index, item[1], item[2], item[3], tipo, item[5])
             self.tabla.insert(
-                "", 0, text=item[0], values=(item[1], item[2], item[3], tipo, item[5])
+                "", tk.END, text=id_registro, values=tupla
             )
 
         # botones finales
@@ -247,22 +249,30 @@ class PageTypeEquipos:
             "descripcion": self.entry_descripcion.get(1.0, tk.END),
         }
         if self.id_tipo_equipo == None:
-            TipoEquipos.create(
-                nombre=tipo_equipo["nombre"],
-                marca=tipo_equipo["marca"],
-                modelo=tipo_equipo["modelo"],
-                descripcion=tipo_equipo["descripcion"],
-                equipo_componente=tipo_equipo["equipo_componente"],
+            valor = messagebox.askquestion(
+                "Registro Nuevo", "Desea ingresar nuevo registro"
             )
+            if valor == "yes":
+                TipoEquipos.create(
+                    nombre=tipo_equipo["nombre"],
+                    marca=tipo_equipo["marca"],
+                    modelo=tipo_equipo["modelo"],
+                    descripcion=tipo_equipo["descripcion"],
+                    equipo_componente=tipo_equipo["equipo_componente"],
+                )
         else:
-            TipoEquipos.update(
-                id=self.id_tipo_equipo,
-                nombre=tipo_equipo["nombre"],
-                marca=tipo_equipo["marca"],
-                modelo=tipo_equipo["modelo"],
-                descripcion=tipo_equipo["descripcion"],
-                equipo_componente=tipo_equipo["equipo_componente"],
+            valor = messagebox.askquestion(
+                    "Editar Registro", "Desea editar este registro"
             )
+            if valor == "yes":
+                TipoEquipos.update(
+                    id=self.id_tipo_equipo,
+                    nombre=tipo_equipo["nombre"],
+                    marca=tipo_equipo["marca"],
+                    modelo=tipo_equipo["modelo"],
+                    descripcion=tipo_equipo["descripcion"],
+                    equipo_componente=tipo_equipo["equipo_componente"],
+                )
 
         self.desabilitar_campos()
         self.tabla_lista()
@@ -293,9 +303,7 @@ class PageTypeEquipos:
             marca_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
             modelo_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][2]
             tipo_equipo = self.tabla.item(self.tabla.selection())["values"][3]
-            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][
-                4
-            ]
+            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][4]
 
             if tipo_equipo == "Equipo":
                 tipo_equipo = 1
@@ -318,10 +326,15 @@ class PageTypeEquipos:
 
     def eliminar_datos(self):
         try:
+            
             self.id_tipo_equipo = self.tabla.item(self.tabla.selection())["text"]
-            TipoEquipos.delete(self.id_tipo_equipo)
-            self.tabla_lista()
-            self.desabilitar_campos()
+            valor = messagebox.askquestion(
+                "Eliminar Registro", "Desea Eliminar el registro seleccionado"
+            )
+            if valor == "yes":
+                TipoEquipos.delete(self.id_tipo_equipo)
+                self.tabla_lista()
+                self.desabilitar_campos()
         except Exception as error:
             controlError(
                 error,

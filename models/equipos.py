@@ -4,6 +4,7 @@ from tkinter import messagebox
 from config import TITULO_CAMPOS
 from util.util_error import controlError
 from .componentes_has_equipos import Componentes_has_Equipos
+from .componentes import Componentes
 
 class Equipos:
 
@@ -40,6 +41,7 @@ class Equipos:
             ultimo_registro_equipo = conexion.cursor.lastrowid
 
             for componente in componentes:
+                Componentes.sumarUsados(int(componente))
                 conexion.cursor.execute(sql_componente_equipo, (int(componente), int(ultimo_registro_equipo)))
 
             return True
@@ -54,7 +56,7 @@ class Equipos:
         finally:
             conexion.cerrar()
 
-    def update(serial="", tipos_equipos_id=0, bolivar_marron=bool, estado_actual_id=0, area_trabajo_id=0, id=0):
+    def update(serial="", tipos_equipos_id=0, bolivar_marron=bool, estado_actual_id=0, area_trabajo_id=0, id=0, componentes=[]):
         conexion = ConexionDB()
         comprobacionSerial = comprobacionString(serial, 100)
 
@@ -75,14 +77,25 @@ class Equipos:
                 area_trabajo_id=?
             WHERE id = ?
         """
+        sql_componente_equipo = """
+            INSERT INTO componentes_has_equipos (componente_id, equipo_id)
+            VALUES(?, ?)
+        """
 
         try:
             conexion.cursor.execute(sql, (str(serial), int(tipos_equipos_id), bool(bolivar_marron), int(estado_actual_id), int(area_trabajo_id), int(id)))
+
+            for componente in componentes:
+                Componentes.sumarUsados(int(componente))
+                conexion.cursor.execute(sql_componente_equipo, [int(componente), int(id)])
+            return True
         except Exception as error:
-            print(error)
-            titulo = "Edicion de datos"
-            message = "No se a podido editar el registro"
-            messagebox.showwarning(titulo, message)
+            controlError(
+                error,
+                titleTable="Edicion de datos",
+                messageTable="No se a podido editar el registro",
+            )
+            return False
         finally:
             conexion.cerrar()
 
@@ -153,6 +166,7 @@ class Equipos:
                 lista = conexion.cursor.fetchall()
 
         except Exception as error:
+            print(error)
             controlError(
                 error,
                 titleTable="Conexion al registro",

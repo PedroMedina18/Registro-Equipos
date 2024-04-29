@@ -11,7 +11,7 @@ def main():
     root.resizable(0, 1)
 
     # *para agregar pantalla completa
-    # root.state("zoomed")
+    root.state("zoomed")
 
     # *tamaño de la ventana en caso de reducir
     width, height = 1250, 800   

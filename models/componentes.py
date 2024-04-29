@@ -200,7 +200,8 @@ class Componentes:
                 id,
                 nombre,
                 almacen
-            FROM componentes ORDER BY id ASC;
+            FROM componentes 
+            WHERE id=?;
         """
         try:
             conexion.cursor.execute(sql, [int(id_componente)])
@@ -221,3 +222,70 @@ class Componentes:
             )
         finally:
             conexion.cerrar()
+
+    def sumarUsados(id_componente=0):
+        conexion = ConexionDB()
+        componente=None
+        sql_component = """
+            SELECT 
+                id,
+                nombre,
+                almacen,
+                uso
+            FROM componentes 
+            WHERE id=?;
+        """
+        sql_update = """
+            UPDATE componentes
+            SET almacen = ?, uso = ?
+            WHERE id = ?
+        """
+        try:
+            conexion.cursor.execute(sql_component, [int(id_componente)])
+            componente=conexion.cursor.fetchall()
+
+            conexion.cursor.execute(sql_update, [int(componente[0][2]-1), int(componente[0][3]+1), int(id_componente)])
+            return True
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla componentes en la base de datos"
+            )
+            return False
+        finally:
+            conexion.cerrar()
+    
+    def restarUsados(id_componente=0):
+        conexion = ConexionDB()
+        componente=None
+        sql_component = """
+            SELECT 
+                id,
+                nombre,
+                almacen,
+                uso
+            FROM componentes 
+            WHERE id=?;
+        """
+        sql_update = """
+            UPDATE componentes
+            SET almacen = ?, uso = ?
+            WHERE id = ?
+        """
+        try:
+            conexion.cursor.execute(sql_component, [int(id_componente)])
+            componente=conexion.cursor.fetchall()
+
+            conexion.cursor.execute(sql_update, [int(componente[0][2]+1), int(componente[0][3]-1), int(id_componente)])
+            return True
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Conexion al registro",
+                messageTable="Crea la tabla componentes en la base de datos"
+            )
+            return False
+        finally:
+            conexion.cerrar()
+    

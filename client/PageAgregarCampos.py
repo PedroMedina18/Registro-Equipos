@@ -211,9 +211,13 @@ class PageAgregarCampos:
         self.select_campos.set("")
 
     def eliminar_campos(self, id_campo=0):
-        Tablas_has_Campos.delete(id=id_campo)
-        self.frame_campos.destroy()
-        self.frameCampos()
+        valor = messagebox.askquestion(
+                "Eliminar Campo", "Desea el campo seleccionado"
+        )
+        if valor == "yes":
+            Tablas_has_Campos.delete(id=id_campo)
+            self.frame_campos.destroy()
+            self.frameCampos()
 
     def desabilitar_campos(self):
         self.select_campos.set("")

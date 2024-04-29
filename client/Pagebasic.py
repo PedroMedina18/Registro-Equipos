@@ -114,8 +114,9 @@ class PageBasic:
 
         self.tabla = ttk.Treeview(
             self.framePrincipal, 
-            columns=("Nombre", "Descripcion"), 
-            height=20
+            columns=("ID", "Nombre", "Descripcion"), 
+            height=20,
+            show='headings'
         )
         self.tabla.grid(row=4, column=0, columnspan=4, sticky="NSEW", padx=10)
 
@@ -126,13 +127,15 @@ class PageBasic:
         scroll.grid(row=4, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.heading("#0", text="ID")
-        self.tabla.heading("#1", text="NOMBRE")
-        self.tabla.heading("#2", text="DESCRIPCIÓN")
+        self.tabla.heading("ID", text="ID")
+        self.tabla.heading("Nombre", text="NOMBRE")
+        self.tabla.heading("Descripcion", text="DESCRIPCIÓN")
 
         # iterar la lista de areas de trabao
-        for item in lista_areas_trabajo:
-            self.tabla.insert("", 0, text=item[0], values=(item[1], item[2]))
+        for index, item in enumerate(lista_areas_trabajo, start=1):
+            id_registro=item[0]
+            tupla=(index, item[1], item[2])
+            self.tabla.insert("", tk.END, text=id_registro, values=tupla)
 
         # botones finales
         # editar
@@ -175,12 +178,16 @@ class PageBasic:
             "descripcion": self.entry_descripcion.get(1.0, tk.END),
         }
         if self.id_model == None:
-            self.model.create(
-                nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"]
+            valor = messagebox.askquestion(
+                "Registro Nuevo", "Desea ingresar nuevo registro"
             )
+            if valor == "yes":
+                self.model.create(
+                    nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"]
+                )
         else:
             valor = messagebox.askquestion(
-                "Editar Registro", "Desea Editar este registro"
+                "Editar Registro", "Desea editar este registro"
             )
             if valor == "yes":
                 self.model.update(

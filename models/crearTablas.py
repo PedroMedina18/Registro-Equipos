@@ -14,7 +14,7 @@ def crearTablas():
             equipo_componente BOOLEAN NOT NULL,
             descripcion VARCHAR(500),
             PRIMARY KEY(id AUTOINCREMENT)
-        )
+        )ENGINE=InnoDB;
     """
     SQL_estados = """
         CREATE TABLE estados(
@@ -22,7 +22,7 @@ def crearTablas():
             nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
-        )
+        )ENGINE=InnoDB;
     """
 
     SQL_areasTrabajo = """
@@ -31,7 +31,7 @@ def crearTablas():
             nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
-        )  
+        )ENGINE=InnoDB;
     """
 
     SQL_tipoRegistro = """
@@ -40,7 +40,7 @@ def crearTablas():
             nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
-        )  
+        )ENGINE=InnoDB;
     """
 
     SQL_equipos = """
@@ -52,10 +52,10 @@ def crearTablas():
             estado_actual_id INT NOT NULL,
             area_trabajo_id INT NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT),
-            FOREIGN KEY (tipos_equipos_id) REFERENCES tipos_equipos(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-            FOREIGN KEY (estado_actual_id) REFERENCES estados(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-            FOREIGN KEY (area_trabajo_id) REFERENCES areas_trabajo(id) ON DELETE RESTRICT ON UPDATE CASCADE
-        );
+            FOREIGN KEY (tipos_equipos_id) REFERENCES tipos_equipos(id) ON DELETE RESTRICT,
+            FOREIGN KEY (estado_actual_id) REFERENCES estados(id) ON DELETE RESTRICT,
+            FOREIGN KEY (area_trabajo_id) REFERENCES areas_trabajo(id) ON DELETE RESTRICT
+        )ENGINE=InnoDB;
     """
 
     SQL_componentes = """
@@ -68,7 +68,7 @@ def crearTablas():
             almacen INTEGER NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (componente_id) REFERENCES tipos_equipos(id) ON DELETE RESTRICT ON UPDATE CASCADE 
-        )  
+        )ENGINE=InnoDB;
     """
 
     SQL_caracteristicas = """
@@ -77,7 +77,7 @@ def crearTablas():
             nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
-        )  
+        )ENGINE=InnoDB;
     """
 
     SQL_componentes_caracteristicas = """
@@ -87,9 +87,9 @@ def crearTablas():
             caracteristica_id INTEGER NOT NULL,
             value VARCHAR(200) NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT),
-            FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE UPDATE ON UPDATE CASCADE,
-            FOREIGN KEY (caracteristica_id) REFERENCES caracteristicas(id) ON DELETE UPDATE ON UPDATE CASCADE
-        )  
+            FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (caracteristica_id) REFERENCES caracteristicas(id) ON DELETE CASCADE ON UPDATE CASCADE
+        )ENGINE=InnoDB;
     """
 
     SQL_componentes_equipos = """
@@ -100,7 +100,7 @@ def crearTablas():
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (componente_id) REFERENCES componentes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON DELETE RESTRICT ON UPDATE CASCADE
-        )  
+        )ENGINE=InnoDB;
     """
 
     SQL_tablas = """
@@ -109,7 +109,7 @@ def crearTablas():
             nombre VARCHAR(100) NOT NULL UNIQUE,
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
-        )
+        )ENGINE=InnoDB;
     """
 
     SQL_campos_tablas = """
@@ -119,7 +119,7 @@ def crearTablas():
             numero_caracteres INTEGER NOT NULL, 
             descripcion VARCHAR(200),
             PRIMARY KEY(id AUTOINCREMENT)
-        )
+        )ENGINE=InnoDB;
     """
 
     SQL_tablas_campos_tablas = """
@@ -130,7 +130,7 @@ def crearTablas():
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (tablas_id) REFERENCES tablas(id) ON DELETE RESTRICT ON UPDATE CASCADE,
             FOREIGN KEY (campos_id) REFERENCES campos_tablas(id) ON DELETE RESTRICT ON UPDATE CASCADE
-        )
+        )ENGINE=InnoDB;
     """
 
     SQL_registros = """
@@ -143,7 +143,7 @@ def crearTablas():
             fecha_actualizacion DATETIME NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT),
             FOREIGN KEY (campo_tablas_id) REFERENCES tablas_has_campos_tablas(id) ON DELETE CASCADE ON UPDATE CASCADE
-        )
+        )ENGINE=InnoDB;
     """
 
     try:
