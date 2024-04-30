@@ -50,7 +50,7 @@ class Equipos:
                 error,
                 titleTable="Conexion al registro",
                 messageTable="La tabla equipos no esta creada en la base de datos",
-                messageUnique="El valor del campo serial debe ser Unico"
+                messageUnique="El valor del campo serial debe ser unico"
             )
             return False
         finally:

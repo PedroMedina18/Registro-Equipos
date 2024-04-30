@@ -7,3 +7,5 @@ Terminar la seccio de almacenamiento
 colocar confirmaciones para editar y guardar                              x
 colocar los comentariot (OPCIONAL)
 arreglar las apariencias
+
+Crea los registros por defecto averigua como registrar varios

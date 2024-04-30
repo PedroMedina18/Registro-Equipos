@@ -35,7 +35,7 @@ class Estados:
                 error,
                 titleTable="Conexion al registro",
                 messageTable="La tabla estados no esta creada en la base de datos",
-                messageUnique="El valor del campo Nombre debe ser Unico"
+                messageUnique="El valor del campo nombre debe ser unico"
             )
         finally:
             conexion.cerrar()
@@ -70,7 +70,7 @@ class Estados:
                 error,
                 titleTable="Edicion de datos",
                 messageTable="No se a podido editar el registro",
-                messageUnique="El valor del campo Nombre debe ser Unico"
+                messageUnique="El valor del campo nombre debe ser unico"
             )
         finally:
             conexion.cerrar()
@@ -86,7 +86,6 @@ class Estados:
         try:
             conexion.cursor.execute(sql, [int(id)])
         except Exception as error:
-            print(error)
             controlError(
                 error,
                 titleTable="Eliminar Datos",

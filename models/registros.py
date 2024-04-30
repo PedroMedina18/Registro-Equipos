@@ -1,11 +1,11 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
-from config import TITULO_CAMPOS
 from util.numero_unico import numero_unico
 from util.list_values import organizador_registros, asignar_valores
-from datetime import datetime
 from util.util_error import controlError
+from config import TITULO_CAMPOS
+from datetime import datetime
 
 class Registros:
     def create(campos=[]):

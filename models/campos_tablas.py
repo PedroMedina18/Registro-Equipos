@@ -51,7 +51,7 @@ class Campos_Tabla:
                 error,
                 titleTable="Conexion al registro",
                 messageTable="La tabla campos_tabla no esta creada en la base de datos",
-                messageUnique="El valor del campo Nombre debe ser Unico"
+                messageUnique="El valor del campo nombre debe ser unico"
             )
         finally:
             conexion.cerrar()
@@ -102,7 +102,7 @@ class Campos_Tabla:
                 error,
                 titleTable="Edicion de datos",
                 messageTable="No se a podido editar el registro",
-                messageUnique="El valor del campo Nombre debe ser Unico"
+                messageUnique="El valor del campo nombre debe ser unico"
             )
         finally:
             conexion.cerrar()

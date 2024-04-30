@@ -4,7 +4,7 @@ from tkinter import messagebox
 from config import TITULO_CAMPOS
 from util.util_error import controlError
 
-class Tablas:
+class Tipo_registros:
 
     def create(nombre="", descripcion=""):
         conexion = ConexionDB()
@@ -24,7 +24,7 @@ class Tablas:
             return None
 
         sql = """
-            INSERT INTO tablas (nombre, descripcion)
+            INSERT INTO tipos_registros (nombre, descripcion)
             VALUES(?, ?)
         """
 
@@ -34,7 +34,7 @@ class Tablas:
             controlError(
                 error,
                 titleTable="Conexion al registro",
-                messageTable="La tabla tablas no esta creada en la base de datos",
+                messageTable="La tabla tipos_registros no esta creada en la base de datos",
                 messageUnique="El valor del campo nombre debe ser unico"
             )
         finally:
@@ -58,7 +58,7 @@ class Tablas:
             return None
 
         sql = """
-            UPDATE tablas
+            UPDATE tipos_registros
             SET nombre=?, descripcion=?
             WHERE id = ?
         """
@@ -79,7 +79,7 @@ class Tablas:
         conexion = ConexionDB()
 
         sql = """
-            DELETE FROM tablas
+            DELETE FROM tipos_registros
             WHERE id = ?;
         """
 
@@ -99,7 +99,7 @@ class Tablas:
 
         lista = []
         sql = """
-            SELECT * FROM tablas ORDER BY id ASC;
+            SELECT * FROM tipos_registros ORDER BY id ASC;
         """
 
         try:
@@ -110,7 +110,7 @@ class Tablas:
             controlError(
                 error,
                 titleTable="Conexion al registro",
-                messageTable="Crea la tabla estados en la base de datos"
+                messageTable="Crea la tabla tipos_registros en la base de datos"
             )
         finally:
             conexion.cerrar()
