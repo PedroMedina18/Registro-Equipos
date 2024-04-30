@@ -166,6 +166,59 @@ def crearTablas():
         )
     """
 
+    SQL_insert_estados='''
+        INSERT INTO estados (nombre, descripcion)
+        VALUES(?, ?)
+    '''
+    estados=[
+        ("Dañados", "Equipos que se encuentran Dañados"),
+        ("Mantenimiento", "Equipos que se encuentran en mantenimiento en el area de sistemas"),
+        ("Uso", "Equipos que se encuentran en uso en su area de trabajo"),
+    ]
+
+    SQL_insert_areas_trabajo='''
+        INSERT INTO areas_trabajo (nombre, descripcion)
+        VALUES(?, ?)
+    '''
+    areas_trabajo=[
+        ("Farmacía", "Area de Farmacía"),
+        ("Caja", "Área de Caja"),
+        ("Convenio", "Área de Convenio"),
+        ("Sistemas", "Área de Sistemas"),
+        ("Tesoreria", "Área de Tesoreria"),
+        ("Atencion al Cliente", "Área de Atencion al Cliente"),
+        ("Equipos Medicos", "Área de Equipos Medicos"),
+        ("Gerencia", "Área de Gerencia"),
+        ("Sub Gerencia", "Área de la Sub Gerencia"),
+        ("Almacen", "Área de Almacen"),
+        ("Seguridad", "Área de Seguridad"),
+        ("Recursos Humanos", "Área de Recursos Humanos"),
+        ("Cuentas por Pagar", "Área de Cuentas por Pagar"),
+        ("Cuentas por Cobrar", "Área de Cuentas por Cobrar"),
+    ]
+
+    SQL_insert_tablas='''
+        INSERT INTO tablas (nombre, descripcion)
+        VALUES(?, ?)
+    '''
+    tablas=[
+        ("Contraseñas Computadores", "Tabla con todas las contraseñas de los computadores"),
+        ("Contraseñas WI-FI", "Tabla con todas las contraseñas de los puntos de WI-FI"),
+        ("Extenciones Telefonicas", "Tabla con las diferentes extsiones de telefono"),
+        ("Direcciones IP", "Tabla con las direcciones IP de los computadores"),
+    ]
+
+    SQL_insert_tablas='''
+        INSERT INTO tipos_registros (nombre, descripcion)
+        VALUES(?, ?)
+    '''
+    tablas=[
+        ("Contraseñas Computadores", "Tabla con todas las contraseñas de los computadores"),
+        ("Contraseñas WI-FI", "Tabla con todas las contraseñas de los puntos de WI-FI"),
+        ("Extenciones Telefonicas", "Tabla con las diferentes extsiones de telefono"),
+        ("Direcciones IP", "Tabla con las direcciones IP de los computadores"),
+    ]
+
     try:
         conexion.cursor.execute(SQL_tablaEquipos)
         conexion.cursor.execute(SQL_estados)
@@ -182,6 +235,9 @@ def crearTablas():
         conexion.cursor.execute(SQL_registros)
         conexion.cursor.execute(SQL_tipo_registro)
         conexion.cursor.execute(SQL_historial)
+        conexion.cursor.executemany(SQL_insert_estados, estados)
+        conexion.cursor.executemany(SQL_insert_areas_trabajo, areas_trabajo)
+        conexion.cursor.executemany(SQL_insert_tablas, tablas)
         conexion.cerrar()
         titulo = "Crear Tablas"
         message = "Se creo todas las tablas de la base de datos"
