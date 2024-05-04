@@ -171,9 +171,12 @@ def crearTablas():
         VALUES(?, ?)
     '''
     estados=[
-        ("Dañados", "Equipos que se encuentran Dañados"),
+        ("Dañado", "Equipos que se encuentran Dañados"),
         ("Mantenimiento", "Equipos que se encuentran en mantenimiento en el area de sistemas"),
         ("Uso", "Equipos que se encuentran en uso en su area de trabajo"),
+        ("Almacen", "Equipos que se encuentran guardados en el almacen de sistemas"),
+        ("Desaparecido", "Equipos que se desconocen su ubicación"),
+        ("Eliminado", "Equipos que fueron botados por estar totalmente inutilizable"),
     ]
 
     SQL_insert_areas_trabajo='''
@@ -208,16 +211,58 @@ def crearTablas():
         ("Direcciones IP", "Tabla con las direcciones IP de los computadores"),
     ]
 
-    SQL_insert_tablas='''
+    SQL_insert_campos_tablas='''
+        INSERT INTO campos_tablas (nombre, descripcion, numero_caracteres)
+        VALUES(?, ?, ?)
+    '''
+    
+    campos_tablas=[
+        ("Red", "Red de WI-FI", 100),
+        ("Contraseña", "Contraseña", 100),
+        ("Extension Telefónica", "Codigo Telefónico", 100),
+        ("Departamento", "Nombre del Departamento", 200),
+        ("Nombre del Computador", "Nombre del Computador", 300),
+        ("Nombre de Usuario", "Nombre de Usuario", 300),
+        ("Dirección IP", "Direccion IP", 100),
+        ("Surcursal", "Nombre de la Surcursal", 100),
+    ]
+
+    SQL_insert_tipo_registro='''
         INSERT INTO tipos_registros (nombre, descripcion)
         VALUES(?, ?)
     '''
-    tablas=[
-        ("Contraseñas Computadores", "Tabla con todas las contraseñas de los computadores"),
-        ("Contraseñas WI-FI", "Tabla con todas las contraseñas de los puntos de WI-FI"),
-        ("Extenciones Telefonicas", "Tabla con las diferentes extsiones de telefono"),
-        ("Direcciones IP", "Tabla con las direcciones IP de los computadores"),
+    
+    tipo_registro=[
+        ("Ingreso", "Ingreso del equipo en el sistema"),
+        ("Compra", "Fecha de compra del equipo"),
+        ("Mantenimiento", "El equipo se le realizo un mantenimiento"),
+        ("Cambio de componente", "Cambio de componente interno del equipo"),
+        ("Fuera de Servicio", "El equipo no esta en uso por problemas tecnicos"),
+        ("Cambio de Ubicación", "Se cambio la ubicación actual del equipo"),
     ]
+
+    SQL_insert_tipo_equipo='''
+        INSERT INTO tipos_equipos (nombre, marca, modelo, descripcion, equipo_componente)
+        VALUES(?, ?, ?, ?, ?)
+    '''
+    tipo_equipo=[
+        ("Computadora", "Lenovo", "N/S", "Computadora de escritorio marca lenovo", 1),
+        ("Servidor", "N/S", "N/S", "", 1),
+        ("Pantalla de escritorio", "N/S", "N/S", "Pantalla de escritorio", 1),
+        ("Televisor", "N/S", "N/S", "", 1),
+        ("Puntos de Venta", "N/S", "N/S", "", 1),
+        ("Visores de Precio", "N/S", "N/S", "", 1),
+        ("Mini Stwiche", "N/S", "N/S", "", 1),
+        ("Stwiche", "N/S", "N/S", "", 1),
+        ("Rauter", "N/S", "N/S", "", 1),
+        ("Moden", "N/S", "N/S", "", 1),
+        ("Disco Duro", "N/S", "N/S", "", 0),
+        ("Memoria Ram", "N/S", "N/S", "", 0),
+        ("Procesador", "N/S", "N/S", "", 0),
+        ("Mause", "N/S", "N/S", "", 0),
+        ("Teclado", "N/S", "N/S", "", 0),
+    ]
+
 
     try:
         conexion.cursor.execute(SQL_tablaEquipos)
@@ -238,6 +283,9 @@ def crearTablas():
         conexion.cursor.executemany(SQL_insert_estados, estados)
         conexion.cursor.executemany(SQL_insert_areas_trabajo, areas_trabajo)
         conexion.cursor.executemany(SQL_insert_tablas, tablas)
+        conexion.cursor.executemany(SQL_insert_campos_tablas, campos_tablas)
+        conexion.cursor.executemany(SQL_insert_tipo_registro, tipo_registro)
+        conexion.cursor.executemany(SQL_insert_tipo_equipo, tipo_equipo)
         conexion.cerrar()
         titulo = "Crear Tablas"
         message = "Se creo todas las tablas de la base de datos"

@@ -1,7 +1,7 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
-from config import TITULO_CAMPOS
+from config import TITULO_CAMPOS, MESSAGE_DELETE
 from util.util_error import controlError
 
 class Tablas:
@@ -9,7 +9,7 @@ class Tablas:
     def create(nombre="", descripcion=""):
         conexion = ConexionDB()
         comprobacionNombre = comprobacionString(nombre, 100)
-        comprobacionDescripcion = comprobacionString(descripcion, 200, False)
+        comprobacionDescripcion = comprobacionString(descripcion, 300, False)
 
         if not comprobacionNombre["status"]:
             messagebox.showwarning(
@@ -43,7 +43,7 @@ class Tablas:
     def update(nombre="", descripcion="", id=0):
         conexion = ConexionDB()
         comprobacionNombre = comprobacionString(nombre, 100)
-        comprobacionDescripcion = comprobacionString(descripcion, 200, False)
+        comprobacionDescripcion = comprobacionString(descripcion, 300, False)
 
         if not comprobacionNombre["status"]:
             messagebox.showwarning(
@@ -83,8 +83,19 @@ class Tablas:
             WHERE id = ?;
         """
 
+        sql_comprobacion="""
+            SELECT id FROM tablas_has_campos_tablas WHERE tablas_id = ?
+        """
+
         try:
+            conexion.cursor.execute(sql_comprobacion, [int(id)])
+            comprobacion= conexion.cursor.fetchall()
+            if len(comprobacion)>0:
+                messagebox.showerror("Eliminar Registro", MESSAGE_DELETE)
+                return None
+
             conexion.cursor.execute(sql, [int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -94,13 +105,18 @@ class Tablas:
         finally:
             conexion.cerrar()
 
-    def list():
+    def list(order=False):
         conexion = ConexionDB()
 
         lista = []
         sql = """
             SELECT * FROM tablas ORDER BY id ASC;
         """
+
+        if order:
+            sql = """
+            SELECT * FROM tablas ORDER BY nombre ASC;
+            """
 
         try:
             conexion.cursor.execute(sql)

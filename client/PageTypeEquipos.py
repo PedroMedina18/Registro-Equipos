@@ -32,6 +32,7 @@ class PageTypeEquipos:
         self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
 
     def controles(self):
+        self.framePrincipal.columnconfigure(1, weight=1)
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Tipos de Equipos")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
@@ -74,15 +75,15 @@ class PageTypeEquipos:
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
         self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_nombre.grid(row=1, column=1, pady=7, columnspan=2)
 
         self.entry_marca = tk.Entry(self.framePrincipal, textvariable=self.mi_marca)
         self.entry_marca.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_marca.grid(row=2, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_marca.grid(row=2, column=1, pady=7, columnspan=2)
 
         self.entry_modelo = tk.Entry(self.framePrincipal, textvariable=self.mi_modelo)
         self.entry_modelo.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_modelo.grid(row=3, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_modelo.grid(row=3, column=1, pady=7, columnspan=2)
 
         self.Boolean_Equipos = tk.Radiobutton(
             self.framePrincipal, 
@@ -91,7 +92,7 @@ class PageTypeEquipos:
             value=1
         )
         self.Boolean_Equipos.config(width=10, font=FONT_LABEL, bg=COLOR_BASE)
-        self.Boolean_Equipos.grid(row=5, column=1, padx=10, pady=2)
+        self.Boolean_Equipos.grid(row=5, column=1, pady=2)
 
         self.Boolean_Componente = tk.Radiobutton(
             self.framePrincipal,
@@ -100,14 +101,14 @@ class PageTypeEquipos:
             value=0,
         )
         self.Boolean_Componente.config(width=10, font=FONT_LABEL, bg=COLOR_BASE)
-        self.Boolean_Componente.grid(row=5, column=2, padx=10, pady=2)
+        self.Boolean_Componente.grid(row=5, column=2, pady=2)
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
-        self.entry_descripcion.config(width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=3)
+        self.entry_descripcion.config( height=10, font=FONT_LABEL)
+        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=4)
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
-        scroll.grid(row=6, column=3, sticky="nsew", pady=10)
+        scroll.grid(row=6, column=3, sticky="nse", pady=10)
         self.entry_descripcion.config(yscrollcommand=scroll.set)
 
         # Botones

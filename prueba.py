@@ -84,17 +84,16 @@ from models.equipos import Equipos
 
 def pruebasql():
     conexion = ConexionDB()
-    # sql='''
-    #     SELECT *
-    #     FROM equipos
-    #     WHERE id = 1;
-    # '''
+    sql='''
+        SELECT *
+        FROM estados
+        ORDER BY nombre ASC;
+    '''
 
     try:
-        equipos=Equipos.list()
+        conexion.cursor.execute(sql)
+        equipos=conexion.cursor.fetchall()
         print(equipos)
-        equipo=Equipos.list(id=1)
-        print(equipo)
     except Exception as error:
         controlError(
             error,

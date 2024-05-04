@@ -1,7 +1,7 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
-from config import TITULO_CAMPOS
+from config import TITULO_CAMPOS, MESSAGE_DELETE
 from util.util_error import controlError
 from models.componentes_has_caracteristicas import Componentes_has_Caracteristicas
 
@@ -100,9 +100,19 @@ class Componentes:
             DELETE FROM componentes
             WHERE id = ?;
         """
+        sql_comprobacion="""
+            SELECT id FROM componentes_has_equipos WHERE componente_id = ?
+        """
 
         try:
+            conexion.cursor.execute(sql_comprobacion, [int(id)])
+            comprobacion = conexion.cursor.fetchall()
+            if len(comprobacion) > 0:
+                messagebox.showerror("Eliminar Registro", MESSAGE_DELETE)
+                return None
+
             conexion.cursor.execute(sql, [int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -112,7 +122,7 @@ class Componentes:
         finally:
             conexion.cerrar()
 
-    def list(id_componente=0, almacen=False):
+    def list(id_componente=0, almacen=False, order=False):
         conexion = ConexionDB()
 
         sql = """
@@ -129,8 +139,12 @@ class Componentes:
                 tir.descripcion
             FROM componentes AS com
             LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
-            ORDER BY com.id ASC;
         """
+        if order:
+            sql=sql+ " ORDER BY com.nombre ASC;"
+        else:
+            sql=sql+ " ORDER BY com.id ASC;"
+
 
         if id_componente>0 and not almacen:
             sql = """
@@ -166,8 +180,11 @@ class Componentes:
             FROM componentes AS com
             LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
             WHERE com.almacen > 0 
-            ORDER BY com.id ASC;
             """
+            if order:
+                sql=sql+ " ORDER BY com.nombre ASC;"
+            else:
+                sql=sql+ " ORDER BY com.id ASC;"
 
         try:
             if id_componente>0 and not almacen:

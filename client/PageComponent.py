@@ -193,7 +193,7 @@ class   PageComponent:
         self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
         self.entry_nombre.grid(row=2, column=1, padx=10, pady=7, columnspan=2)
 
-        self.list_componentes = TipoEquipos.list(equipo_componente=False)
+        self.list_componentes = TipoEquipos.list(equipo_componente=False, order=True)
         self.select_componente = ttk.Combobox(
             self.framePrincipal, state="readonly",
             values=list_values(self.list_componentes)
@@ -215,7 +215,7 @@ class   PageComponent:
         self.entry_dañados.grid(row=7, column=1, padx=10, pady=7, columnspan=2)
 
 
-        self.list_caracteristicas = Caracteristicas.list()
+        self.list_caracteristicas = Caracteristicas.list(order=True)
         self.list_values_caracteristicas=list_values(self.list_caracteristicas)
         self.select_caracteristicas = ttk.Combobox(
             self.framePrincipal, state="readonly",
@@ -567,8 +567,9 @@ class   PageComponent:
                 "Eliminar Registro", "Desea Eliminar el componente"
             )
             if valor == "yes":
-                Componentes.delete(self.data_component[0])
-                self.cambioInterfaz(self.listComponentes)
+                detele=Componentes.delete(self.data_component[0])
+                if detele:
+                    self.cambioInterfaz(self.listComponentes)
 
         except Exception as error:
             controlError(

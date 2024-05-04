@@ -109,6 +109,7 @@ class Equipos:
 
         try:
             conexion.cursor.execute(sql, [int(id)])
+            return True
         except:
             titulo = "Eliminar Datos"
             message = "No se pudo eliminar el registro"
@@ -116,7 +117,7 @@ class Equipos:
         finally:
             conexion.cerrar()
 
-    def list(id=0):
+    def list(order=False, id=0):
         conexion = ConexionDB()
 
         lista = []
@@ -134,6 +135,7 @@ class Equipos:
             INNER JOIN tipos_equipos AS tip ON equi.tipos_equipos_id=tip.id
             ORDER BY equi.id ASC;
         """
+
 
         if id>0:
             sql = """

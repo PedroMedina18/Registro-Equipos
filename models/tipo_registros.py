@@ -9,7 +9,7 @@ class Tipo_registros:
     def create(nombre="", descripcion=""):
         conexion = ConexionDB()
         comprobacionNombre = comprobacionString(nombre, 100)
-        comprobacionDescripcion = comprobacionString(descripcion, 200, False)
+        comprobacionDescripcion = comprobacionString(descripcion, 300, False)
 
         if not comprobacionNombre["status"]:
             messagebox.showwarning(
@@ -43,7 +43,7 @@ class Tipo_registros:
     def update(nombre="", descripcion="", id=0):
         conexion = ConexionDB()
         comprobacionNombre = comprobacionString(nombre, 100)
-        comprobacionDescripcion = comprobacionString(descripcion, 200, False)
+        comprobacionDescripcion = comprobacionString(descripcion, 300, False)
 
         if not comprobacionNombre["status"]:
             messagebox.showwarning(
@@ -94,13 +94,17 @@ class Tipo_registros:
         finally:
             conexion.cerrar()
 
-    def list():
+    def list(order=False):
         conexion = ConexionDB()
 
         lista = []
         sql = """
             SELECT * FROM tipos_registros ORDER BY id ASC;
         """
+        if order:
+            sql = """
+            SELECT * FROM tipos_registros ORDER BY nombre ASC;
+            """
 
         try:
             conexion.cursor.execute(sql)

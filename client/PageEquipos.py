@@ -39,10 +39,10 @@ class PageEquipos:
     def crearCuerpo(self):
 
         # LISTA VALORES SELECTS
-        self.list_tipos_equipos=TipoEquipos.list(equipo_componente=True)
-        self.list_areas_trabajos=AreasTrabajo.list()
-        self.list_estados=Estados.list()
-        self.list_componentes=Componentes.list(almacen=True)
+        self.list_tipos_equipos=TipoEquipos.list(equipo_componente=True, order=True)
+        self.list_areas_trabajos=AreasTrabajo.list(order=True)
+        self.list_estados=Estados.list(order=True)
+        self.list_componentes=Componentes.list(almacen=True, order=True)
         self.list_ubicacion=["Plaza Bolivar", "La Marrón"]
 
 
@@ -56,68 +56,72 @@ class PageEquipos:
     def lista_Equipos(self):
         self.dataEquipo=None
         # Titulo
+        self.framePrincipal.columnconfigure(2, weight=1)
         tituloPage = tk.Label(self.framePrincipal, text="Lista de Equipos")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=5)
 
 
-        ## SELECT
-        label_equipo = tk.Label(self.framePrincipal, text="Equipo")
-        label_equipo.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_equipo.grid(row=1, column=0, padx=10, pady=5)
+        frameSelect=tk.Frame(self.framePrincipal, bg=COLOR_BASE, )
+        frameSelect.grid(row=1, column=0, padx=10, pady=10, columnspan=5, sticky="nsew")
 
+        ## SELECT
+        label_equipo = tk.Label(frameSelect, text="Equipo")
+        label_equipo.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_equipo.grid(row=0, column=0, padx=40, pady=5)
+        
         self.list_filter_tipos_equipos=list_values(self.list_tipos_equipos)
         self.list_filter_tipos_equipos.insert(0, 'Todos')
         self.select_filter_tipo_equipo = ttk.Combobox(
-            self.framePrincipal, state="readonly",
+            frameSelect, state="readonly",
             values=self.list_filter_tipos_equipos
         )
-        self.select_filter_tipo_equipo.grid(row=2, column=0, padx=10, pady=5)
+        self.select_filter_tipo_equipo.grid(row=1, column=0, padx=40, pady=5)
         self.select_filter_tipo_equipo.bind("<<ComboboxSelected>>", self.filterEquipos)
         self.select_filter_tipo_equipo.current(0)
 
 
-        label_ubicacion = tk.Label(self.framePrincipal, text="Ubicación")
+        label_ubicacion = tk.Label(frameSelect, text="Ubicación")
         label_ubicacion.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_ubicacion.grid(row=1, column=1, padx=10, pady=5)
+        label_ubicacion.grid(row=0, column=1, padx=40, pady=5)
 
         self.list_filter_ubicacion=self.list_ubicacion
         self.list_filter_ubicacion.insert(0, 'Todos')
         self.select_filter_ubicacion = ttk.Combobox(
-            self.framePrincipal, state="readonly",
+            frameSelect, state="readonly",
             values=self.list_filter_ubicacion
         )
-        self.select_filter_ubicacion.grid(row=2, column=1, padx=10, pady=5)
+        self.select_filter_ubicacion.grid(row=1, column=1, padx=40, pady=5)
         self.select_filter_ubicacion.bind("<<ComboboxSelected>>", self.filterEquipos)
         self.select_filter_ubicacion.current(0)
 
 
-        label_estado = tk.Label(self.framePrincipal, text="Estado")
+        label_estado = tk.Label(frameSelect, text="Estado")
         label_estado.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_estado.grid(row=1, column=2, padx=10, pady=5)
+        label_estado.grid(row=0, column=2, padx=40, pady=5)
 
         self.list_filter_estados=list_values(self.list_estados)
         self.list_filter_estados.insert(0, 'Todos')
         self.select_filter_estado = ttk.Combobox(
-            self.framePrincipal, state="readonly",
+            frameSelect, state="readonly",
             values=self.list_filter_estados
         )
-        self.select_filter_estado.grid(row=2, column=2, padx=10, pady=5)
+        self.select_filter_estado.grid(row=1, column=2, padx=40, pady=5)
         self.select_filter_estado.bind("<<ComboboxSelected>>", self.filterEquipos)
         self.select_filter_estado.current(0)
 
 
-        label_area = tk.Label(self.framePrincipal, text="Are de Trabajo")
+        label_area = tk.Label(frameSelect, text="Are de Trabajo")
         label_area.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_area.grid(row=1, column=3, padx=10, pady=5)
+        label_area.grid(row=0, column=3, padx=40, pady=5)
 
         self.list_filter_areas_trabajo=list_values(self.list_areas_trabajos)
         self.list_filter_areas_trabajo.insert(0, 'Todos')
         self.select_filter_area_trabajo = ttk.Combobox(
-            self.framePrincipal, state="readonly",
+            frameSelect, state="readonly",
             values=self.list_filter_areas_trabajo
         )
-        self.select_filter_area_trabajo.grid(row=2, column=3, padx=10, pady=5)
+        self.select_filter_area_trabajo.grid(row=1, column=3, padx=40, pady=5)
         self.select_filter_area_trabajo.bind("<<ComboboxSelected>>", self.filterEquipos)
         self.select_filter_area_trabajo.current(0)
 
@@ -149,19 +153,19 @@ class PageEquipos:
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        boton_crear.grid(row=4, column=3, padx=10, pady=10)
+        boton_crear.grid(row=4, column=4, padx=10, pady=10)
 
     def tabla_equipos(self):
         self.tabla_listEquipos = ttk.Treeview(
             self.framePrincipal, columns=("ID", "Serial", "Equipo", "Ubicacion", "Estado", "Area"), height=25, show='headings'
         )
-        self.tabla_listEquipos.grid(row=3, column=0, sticky="NSEW", padx=10, columnspan=8)
+        self.tabla_listEquipos.grid(row=3, column=0, sticky="NSEW", padx=10, columnspan=6)
 
         # Scroll bar
         scroll = ttk.Scrollbar(
             self.framePrincipal, orient="vertical", command=self.tabla_listEquipos.yview
         )
-        scroll.grid(row=3, column=7, sticky="ns")
+        scroll.grid(row=3, column=5, sticky="nse")
         self.tabla_listEquipos.configure(yscrollcommand=scroll.set)
 
         self.tabla_listEquipos.heading("ID", text="ID", anchor=tk.W)
@@ -591,8 +595,9 @@ class PageEquipos:
                 "Eliminar Registro", "Desea Eliminar el equipo"
             )
             if valor == "yes":
-                Equipos.delete(self.dataEquipo[0][0])
-                self.cambioInterfaz(self.listComponentes)
+                delete=Equipos.delete(self.dataEquipo[0][0])
+                if delete:
+                    self.cambioInterfaz(self.listComponentes)
 
         except Exception as error:
             controlError(

@@ -1,7 +1,7 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
-from config import TITULO_CAMPOS
+from config import TITULO_CAMPOS, MESSAGE_DELETE
 from util.util_error import controlError
 
 class Campos_Tabla:
@@ -9,7 +9,7 @@ class Campos_Tabla:
     def create(nombre="", descripcion="", caracteres=0):
         conexion = ConexionDB()
         comprobacionNombre = comprobacionString(nombre, 100)
-        comprobacionDescripcion = comprobacionString(descripcion, 200, False)
+        comprobacionDescripcion = comprobacionString(descripcion, 300, False)
 
         if not comprobacionNombre["status"]:
             messagebox.showwarning(
@@ -59,7 +59,7 @@ class Campos_Tabla:
     def update(nombre="", descripcion="", caracteres=0, id=0):
         conexion = ConexionDB()
         comprobacionNombre = comprobacionString(nombre, 100)
-        comprobacionDescripcion = comprobacionString(descripcion, 200, False)
+        comprobacionDescripcion = comprobacionString(descripcion, 300, False)
 
         if not comprobacionNombre["status"]:
             messagebox.showwarning(
@@ -115,8 +115,19 @@ class Campos_Tabla:
             WHERE id = ?;
         """
 
+        sql_comprobacion="""
+            SELECT id FROM tablas_has_campos_tablas WHERE campos_id = ?
+        """
+
         try:
+            conexion.cursor.execute(sql_comprobacion, [int(id)])
+            comprobacion= conexion.cursor.fetchall()
+            if len(comprobacion)>0:
+                messagebox.showerror("Eliminar Registro", MESSAGE_DELETE)
+                return None
+            
             conexion.cursor.execute(sql, [int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -126,13 +137,18 @@ class Campos_Tabla:
         finally:
             conexion.cerrar()
 
-    def list():
+    def list(order=False):
         conexion = ConexionDB()
 
         lista = []
         sql = """
             SELECT * FROM campos_tablas ORDER BY id ASC;
         """
+
+        if order:
+            sql = """
+            SELECT * FROM campos_tablas ORDER BY nombre ASC;
+            """
 
         try:
             conexion.cursor.execute(sql)

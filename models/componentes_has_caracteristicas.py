@@ -14,7 +14,6 @@ class Componentes_has_Caracteristicas:
             conexion.cursor.execute(sql_componente_caracteristica, (int(componente_id), int(caracteristica_id), str(value)))
             
         except Exception as error:
-            print(error)
             controlError(
                 error,
                 titleTable="Conexion al registro",

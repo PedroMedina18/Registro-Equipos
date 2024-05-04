@@ -10,6 +10,7 @@ from config import (
     ACTIVE_VERDE,
     ACTIVE_AZUL,
     FONT_LABEL_ELEMENT_LIST,
+    TAMAÑO_BOTON
 )
 from models.tablas import Tablas
 from models.campos_tablas import Campos_Tabla
@@ -34,8 +35,8 @@ class PageAgregarCampos:
         self.framePrincipal.columnconfigure(3, weight=1)
 
     def controles(self):
-        self.tablas = Tablas.list()
-        self.campos = Campos_Tabla.list()
+        self.tablas = Tablas.list(order=True)
+        self.campos = Campos_Tabla.list(order=True)
 
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Agregar Campos a la Tabla")
@@ -67,7 +68,7 @@ class PageAgregarCampos:
             self.framePrincipal, text="Buscar", command=self.buscar_campos
         )
         self.boton_buscar.config(
-            width=10,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
             fg="white",
             bg=COLOR_VERDE,
@@ -81,7 +82,7 @@ class PageAgregarCampos:
             self.framePrincipal, text="Agregar", command=self.agregar_campo
         )
         self.boton_agregar.config(
-            width=10,
+            width=TAMAÑO_BOTON,
             font=FONT_LABEL,
             fg="white",
             bg=COLOR_AZUL,
@@ -212,7 +213,7 @@ class PageAgregarCampos:
 
     def eliminar_campos(self, id_campo=0):
         valor = messagebox.askquestion(
-                "Eliminar Campo", "Desea el campo seleccionado"
+                "Eliminar Campo", "Desea eliminar campo seleccionado"
         )
         if valor == "yes":
             Tablas_has_Campos.delete(id=id_campo)

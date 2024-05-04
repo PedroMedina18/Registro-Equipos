@@ -35,6 +35,7 @@ class PageBasic:
 
     def controles(self):
         # Titulo
+        self.framePrincipal.columnconfigure(1, weight=1)
         tituloPage = tk.Label(self.framePrincipal, text=f"{self.titulo}")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
@@ -55,14 +56,14 @@ class PageBasic:
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
         self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=2)
+        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=3)
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
-        self.entry_descripcion.config(width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=2, column=1, pady=10, columnspan=2)
+        self.entry_descripcion.config(height=10, font=FONT_LABEL)
+        self.entry_descripcion.grid(row=2, column=1, pady=10, columnspan=3)
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
-        scroll.grid(row=2, column=3, sticky="nsew", pady=10)
+        scroll.grid(row=2, column=3, sticky="nsw", pady=10)
         self.entry_descripcion.config(yscrollcommand=scroll.set)
 
         # Botones

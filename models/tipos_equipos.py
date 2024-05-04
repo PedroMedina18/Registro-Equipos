@@ -1,7 +1,7 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString, comprobacionBoolean
 from tkinter import messagebox
-from config import TITULO_CAMPOS
+from config import TITULO_CAMPOS, MESSAGE_DELETE
 from util.util_error import controlError
 
 class TipoEquipos:
@@ -145,8 +145,25 @@ class TipoEquipos:
             WHERE id = ?;
         """
 
+        sql_comprobacion_equipo="""
+            SELECT id FROM equipos WHERE tipos_equipos_id = ?
+        """
+
+        sql_comprobacion_componente="""
+            SELECT id FROM componentes WHERE componente_id = ?
+        """
+
         try:
+            conexion.cursor.execute(sql_comprobacion_equipo, [int(id)])
+            comprobacion_equipo= conexion.cursor.fetchall()
+            conexion.cursor.execute(sql_comprobacion_componente, [int(id)])
+            comprobacion_componente= conexion.cursor.fetchall()
+            if len(comprobacion_equipo)>0 or len(comprobacion_componente)>0:
+                messagebox.showerror("Eliminar Registro", MESSAGE_DELETE)
+                return None
+
             conexion.cursor.execute(sql, [int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -156,12 +173,12 @@ class TipoEquipos:
         finally:
             conexion.cerrar()
 
-    def list(equipo_componente=None):
+    def list(equipo_componente=None, order=False):
         conexion = ConexionDB()
 
         lista = []
         sql = """
-            SELECT id, nombre, marca, modelo, equipo_componente, descripcion FROM tipos_equipos ORDER BY id ASC;
+            SELECT id, nombre, marca, modelo, equipo_componente, descripcion FROM tipos_equipos
         """
         if equipo_componente==True:
             sql = """
@@ -175,7 +192,6 @@ class TipoEquipos:
                 FROM 
                     tipos_equipos 
                 WHERE equipo_componente=1
-                ORDER BY id ASC;
             """
 
         if equipo_componente==False:
@@ -190,8 +206,11 @@ class TipoEquipos:
                 FROM 
                     tipos_equipos 
                 WHERE equipo_componente=0
-                ORDER BY id ASC;
             """
+        if order:
+            sql = sql + " ORDER BY nombre ASC;"
+        else:
+            sql = sql + " ORDER BY id ASC;"
 
         try:
             conexion.cursor.execute(sql)
