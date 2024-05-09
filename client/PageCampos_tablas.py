@@ -34,6 +34,7 @@ class PageCampos_tablas:
 
     def controles(self):
         # Titulo
+        self.framePrincipal.columnconfigure(1, weight=1)
         tituloPage = tk.Label(self.framePrincipal, text="Nombre de los campos")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
@@ -59,16 +60,16 @@ class PageCampos_tablas:
         self.caracteres = tk.IntVar()
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
-        self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=2)
+        self.entry_nombre.config(font=FONT_LABEL)
+        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=2, sticky="ew")
 
         self.entry_caracteres = tk.Entry(self.framePrincipal, textvariable=self.caracteres)
-        self.entry_caracteres.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_caracteres.grid(row=2, column=1, pady=10, columnspan=2)
+        self.entry_caracteres.config(font=FONT_LABEL)
+        self.entry_caracteres.grid(row=2, column=1, pady=10, columnspan=2, sticky="ew")
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
-        self.entry_descripcion.config(width=TAMAÑO_ENTRYS, height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=3, column=1, pady=10, columnspan=2)
+        self.entry_descripcion.config(height=10, font=FONT_LABEL)
+        self.entry_descripcion.grid(row=3, column=1, pady=10, columnspan=2, sticky="ew")
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
         scroll.grid(row=3, column=3, sticky="nsew", pady=10)
@@ -135,10 +136,16 @@ class PageCampos_tablas:
         scroll.grid(row=5, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.heading("ID", text="ID")
-        self.tabla.heading("Nombre", text="NOMBRE")
-        self.tabla.heading("Caracteres", text="CARACTERES")
-        self.tabla.heading("Descripcion", text="DESCRIPCIÓN")
+        self.tabla.heading("ID", text="ID", anchor=tk.W)
+        self.tabla.heading("Nombre", text="NOMBRE", anchor=tk.W)
+        self.tabla.heading("Caracteres", text="CARACTERES", anchor=tk.W)
+        self.tabla.heading("Descripcion", text="DESCRIPCIÓN", anchor=tk.W)
+
+        self.tabla.column("ID", stretch=tk.NO, minwidth="25", width="50")
+        self.tabla.column("Nombre", stretch=tk.NO, minwidth="50", width="200")
+        self.tabla.column("Caracteres", stretch=tk.NO, minwidth="25", width="80")
+        self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25")
+
 
         # iterar la lista d epeliculas
         for index, item in enumerate(self.lista_campos):

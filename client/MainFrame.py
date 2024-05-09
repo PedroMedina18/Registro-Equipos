@@ -24,6 +24,7 @@ from models.tablas import Tablas
 from models.caracteristicas import Caracteristicas
 from models.estados import Estados
 from models.areas_trabajo import AreasTrabajo
+from models.tipos_registros import Tipos_registros
 
 from prueba import pruebasql
 
@@ -91,6 +92,17 @@ class MainFrame:
                 atributos={
                     "titulo": "Caracteristicas de los Componentes",
                     "model": Caracteristicas,
+                },
+            ),
+        )
+
+        menu_opciones.add_command(
+            label="Tipos de Regitros",
+            command=lambda: self.destroyCuerpo(
+                object_page=PageBasic,
+                atributos={
+                    "titulo": "Tipos de Registros del Historial",
+                    "model": Tipos_registros,
                 },
             ),
         )
@@ -253,9 +265,18 @@ class MainFrame:
             width=ancho_menu,
             height=alto_menu,
         )
+        style.configure(
+            "Combobox.TCombobox",
+            font=font.Font(family="FontAwesome", size=15),
+            background=COLOR_BASE,
+            borderwidth=1,
+            padding=4,
+            anchor="center",
+        )
+        
         # style.theme_create( "button-center", parent="alt", settings={
         # "TButton": {"configure": {"anchor": "center"}}} )
-        style.theme_use("alt")
+        style.theme_use("default")
 
         button.config(style="ButtonNormal.TButton")
         button.pack(side=tk.TOP, ipady=10)

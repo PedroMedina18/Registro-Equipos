@@ -47,6 +47,7 @@ def crearTablas():
         CREATE TABLE equipos (
             id INTEGER NOT NULL,
             serial VARCHAR(100) NOT NULL UNIQUE,
+            alias VARCHAR(100) UNIQUE,
             tipos_equipos_id INT NOT NULL,
             bolivar_marron BOOLEAN NOT NULL,
             estado_actual_id INT NOT NULL,
@@ -161,7 +162,7 @@ def crearTablas():
             tipo_registro_id INTEGER NOT NULL, 
             equipo_id INTEGER NOT NULL, 
             fecha DATETIME NOT NULL,
-            descripcion VARCHAR(3000),
+            descripcion VARCHAR(3000) NOT NULL,
             PRIMARY KEY(id AUTOINCREMENT)
         )
     """

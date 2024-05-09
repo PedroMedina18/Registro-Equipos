@@ -56,11 +56,9 @@ class PageTypeEquipos:
         label_modelo.grid(row=3, column=0, padx=10, pady=7, sticky="w")
 
         # Clase de Registro
-        label_TypeRegistro = tk.Label(
-            self.framePrincipal, text="Escoja el tipo de Registro:"
-        )
+        label_TypeRegistro = tk.Label(self.framePrincipal, text="Escoja el tipo de Registro:")
         label_TypeRegistro.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_TypeRegistro.grid(row=4, column=0, padx=10, pady=7, columnspan=3)
+        label_TypeRegistro.grid(row=4, column=0, padx=10, pady=7, columnspan=4)
 
         # Descripción
         label_descripcion = tk.Label(self.framePrincipal, text="Descripción:")
@@ -74,16 +72,16 @@ class PageTypeEquipos:
         self.componente_equipo = tk.IntVar()
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
-        self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, pady=7, columnspan=2)
+        self.entry_nombre.config(font=FONT_LABEL)
+        self.entry_nombre.grid(row=1, column=1, pady=7, columnspan=2, sticky="ew")
 
         self.entry_marca = tk.Entry(self.framePrincipal, textvariable=self.mi_marca)
-        self.entry_marca.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_marca.grid(row=2, column=1, pady=7, columnspan=2)
+        self.entry_marca.config(font=FONT_LABEL)
+        self.entry_marca.grid(row=2, column=1, pady=7, columnspan=2, sticky="ew")
 
         self.entry_modelo = tk.Entry(self.framePrincipal, textvariable=self.mi_modelo)
-        self.entry_modelo.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_modelo.grid(row=3, column=1, pady=7, columnspan=2)
+        self.entry_modelo.config(font=FONT_LABEL)
+        self.entry_modelo.grid(row=3, column=1, pady=7, columnspan=2, sticky="ew")
 
         self.Boolean_Equipos = tk.Radiobutton(
             self.framePrincipal, 
@@ -105,7 +103,7 @@ class PageTypeEquipos:
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
         self.entry_descripcion.config( height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=4)
+        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=4, sticky="ew")
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
         scroll.grid(row=6, column=3, sticky="nse", pady=10)
@@ -174,18 +172,19 @@ class PageTypeEquipos:
         scroll.grid(row=8, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.column("ID", width=TAMAÑO_BOTON)
-        self.tabla.heading("ID", text="ID")
-        self.tabla.column("Nombre", width=30)
-        self.tabla.heading("Nombre", text="NOMBRE")
-        self.tabla.column("Marca", width=30)
-        self.tabla.heading("Marca", text="MARCA")
-        self.tabla.column("Modelo", width=30)
-        self.tabla.heading("Modelo", text="MODELO")
-        self.tabla.column("Tipo", width=TAMAÑO_BOTON)
-        self.tabla.heading("Tipo", text="TIPO")
-        self.tabla.column("Descripcion", width=50)
-        self.tabla.heading("Descripcion", text="DESCRIPCIÓN")
+        self.tabla.heading("ID", text="ID", anchor=tk.W)
+        self.tabla.heading("Nombre", text="NOMBRE", anchor=tk.W)
+        self.tabla.heading("Marca", text="MARCA", anchor=tk.W)
+        self.tabla.heading("Modelo", text="MODELO", anchor=tk.W)
+        self.tabla.heading("Tipo", text="TIPO", anchor=tk.W)
+        self.tabla.heading("Descripcion", text="DESCRIPCIÓN", anchor=tk.W)
+
+        self.tabla.column("ID", stretch=tk.NO, minwidth="25", width="50")
+        self.tabla.column("Nombre", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla.column("Marca", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla.column("Modelo", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla.column("Tipo", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25", width="150")
 
         # iterar la lista de tipos de equipo
 
@@ -300,11 +299,11 @@ class PageTypeEquipos:
         try:
             self.desabilitar_campos()
             self.id_tipo_equipo = self.tabla.item(self.tabla.selection())["text"]
-            nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][0]
-            marca_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
-            modelo_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][2]
-            tipo_equipo = self.tabla.item(self.tabla.selection())["values"][3]
-            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][4]
+            nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
+            marca_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][2]
+            modelo_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][3]
+            tipo_equipo = self.tabla.item(self.tabla.selection())["values"][4]
+            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][5]
 
             if tipo_equipo == "Equipo":
                 tipo_equipo = 1

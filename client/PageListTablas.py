@@ -48,8 +48,7 @@ class PageListTablas:
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10)
 
-        self.list_tabla = Tablas.list()
-        self.list_tabla.reverse()
+        self.list_tabla = Tablas.list(order=True)
 
         self.tabla_listTablas = ttk.Treeview(
             self.framePrincipal, columns=("ID", "Nombre", "Descripcion"), height=30, show='headings'
@@ -69,7 +68,7 @@ class PageListTablas:
 
 
         # edit column
-        self.tabla_listTablas.column("ID", stretch=tk.NO, minwidth="25", width="150")
+        self.tabla_listTablas.column("ID", stretch=tk.NO, minwidth="25", width="50")
         self.tabla_listTablas.column("Nombre", stretch=tk.NO, minwidth="25", width="250")
         self.tabla_listTablas.column("Descripcion", stretch=tk.YES, minwidth="25")
 
@@ -98,7 +97,7 @@ class PageListTablas:
     def buscarDataTabla(self):
         try:
             self.id_table = self.tabla_listTablas.item(self.tabla_listTablas.selection())["text"]
-            name_tabla = self.tabla_listTablas.item(self.tabla_listTablas.selection())["values"][0]
+            name_tabla = self.tabla_listTablas.item(self.tabla_listTablas.selection())["values"][1]
             self.list_campos = Tablas_has_Campos.list(id_tabla=self.id_table)
             if len(self.list_campos) == 0:
                 respuesta=messagebox.showwarning(f"Tabla {name_tabla}", "No hay ningun campo agregado a esta tabla")
@@ -118,6 +117,7 @@ class PageListTablas:
     
     def frameTableData(self, id_table=0, name_tabla=""):
         self.list_campos = Tablas_has_Campos.list(id_tabla=id_table)
+        self.framePrincipal.columnconfigure(1, weight=1)
 
         # # Button Regresar
         buttonRegresar = tk.Button(self.framePrincipal, text="Regresar")
@@ -151,16 +151,11 @@ class PageListTablas:
             if campos[2] >= 150:
                 # # TEXTARE
                 entry_descripcion = tk.Text(self.framePrincipal)
-                entry_descripcion.grid(
-                    row=2 + self.CONTADOR, column=1, pady=10, columnspan=2
-                )
+                entry_descripcion.grid(row=2 + self.CONTADOR, column=1, pady=10, columnspan=3, sticky="ew")
 
-                scroll = tk.Scrollbar(
-                    self.framePrincipal, command=entry_descripcion.yview
-                )
-                scroll.grid(row=2 + self.CONTADOR, column=3, sticky="nsew")
+                scroll = tk.Scrollbar(self.framePrincipal, command=entry_descripcion.yview)
+                scroll.grid(row=2 + self.CONTADOR, column=4, sticky="nsw", pady=10)
                 entry_descripcion.config(
-                    width=TAMAÑO_ENTRYS,
                     height=10,
                     font=FONT_LABEL,
                     yscrollcommand=scroll.set,
@@ -173,16 +168,15 @@ class PageListTablas:
                         "id": campos[0],
                         "caracteres": campos[2],
                         "nombre": campos[1],
+                        "type_registro":None
                     }
                 )
             else:
                 # # ENTRY
                 string = tk.StringVar()
                 entry_nombre = tk.Entry(self.framePrincipal, textvariable=string)
-                entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-                entry_nombre.grid(
-                    row=2 + self.CONTADOR, column=1, pady=10, columnspan=2
-                )
+                entry_nombre.config(font=FONT_LABEL)
+                entry_nombre.grid(row=2 + self.CONTADOR, column=1, pady=10, columnspan=3, sticky="ew")
 
                 self.LIST_CAMPOS.append(
                     {
@@ -192,6 +186,7 @@ class PageListTablas:
                         "caracteres": campos[2],
                         "nombre": campos[1],
                         "variable": string,
+                        "type_registro":"create"
                     }
                 )
 
@@ -241,7 +236,7 @@ class PageListTablas:
         columns += ("fecha_creacion", "fecha_actualizacion")
         self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
         
-        frameTable=tk.Frame(self.framePrincipal, height=300, bg="red", width=200)
+        frameTable=tk.Frame(self.framePrincipal, height=350, bg=COLOR_BASE, width=200)
         frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=5, sticky="NSEW", padx=10)
 
         self.tabla_registros = ttk.Treeview(
@@ -249,7 +244,7 @@ class PageListTablas:
             columns=columns,
             show="headings",
         )
-        self.tabla_registros.place(width=950, height=300)
+        self.tabla_registros.place(relwidth=1, height=350)
 
         # Scroll bar
         scrollVertical = ttk.Scrollbar(
@@ -274,13 +269,17 @@ class PageListTablas:
 
         # Para insertar todas las columnas de la tabla
         for object in columns:
-            self.tabla_registros.heading(f"{object}", text=object.replace("_", " ").upper())
-
+            self.tabla_registros.heading(f"{object}", text=object.replace("_", " ").upper(), anchor=tk.W)
+            if object=="id":
+                self.tabla_registros.column(f"{object}", stretch=tk.NO, minwidth="25", width="50")
+            if object=="fecha_creacion" or object=="fecha_actualizacion":
+                self.tabla_registros.column(f"{object}", stretch=tk.NO, minwidth="50", width="180")
+        
         # Para insertar los registros en al tabla
         for index, registros in enumerate(self.lista_registros):
             values = list(values for keys, values in registros.items())
-            idRegistro=values[0]
-            values[0]=index+1
+            idRegistro = values[0]
+            values[0] = index + 1
             values=tuple(values)
             self.tabla_registros.insert("", tk.END, text=idRegistro, values=values)
 
@@ -335,6 +334,7 @@ class PageListTablas:
                         "value": element["variable"].get(),
                         "caracteres": element["caracteres"],
                         "nombre": element["nombre"],
+                        "type":element["type_registro"]
                     }
                 )
             else:
@@ -344,8 +344,11 @@ class PageListTablas:
                         "value": element["entrada"].get(1.0, tk.END),
                         "caracteres": element["caracteres"],
                         "nombre": element["nombre"],
+                        "type":element["type_registro"]
                     }
                 )
+            element["type_registro"]="create"
+        
         if self.numero_registro == None:
             valor = messagebox.askquestion(
                 "Registro Nuevo", "Desea ingresar nuevo registro"
@@ -402,6 +405,9 @@ class PageListTablas:
             self.habilitar_campos()
 
             for index, campo in enumerate(self.LIST_CAMPOS, start = 1):
+                if not (dataSeleccionada["values"][index] == ""):
+                    campo["type_registro"]="update"
+                    
                 if campo["caracteres"] >= 150:
                     campo["entrada"].insert(1.0, dataSeleccionada["values"][index])
                 else:

@@ -56,14 +56,14 @@ class PageBasic:
 
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
         self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=3)
+        self.entry_nombre.grid(row=1, column=1, pady=10, columnspan=2, sticky="ew")
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
         self.entry_descripcion.config(height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=2, column=1, pady=10, columnspan=3)
+        self.entry_descripcion.grid(row=2, column=1, pady=10, columnspan=3, sticky="ew")
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
-        scroll.grid(row=2, column=3, sticky="nsw", pady=10)
+        scroll.grid(row=2, column=3, sticky="nse", pady=10)
         self.entry_descripcion.config(yscrollcommand=scroll.set)
 
         # Botones
@@ -128,9 +128,13 @@ class PageBasic:
         scroll.grid(row=4, column=3, sticky="nsew")
         self.tabla.configure(yscrollcommand=scroll.set)
 
-        self.tabla.heading("ID", text="ID")
-        self.tabla.heading("Nombre", text="NOMBRE")
-        self.tabla.heading("Descripcion", text="DESCRIPCIÓN")
+        self.tabla.heading("ID", text="ID", anchor=tk.W)
+        self.tabla.heading("Nombre", text="NOMBRE", anchor=tk.W)
+        self.tabla.heading("Descripcion", text="DESCRIPCIÓN", anchor=tk.W)
+
+        self.tabla.column("ID", stretch=tk.NO, minwidth="25", width="50")
+        self.tabla.column("Nombre", stretch=tk.NO, minwidth="50", width="200")
+        self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25")
 
         # iterar la lista de areas de trabao
         for index, item in enumerate(lista_areas_trabajo, start=1):
@@ -214,8 +218,8 @@ class PageBasic:
         try:
             self.desabilitar_campos()
             self.id_model = self.tabla.item(self.tabla.selection())["text"]
-            nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][0]
-            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
+            nombre_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][1]
+            descripcion_tipo_equipo = self.tabla.item(self.tabla.selection())["values"][2]
 
             self.habilitar_campos()
 

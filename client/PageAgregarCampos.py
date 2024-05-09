@@ -37,6 +37,7 @@ class PageAgregarCampos:
     def controles(self):
         self.tablas = Tablas.list(order=True)
         self.campos = Campos_Tabla.list(order=True)
+        self.framePrincipal.columnconfigure(1, weight=1)
 
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Agregar Campos a la Tabla")
@@ -56,12 +57,14 @@ class PageAgregarCampos:
 
         # # Select
         self.select_tabla = ttk.Combobox(
-            self.framePrincipal, state="readonly", values=list_values(self.tablas)
+            self.framePrincipal, state="readonly", values=list_values(self.tablas), width=30, font=("Arial", 10, "roman"), justify="center"
         )
         self.select_tabla.grid(row=1, column=2, padx=5, pady=10)
+        self.select_tabla.config(style="Combobox.TCombobox")
 
-        self.select_campos = ttk.Combobox(self.framePrincipal, state="readonly")
+        self.select_campos = ttk.Combobox(self.framePrincipal, state="readonly", width=30, font=("Arial", 10, "roman"), justify="center")
         self.select_campos.grid(row=2, column=2, padx=5, pady=10)
+        self.select_campos.config(style="Combobox.TCombobox")
 
         # Button
         self.boton_buscar = tk.Button(
@@ -151,9 +154,9 @@ class PageAgregarCampos:
                 command=lambda: self.eliminar_campos(id_campo=int(campo[0])),
             )
             buton_eliminar.config(
-                width=40, bg=COLOR_ROJO, cursor="hand2", activebackground=COLOR_ROJO
+                width=80, bg=COLOR_ROJO, cursor="hand2", activebackground=COLOR_ROJO
             )
-            buton_eliminar.grid(row=1 + CONTADOR, column=2, padx=5, pady=10)
+            buton_eliminar.grid(row=1 + CONTADOR, column=2, pady=10)
 
             CONTADOR = CONTADOR + 1
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 def list_values(list):
     lista = []
@@ -31,10 +31,16 @@ def determinar_campo(list_campos_sql, campo_select):
     if not result:
         return None
 
-def determinar_indice(list_campos_sql, id_campo_select):
+
+
+def determinar_indice(list_campos_sql, id_campo_select=0, nombre=None):
     for index, tupla in enumerate(list_campos_sql):
-        if tupla[0] == int(id_campo_select):
-            return index
+        if id_campo_select>0:
+            if tupla[0] == int(id_campo_select):
+                return index
+        if nombre:
+            if tupla[1] == str(nombre):
+                return index
 
 
 def organizador_registros(tuples_list):
@@ -70,3 +76,19 @@ def formatoFecha(fecha):
     fechaStr=datetime.strptime(fecha, formatoDateTime)
     stringFecha=f"{fechaStr.day:02}/{fechaStr.month:02}/{fechaStr.year}    {fechaStr.hour if fechaStr.hour <= 12 else fechaStr.hour - 12}:{fechaStr.minute:02} {'am' if fechaStr.hour <= 12 else 'pm'}"
     return stringFecha
+
+def Fecha(fecha):
+    formatoDateTime="%Y-%m-%d %H:%M:%S"
+    fechaStr=datetime.strptime(fecha, formatoDateTime)
+    stringFecha=f"{fechaStr.day:02}/{fechaStr.month:02}/{fechaStr.year}"
+    return stringFecha
+
+def validate_date(date_str):
+    formats = ["%d/%m/%Y", "%d-%m-%Y"]
+    for fmt in formats:
+        try:
+            fecha=datetime.strptime(str(date_str), fmt)
+            return fecha
+        except ValueError:
+            pass
+    return False

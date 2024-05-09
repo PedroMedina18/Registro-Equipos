@@ -62,14 +62,22 @@ class Registros:
                 )
                 return None
 
-        sql = """
+        sql_update = """
             UPDATE registros
             SET value=?, fecha_actualizacion=?
-            WHERE numero_registro=? AND  campo_tablas_id=?
+            WHERE numero_registro=? AND campo_tablas_id=?
+        """
+        sql_create = """
+            INSERT INTO registros (campo_tablas_id, value, numero_registro, fecha_creacion, fecha_actualizacion)
+            VALUES(?, ?, ?, ?, ?)
         """
         try:
             for campo in campos:
-                conexion.cursor.execute(sql, [campo["value"], fecha_hora_actual, numero_registro, campo["id"]])
+                if campo["type"]=="update":
+                    conexion.cursor.execute(sql_update, [campo["value"], fecha_hora_actual, numero_registro, campo["id"]])
+                elif campo["type"]=="create":
+                    conexion.cursor.execute(sql_create, [campo["id"], campo["value"], numero_registro, fecha_hora_actual, fecha_hora_actual])
+
         except Exception as error:
             controlError(
                 error,
@@ -122,12 +130,10 @@ class Registros:
             conexion.cursor.execute(sql_registros, [id_tabla])
             registros = conexion.cursor.fetchall()
 
-            campos_tabla={keys:None for keys in campos}
-            
+            campos_tabla={keys:"" for keys in campos}
             
             grupo_registros = organizador_registros(registros)
 
-           
             lista_registros = asignar_valores(campos_tabla, grupo_registros )
             
             return lista_registros

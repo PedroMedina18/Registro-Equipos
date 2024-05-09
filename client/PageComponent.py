@@ -46,12 +46,15 @@ class   PageComponent:
     def listComponentes(self):
         self.framePrincipal.columnconfigure(0, weight=1)
         self.data_component=None
+        self.id_componente = None
+
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Lista de componentes")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
         self.list_componentes = Componentes.list()
+        self.list_componentes.reverse()
 
         self.tabla_listComponentes = ttk.Treeview(
             self.framePrincipal, columns=("ID","Nombre", "Almacen",  "Dañados", "Usados"), height=30, show='headings'
@@ -70,6 +73,12 @@ class   PageComponent:
         self.tabla_listComponentes.heading("Almacen", text="ALMACEN", anchor=tk.W)
         self.tabla_listComponentes.heading("Dañados", text="DAÑADOS", anchor=tk.W)
         self.tabla_listComponentes.heading("Usados", text="USADOS", anchor=tk.W)
+
+        self.tabla_listComponentes.column("ID", stretch=tk.NO, minwidth="25", width="50")
+        self.tabla_listComponentes.column("Nombre", stretch=tk.NO, minwidth="25", width="200")
+        self.tabla_listComponentes.column("Almacen", stretch=tk.NO, minwidth="25", width="200")
+        self.tabla_listComponentes.column("Dañados", stretch=tk.NO, minwidth="25", width="200")
+        self.tabla_listComponentes.column("Usados", stretch=tk.YES, minwidth="25", width="200")
 
         # edit column
 
@@ -104,7 +113,7 @@ class   PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        boton_crear.grid(row=2, column=2, padx=10, pady=10)
+        boton_crear.grid(row=2, column=1, padx=10, pady=10)
 
     # *la que destrulle y crea una nueva interfaz
     def cambioInterfaz(self, interfaz):
@@ -126,6 +135,7 @@ class   PageComponent:
 
     def controlComponent(self):
         self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))
+        self.framePrincipal.columnconfigure(1, weight=1)
 
         buttonRegresar = tk.Button(self.framePrincipal, text="Regresar")
         buttonRegresar.config(
@@ -190,39 +200,38 @@ class   PageComponent:
         self.dañados = tk.IntVar()
         
         self.entry_nombre = tk.Entry(self.framePrincipal, textvariable=self.mi_nombre)
-        self.entry_nombre.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_nombre.grid(row=2, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_nombre.config(font=FONT_LABEL)
+        self.entry_nombre.grid(row=2, column=1, padx=10, pady=7, columnspan=2, sticky="ew")
 
         self.list_componentes = TipoEquipos.list(equipo_componente=False, order=True)
         self.select_componente = ttk.Combobox(
             self.framePrincipal, state="readonly",
-            values=list_values(self.list_componentes)
+            values=list_values(self.list_componentes), width=20, font=("Arial", 10, "roman"), justify="center"
         )
         self.select_componente.grid(row=3, column=1, padx=10, pady=7, columnspan=2)
+        self.select_componente.config(style="Combobox.TCombobox")
         self.select_componente.bind("<<ComboboxSelected>>", self.selectComponent)
 
-
         self.entry_usados = tk.Entry(self.framePrincipal, textvariable=self.usados)
-        self.entry_usados.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_usados.grid(row=5, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_usados.config(font=FONT_LABEL, state="disabled")
+        self.entry_usados.grid(row=5, column=1, padx=10, pady=7, columnspan=2, sticky="ew")
 
         self.entry_almacen = tk.Entry(self.framePrincipal, textvariable=self.almacen)
-        self.entry_almacen.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_almacen.grid(row=6, column=1, padx=10, pady=7, columnspan=2)
+        self.entry_almacen.config(font=FONT_LABEL)
+        self.entry_almacen.grid(row=6, column=1, padx=10, pady=7, columnspan=2, sticky="ew")
 
         self.entry_dañados = tk.Entry(self.framePrincipal, textvariable=self.dañados)
-        self.entry_dañados.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
-        self.entry_dañados.grid(row=7, column=1, padx=10, pady=7, columnspan=2)
-
+        self.entry_dañados.config(font=FONT_LABEL)
+        self.entry_dañados.grid(row=7, column=1, padx=10, pady=7, columnspan=2, sticky="ew")
 
         self.list_caracteristicas = Caracteristicas.list(order=True)
         self.list_values_caracteristicas=list_values(self.list_caracteristicas)
         self.select_caracteristicas = ttk.Combobox(
             self.framePrincipal, state="readonly",
-            values=self.list_values_caracteristicas
+            values=self.list_values_caracteristicas, width=20, font=("Arial", 10, "roman"), justify="center"
         )
-
         self.select_caracteristicas.grid(row=8, column=1, padx=10, pady=7)
+        self.select_caracteristicas.config(style="Combobox.TCombobox")
         self.boton_agregar = tk.Button(self.framePrincipal, text="Agregar", command=self.agregarCaracteristica)
         self.boton_agregar.config(
             width=TAMAÑO_BOTON,
@@ -286,6 +295,7 @@ class   PageComponent:
             self.boton_cancelar = tk.Button(
             self.framePrincipal, text="Eliminar", command=self.deleteComponent
             )
+            self.desabilitar_campos()
         
         else:
             # Botones
@@ -330,7 +340,6 @@ class   PageComponent:
         )
         self.boton_cancelar.grid(row=10, column=2, padx=8, pady=10)
         
-        self.desabilitar_campos()
 
     def dataComponente(self):
         label_nombre = tk.Label(self.frameData, font=FONT_LABEL, bg=COLOR_BASE, text="Nombre:")
