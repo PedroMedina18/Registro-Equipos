@@ -35,8 +35,8 @@ class PageAgregarCampos:
         self.framePrincipal.columnconfigure(3, weight=1)
 
     def controles(self):
-        self.tablas = Tablas.list(order=True)
-        self.campos = Campos_Tabla.list(order=True)
+        self.tablas = Tablas.list(ordenador={"campo":"nombre", "order":"ASC"})
+        self.campos = Campos_Tabla.list(ordenador={"campo":"nombre", "order":"ASC"})
         self.framePrincipal.columnconfigure(1, weight=1)
 
         # Titulo

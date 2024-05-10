@@ -26,13 +26,14 @@ from util.util_img import leer_imagen
 from util.list_values import list_values, verificacion_campos, determinar_campo, determinar_indice
 from util.util_error import controlError
 
-class   PageComponent:
+class PageComponent:
     def __init__(self, root, cambio_cuerpo):
         self.root = root
         self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
         self.id_componente = None
         self.cambio_cuerpo = cambio_cuerpo
-        self.data_component=None
+        self.data_component = None
+        self.order = "ASC"
         self.crearCuerpo()
         self.listComponentes()
 
@@ -43,7 +44,7 @@ class   PageComponent:
             self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
             self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
 
-    def listComponentes(self):
+    def listComponentes(self, list=True):
         self.framePrincipal.columnconfigure(0, weight=1)
         self.data_component=None
         self.id_componente = None
@@ -53,8 +54,9 @@ class   PageComponent:
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
-        self.list_componentes = Componentes.list()
-        self.list_componentes.reverse()
+        if list:
+            self.list_componentes = Componentes.list()
+            self.list_componentes.reverse()
 
         self.tabla_listComponentes = ttk.Treeview(
             self.framePrincipal, columns=("ID","Nombre", "Almacen",  "Dañados", "Usados"), height=30, show='headings'
@@ -79,7 +81,7 @@ class   PageComponent:
         self.tabla_listComponentes.column("Almacen", stretch=tk.NO, minwidth="25", width="200")
         self.tabla_listComponentes.column("Dañados", stretch=tk.NO, minwidth="25", width="200")
         self.tabla_listComponentes.column("Usados", stretch=tk.YES, minwidth="25", width="200")
-
+        self.tabla_listComponentes.bind('<ButtonRelease-1>', self.on_treeview_click)
         # edit column
 
         # iterar la lista de campos
@@ -114,6 +116,29 @@ class   PageComponent:
             activebackground=ACTIVE_AZUL,
         )
         boton_crear.grid(row=2, column=1, padx=10, pady=10)
+
+    def on_treeview_click(self, event):
+        if self.order=="ASC":
+            self.order="DESC"
+        else:
+            self.order="ASC"
+
+        column = self.tabla_listComponentes.identify_column(event.x)
+        item = self.tabla_listComponentes.identify_row(event.y)
+
+        if item=="":
+            if column == "#1":
+                self.list_componentes = Componentes.list(ordenador={"campo":"com.id", "order":self.order})
+            elif column == "#2":
+                self.list_componentes = Componentes.list(ordenador={"campo":"com.nombre", "order":self.order})
+            elif column == "#3":
+                self.list_componentes = Componentes.list(ordenador={"campo":"com.almacen", "order":self.order})
+            elif column == "#4":
+                self.list_componentes = Componentes.list(ordenador={"campo":"com.dañados", "order":self.order})
+            elif column == "#5":
+                self.list_componentes = Componentes.list(ordenador={"campo":"com.uso", "order":self.order})
+        
+        self.listComponentes(False)
 
     # *la que destrulle y crea una nueva interfaz
     def cambioInterfaz(self, interfaz):
@@ -203,7 +228,7 @@ class   PageComponent:
         self.entry_nombre.config(font=FONT_LABEL)
         self.entry_nombre.grid(row=2, column=1, padx=10, pady=7, columnspan=2, sticky="ew")
 
-        self.list_componentes = TipoEquipos.list(equipo_componente=False, order=True)
+        self.list_componentes = TipoEquipos.list(equipo_componente=False, ordenador={"campo":"nombre", "order":"ASC"})
         self.select_componente = ttk.Combobox(
             self.framePrincipal, state="readonly",
             values=list_values(self.list_componentes), width=20, font=("Arial", 10, "roman"), justify="center"
@@ -224,7 +249,7 @@ class   PageComponent:
         self.entry_dañados.config(font=FONT_LABEL)
         self.entry_dañados.grid(row=7, column=1, padx=10, pady=7, columnspan=2, sticky="ew")
 
-        self.list_caracteristicas = Caracteristicas.list(order=True)
+        self.list_caracteristicas = Caracteristicas.list(ordenador={"campo":"nombre", "order":"ASC"})
         self.list_values_caracteristicas=list_values(self.list_caracteristicas)
         self.select_caracteristicas = ttk.Combobox(
             self.framePrincipal, state="readonly",
@@ -339,7 +364,6 @@ class   PageComponent:
             activebackground=ACTIVE_ROJO,
         )
         self.boton_cancelar.grid(row=10, column=2, padx=8, pady=10)
-        
 
     def dataComponente(self):
         label_nombre = tk.Label(self.frameData, font=FONT_LABEL, bg=COLOR_BASE, text="Nombre:")
@@ -525,7 +549,7 @@ class   PageComponent:
                         "value":str(caracteristica[3].get()), 
                         "id_caracteristica_component":caracteristica[2], 
                         "tipo":"update"})
-                    
+
             if self.data_component:
                 valor = messagebox.askquestion(
                     "Editar Registro", "Desea editar este registro"

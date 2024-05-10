@@ -27,6 +27,8 @@ class PageListTablas:
         self.framePrincipal = None
         self.cambio_cuerpo = cambio_cuerpo
         self.id_table = None
+        self.order="ASC"
+        self.order_table="ASC"
         self.numero_registro = 0
         self.crearCuerpo()
         self.lista_tablas()
@@ -40,15 +42,17 @@ class PageListTablas:
             self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True)
 
     # *la primera lista en donde se ven todas las tablas
-    def lista_tablas(self):
+    def lista_tablas(self, list=True):
         self.framePrincipal.columnconfigure(0, weight=1)
 
         # Titulo
         tituloPage = tk.Label(self.framePrincipal, text="Lista de tablas")
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10)
-
-        self.list_tabla = Tablas.list(order=True)
+        
+        if list:
+            self.list_tabla = Tablas.list(ordenador={"campo":"nombre", "order":"ASC"})
+            self.list_tabla.reverse()
 
         self.tabla_listTablas = ttk.Treeview(
             self.framePrincipal, columns=("ID", "Nombre", "Descripcion"), height=30, show='headings'
@@ -72,6 +76,7 @@ class PageListTablas:
         self.tabla_listTablas.column("Nombre", stretch=tk.NO, minwidth="25", width="250")
         self.tabla_listTablas.column("Descripcion", stretch=tk.YES, minwidth="25")
 
+        self.tabla_listTablas.bind('<ButtonRelease-1>', self.on_treeview_click)
 
         # iterar la lista de campos
         for index, item in enumerate(self.list_tabla, start=1):
@@ -92,6 +97,24 @@ class PageListTablas:
             command=self.buscarDataTabla,
         )
         self.boton_buscar.grid(row=2, column=0, padx=10, pady=10)
+        
+    def on_treeview_click(self, event):
+        if self.order=="ASC":
+            self.order="DESC"
+        else:
+            self.order="ASC"
+
+        column = self.tabla_listTablas.identify_column(event.x)
+        item = self.tabla_listTablas.identify_row(event.y)
+
+        if item=="":
+            if column == "#1":
+                self.list_tabla = Tablas.list(ordenador={"campo":"id", "order":self.order})
+            elif column == "#2":
+                self.list_tabla = Tablas.list(ordenador={"campo":"nombre", "order":self.order})
+            elif column == "#3":
+                self.list_tabla = Tablas.list(ordenador={"campo":"descripcion", "order":self.order})
+            self.lista_tablas(False)
 
     # *la que destrulle y crea el nuevo frame
     def buscarDataTabla(self):

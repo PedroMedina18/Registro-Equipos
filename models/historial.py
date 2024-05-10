@@ -110,7 +110,7 @@ class Historial:
         finally:
             conexion.cerrar()
     
-    def list(equipo_id):
+    def list(equipo_id, ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
@@ -123,8 +123,13 @@ class Historial:
             FROM historial AS hi
             LEFT JOIN tipos_registros AS tire ON hi.tipo_registro_id=tire.id
             WHERE equipo_id = ?
-            ORDER BY fecha ASC;
         """
+        if ordenador["campo"] and ordenador["order"]:
+            sql = sql + f'''
+                ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
+        else:
+            sql = sql + "ORDER BY hi.fecha ASC;"
 
         try:
             conexion.cursor.execute(sql, [int(equipo_id)])

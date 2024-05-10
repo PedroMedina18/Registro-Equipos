@@ -35,6 +35,7 @@ class PageEquipos:
         self.id_equipo = None
         self.id_historial = None
         self.dataEquipo=None
+        self.order_historial="ASC"
         self.crearCuerpo()
         self.lista_Equipos()
 
@@ -42,10 +43,10 @@ class PageEquipos:
     def crearCuerpo(self):
 
         # LISTA VALORES SELECTS
-        self.list_tipos_equipos=TipoEquipos.list(equipo_componente=True, order=True)
-        self.list_areas_trabajos=AreasTrabajo.list(order=True)
-        self.list_estados=Estados.list(order=True)
-        self.list_componentes=Componentes.list(almacen=True, order=True)
+        self.list_tipos_equipos=TipoEquipos.list(equipo_componente=True, ordenador={"campo":"nombre", "order":"ASC"})
+        self.list_areas_trabajos=AreasTrabajo.list(ordenador={"campo":"nombre", "order":"ASC"})
+        self.list_estados=Estados.list(ordenador={"campo":"nombre", "order":"ASC"})
+        self.list_componentes=Componentes.list(almacen=True, ordenador={"campo":"com.nombre", "order":"ASC"})
         self.list_ubicacion=["Plaza Bolivar", "La Marrón"]
 
 
@@ -623,8 +624,9 @@ class PageEquipos:
             )
 
     def frameHistorial(self):
+        self.order_historial="ASC"
         try:
-            self.list_tipos_registros=Tipos_registros.list(order=True)
+            self.list_tipos_registros=Tipos_registros.list(ordenador={"campo":"nombre", "order":"ASC"})
             self.framePrincipal.columnconfigure(1, weight=1)
 
             buttonRegresar = tk.Button(self.framePrincipal, text="Regresar")
@@ -724,9 +726,10 @@ class PageEquipos:
                 titleSelection="Historial de Equipo"
             )
     
-    def tabla_lista_historial(self):
-        self.dataHistorial=Historial.list(equipo_id=self.id_equipo)
-        self.dataHistorial.reverse()
+    def tabla_lista_historial(self, list=True):
+        if list:
+            self.dataHistorial=Historial.list(equipo_id=self.id_equipo)
+            self.dataHistorial.reverse()
          # la lista de areas de trabajo
         self.tabla_historial = ttk.Treeview(
             self.framePrincipal, 
@@ -752,6 +755,8 @@ class PageEquipos:
         self.tabla_historial.column("Tipo de Registro", stretch=tk.NO, minwidth="50", width="200")
         self.tabla_historial.column("Fecha", stretch=tk.NO, minwidth="50", width="150")
         self.tabla_historial.column("Descripcion", stretch=tk.YES, minwidth="25")
+
+        self.tabla_historial.bind('<ButtonRelease-1>', self.on_treeview_click)
 
 
         # iterar la lista de areas de trabao
@@ -788,6 +793,26 @@ class PageEquipos:
         boton_eliminar.grid(row=7, column=1, padx=10, pady=10)
 
         self.desabilitar_campos_historial()
+
+    def on_treeview_click(self, event):
+        if self.order_historial=="ASC":
+            self.order_historial="DESC"
+        else:
+            self.order_historial="ASC"
+
+        column = self.tabla_historial.identify_column(event.x)
+        item = self.tabla_historial.identify_row(event.y)
+
+        if item=="":
+            if column == "#1":
+                self.dataHistorial = Historial.list(equipo_id=self.id_equipo, ordenador={"campo":"hi.id", "order":self.order_historial})
+            elif column == "#2":
+                self.dataHistorial = Historial.list(equipo_id=self.id_equipo, ordenador={"campo":"tire.nombre", "order":self.order_historial})
+            elif column == "#3":
+                self.dataHistorial = Historial.list(equipo_id=self.id_equipo, ordenador={"campo":"hi.fecha", "order":self.order_historial})
+            elif column == "#4":
+                self.dataHistorial = Historial.list(equipo_id=self.id_equipo, ordenador={"campo":"hi.descripcion", "order":self.order})
+            self.tabla_lista_historial(False)
 
     def guardar_campos_historial(self):
         tipo_registro = self.select_tipo_registro.current()

@@ -105,7 +105,7 @@ class Estados:
         finally:
             conexion.cerrar()
 
-    def list(order=False):
+    def list(ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
@@ -113,11 +113,10 @@ class Estados:
             SELECT * FROM estados ORDER BY id ASC;
         """
 
-        if order:
-            sql = """
-            SELECT * FROM estados ORDER BY nombre ASC;
-            """
-
+        if ordenador["campo"] and ordenador["order"]:
+            sql=f'''
+                SELECT * FROM estados ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
         try:
             conexion.cursor.execute(sql)
             lista = conexion.cursor.fetchall()

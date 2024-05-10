@@ -122,7 +122,7 @@ class Componentes:
         finally:
             conexion.cerrar()
 
-    def list(id_componente=0, almacen=False, order=False):
+    def list(id_componente=0, almacen=False, ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         sql = """
@@ -140,10 +140,13 @@ class Componentes:
             FROM componentes AS com
             LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
         """
-        if order:
-            sql=sql+ " ORDER BY com.nombre ASC;"
+        
+        if ordenador["campo"] and ordenador["order"]:
+            sql = sql + f'''
+                ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
         else:
-            sql=sql+ " ORDER BY com.id ASC;"
+            sql = sql + "ORDER BY com.id ASC;"
 
 
         if id_componente>0 and not almacen:
@@ -181,10 +184,13 @@ class Componentes:
             LEFT JOIN tipos_equipos AS tir ON com.componente_id = tir.id
             WHERE com.almacen > 0 
             """
-            if order:
-                sql=sql+ " ORDER BY com.nombre ASC;"
+
+            if ordenador["campo"] and ordenador["order"]:
+                sql = sql + f'''
+                    ORDER BY {ordenador["campo"]} {ordenador["order"]};
+                '''
             else:
-                sql=sql+ " ORDER BY com.id ASC;"
+                sql = sql + "ORDER BY com.id ASC;"
 
         try:
             if id_componente>0 and not almacen:

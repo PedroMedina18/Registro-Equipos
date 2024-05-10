@@ -137,7 +137,7 @@ class Campos_Tabla:
         finally:
             conexion.cerrar()
 
-    def list(order=False):
+    def list(ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
@@ -145,10 +145,10 @@ class Campos_Tabla:
             SELECT * FROM campos_tablas ORDER BY id ASC;
         """
 
-        if order:
-            sql = """
-            SELECT * FROM campos_tablas ORDER BY nombre ASC;
-            """
+        if ordenador["campo"] and ordenador["order"]:
+            sql=f'''
+                SELECT * FROM campos_tablas ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
 
         try:
             conexion.cursor.execute(sql)

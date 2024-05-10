@@ -173,7 +173,7 @@ class TipoEquipos:
         finally:
             conexion.cerrar()
 
-    def list(equipo_componente=None, order=False):
+    def list(equipo_componente=None, ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
@@ -207,10 +207,12 @@ class TipoEquipos:
                     tipos_equipos 
                 WHERE equipo_componente=0
             """
-        if order:
-            sql = sql + " ORDER BY nombre ASC;"
+        if ordenador["campo"] and ordenador["order"]:
+            sql = sql + f'''
+                ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
         else:
-            sql = sql + " ORDER BY id ASC;"
+            sql = sql + "ORDER BY id ASC;"
 
         try:
             conexion.cursor.execute(sql)

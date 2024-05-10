@@ -105,7 +105,7 @@ class AreasTrabajo:
         finally:
             conexion.cerrar()
 
-    def list(order=False):
+    def list(ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
@@ -113,10 +113,10 @@ class AreasTrabajo:
             SELECT * FROM areas_trabajo ORDER BY id ASC;
         """
 
-        if order:
-            sql = """
-            SELECT * FROM areas_trabajo ORDER BY nombre ASC;
-            """
+        if ordenador["campo"] and ordenador["order"]:
+            sql=f'''
+                SELECT * FROM areas_trabajo ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
 
         try:
             conexion.cursor.execute(sql)

@@ -23,6 +23,7 @@ class PageTypeEquipos:
         self.root = root
         self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
         self.id_tipo_equipo = None
+        self.order="ASC"
         self.crearCuerpo()
         self.controles()
         self.tabla_lista()
@@ -150,11 +151,11 @@ class PageTypeEquipos:
         )
         self.boton_cancelar.grid(row=7, column=2, padx=8, pady=7)
 
-    def tabla_lista(self):
-        pass
+    def tabla_lista(self, list=True):
         # la lista de tipos de equipo
-        self.lista_equipos = TipoEquipos.list()
-        self.lista_equipos.reverse()
+        if list:
+            self.lista_equipos = TipoEquipos.list()
+            self.lista_equipos.reverse()
         # la tabla de los datos
 
         self.tabla = ttk.Treeview(
@@ -185,6 +186,8 @@ class PageTypeEquipos:
         self.tabla.column("Modelo", stretch=tk.NO, minwidth="25", width="150")
         self.tabla.column("Tipo", stretch=tk.NO, minwidth="25", width="150")
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25", width="150")
+
+        self.tabla.bind('<ButtonRelease-1>', self.on_treeview_click)
 
         # iterar la lista de tipos de equipo
 
@@ -227,6 +230,31 @@ class PageTypeEquipos:
             command=self.eliminar_datos,
         )
         self.boton_eliminar.grid(row=9, column=1, padx=10, pady=7)
+
+    def on_treeview_click(self, event):
+        if self.order=="ASC":
+            self.order="DESC"
+        else:
+            self.order="ASC"
+
+        column = self.tabla.identify_column(event.x)
+        item = self.tabla.identify_row(event.y)
+
+        if item=="":
+            if column == "#1":
+                self.lista_equipos = TipoEquipos.list(ordenador={"campo":"id", "order":self.order})
+            elif column == "#2":
+                self.lista_equipos = TipoEquipos.list(ordenador={"campo":"nombre", "order":self.order})
+            elif column == "#3":
+                self.lista_equipos = TipoEquipos.list(ordenador={"campo":"marca", "order":self.order})
+            elif column == "#4":
+                self.lista_equipos = TipoEquipos.list(ordenador={"campo":"modelo", "order":self.order})
+            elif column == "#5":
+                self.lista_equipos = TipoEquipos.list(ordenador={"campo":"equipo_componente", "order":self.order})
+            elif column == "#6":
+                self.lista_equipos = TipoEquipos.list(ordenador={"campo":"descripcion", "order":self.order})
+        
+            self.tabla_lista(False)
 
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")

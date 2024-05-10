@@ -24,6 +24,7 @@ class PageCampos_tablas:
         self.root = root
         self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
         self.id_campos_tabla = None
+        self.order="ASC"
         self.crearCuerpo()
         self.controles()
         self.tabla_lista()
@@ -115,11 +116,11 @@ class PageCampos_tablas:
         )
         self.boton_cancelar.grid(row=4, column=2, padx=8, pady=10)
 
-    def tabla_lista(self):
+    def tabla_lista(self, list=True):
 
-        # la lista de pelicular
-        self.lista_campos = Campos_Tabla.list()
-        self.lista_campos.reverse()
+        if list:
+            self.lista_campos = Campos_Tabla.list()
+            self.lista_campos.reverse()
 
         self.tabla = ttk.Treeview(
             self.framePrincipal,
@@ -145,10 +146,10 @@ class PageCampos_tablas:
         self.tabla.column("Nombre", stretch=tk.NO, minwidth="50", width="200")
         self.tabla.column("Caracteres", stretch=tk.NO, minwidth="25", width="80")
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25")
-
+        self.tabla.bind('<ButtonRelease-1>', self.on_treeview_click)
 
         # iterar la lista d epeliculas
-        for index, item in enumerate(self.lista_campos):
+        for index, item in enumerate(self.lista_campos, start=1):
             id=item[0]
             tupla=(index, item[1], item[2], item[3])
             self.tabla.insert("", tk.END, text=id, values=tupla)
@@ -180,6 +181,27 @@ class PageCampos_tablas:
             command=self.eliminar_datos,
         )
         self.boton_eliminar.grid(row=6, column=1, padx=10, pady=10)
+
+    def on_treeview_click(self, event):
+        if self.order=="ASC":
+            self.order="DESC"
+        else:
+            self.order="ASC"
+
+        column = self.tabla.identify_column(event.x)
+        item = self.tabla.identify_row(event.y)
+
+        if item=="":
+            if column == "#1":
+                self.lista_campos = Campos_Tabla.list(ordenador={"campo":"id", "order":self.order})
+            elif column == "#2":
+                self.lista_campos = Campos_Tabla.list(ordenador={"campo":"nombre", "order":self.order})
+            elif column == "#3":
+                self.lista_campos = Campos_Tabla.list(ordenador={"campo":"numero_caracteres", "order":self.order})
+            elif column == "#4":
+                self.lista_campos = Campos_Tabla.list(ordenador={"campo":"descripcion", "order":self.order})
+
+            self.tabla_lista(False)
 
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")
