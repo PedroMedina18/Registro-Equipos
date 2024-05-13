@@ -13,6 +13,8 @@ def main():
     # *para agregar pantalla completa
     root.state("zoomed")
 
+    root.iconbitmap("./img/icono.ico")
+
     # *tamaño de la ventana en caso de reducir
     width, height = 1250, 800   
 

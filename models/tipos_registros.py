@@ -94,17 +94,18 @@ class Tipos_registros:
         finally:
             conexion.cerrar()
 
-    def list(order=False):
+    def list(ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
         sql = """
             SELECT * FROM tipos_registros ORDER BY id ASC;
         """
-        if order:
-            sql = """
-            SELECT * FROM tipos_registros ORDER BY nombre ASC;
-            """
+        
+        if ordenador["campo"] and ordenador["order"]:
+            sql=f'''
+                SELECT * FROM tipos_registros ORDER BY {ordenador["campo"]} {ordenador["order"]};
+            '''
 
         try:
             conexion.cursor.execute(sql)

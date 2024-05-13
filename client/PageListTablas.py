@@ -1,4 +1,5 @@
 import tkinter as tk
+import re
 from tkinter import ttk, messagebox
 from config import (
     FONT_LABEL,
@@ -17,6 +18,7 @@ from config import (
 from models.tablas import Tablas
 from models.tablas_has_campos import Tablas_has_Campos
 from models.registros import Registros
+from util.organizador import sort_tuples
 from util.util_error import controlError
 
 # la pagina en donde se encuentran todas las tablas
@@ -27,8 +29,8 @@ class PageListTablas:
         self.framePrincipal = None
         self.cambio_cuerpo = cambio_cuerpo
         self.id_table = None
-        self.order="ASC"
-        self.order_table="ASC"
+        self.order_registros = "ASC"
+        self.order_table = "ASC"
         self.numero_registro = 0
         self.crearCuerpo()
         self.lista_tablas()
@@ -52,7 +54,6 @@ class PageListTablas:
         
         if list:
             self.list_tabla = Tablas.list(ordenador={"campo":"nombre", "order":"ASC"})
-            self.list_tabla.reverse()
 
         self.tabla_listTablas = ttk.Treeview(
             self.framePrincipal, columns=("ID", "Nombre", "Descripcion"), height=30, show='headings'
@@ -99,21 +100,21 @@ class PageListTablas:
         self.boton_buscar.grid(row=2, column=0, padx=10, pady=10)
         
     def on_treeview_click(self, event):
-        if self.order=="ASC":
-            self.order="DESC"
+        if self.order_table=="ASC":
+            self.order_table="DESC"
         else:
-            self.order="ASC"
+            self.order_table="ASC"
 
         column = self.tabla_listTablas.identify_column(event.x)
         item = self.tabla_listTablas.identify_row(event.y)
 
         if item=="":
             if column == "#1":
-                self.list_tabla = Tablas.list(ordenador={"campo":"id", "order":self.order})
+                self.list_tabla = Tablas.list(ordenador={"campo":"id", "order":self.order_table})
             elif column == "#2":
-                self.list_tabla = Tablas.list(ordenador={"campo":"nombre", "order":self.order})
+                self.list_tabla = Tablas.list(ordenador={"campo":"nombre", "order":self.order_table})
             elif column == "#3":
-                self.list_tabla = Tablas.list(ordenador={"campo":"descripcion", "order":self.order})
+                self.list_tabla = Tablas.list(ordenador={"campo":"descripcion", "order":self.order_table})
             self.lista_tablas(False)
 
     # *la que destrulle y crea el nuevo frame
@@ -123,8 +124,8 @@ class PageListTablas:
             name_tabla = self.tabla_listTablas.item(self.tabla_listTablas.selection())["values"][1]
             self.list_campos = Tablas_has_Campos.list(id_tabla=self.id_table)
             if len(self.list_campos) == 0:
-                respuesta=messagebox.showwarning(f"Tabla {name_tabla}", "No hay ningun campo agregado a esta tabla")
-                if respuesta=="ok":
+                respuesta = messagebox.showwarning(f"Tabla {name_tabla}", "No hay ningun campo agregado a esta tabla")
+                if respuesta == "ok":
                     return
                 
             self.framePrincipal.destroy()
@@ -171,7 +172,7 @@ class PageListTablas:
 
             object_campos={}
 
-            if campos[2] >= 150:
+            if campos[2] >= 180:
                 # # TEXTARE
                 entry_descripcion = tk.Text(self.framePrincipal)
                 entry_descripcion.grid(row=2 + self.CONTADOR, column=1, pady=10, columnspan=3, sticky="ew")
@@ -252,12 +253,13 @@ class PageListTablas:
         self.desabilitar_campos()
         self.tabla_lista()
 
-    def tabla_lista(self):
+    def tabla_lista(self, lista=True):
         self.framePrincipal.columnconfigure(3, weight=1)
         columns = ("id",)
         columns += tuple(element["nombre"] for element in self.LIST_CAMPOS)
         columns += ("fecha_creacion", "fecha_actualizacion")
-        self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
+        if lista:
+            self.lista_registros = Registros.list(id_tabla=self.id_table, campos=columns)
         
         frameTable=tk.Frame(self.framePrincipal, height=350, bg=COLOR_BASE, width=200)
         frameTable.grid(row=3 + self.CONTADOR, column=0, columnspan=5, sticky="NSEW", padx=10)
@@ -297,13 +299,26 @@ class PageListTablas:
                 self.tabla_registros.column(f"{object}", stretch=tk.NO, minwidth="25", width="50")
             if object=="fecha_creacion" or object=="fecha_actualizacion":
                 self.tabla_registros.column(f"{object}", stretch=tk.NO, minwidth="50", width="180")
-        
+
+        self.tabla_registros.bind('<ButtonRelease-1>', self.on_treeview_click_registros)
+        self.lista_valores=[]
+
         # Para insertar los registros en al tabla
         for index, registros in enumerate(self.lista_registros):
-            values = list(values for keys, values in registros.items())
-            idRegistro = values[0]
-            values[0] = index + 1
-            values=tuple(values)
+            if lista:
+                values = list(values for keys, values in registros.items())
+                # print(values)
+                # print("-"*100)
+                self.lista_valores.append(values[:])
+                idRegistro = values[0]
+                values[0] = index + 1
+                values=tuple(values)
+            else:
+                self.lista_valores.append(registros[:])
+                idRegistro = registros[0]
+                values=registros
+                values[0] = index + 1
+            # print(self.lista_valores)
             self.tabla_registros.insert("", tk.END, text=idRegistro, values=values)
 
         # botones finales
@@ -330,6 +345,20 @@ class PageListTablas:
             activebackground=ACTIVE_ROJO,
         )
         self.boton_eliminar.grid(row=5 + self.CONTADOR, column=1, padx=10, pady=10)
+
+    def on_treeview_click_registros(self, event):
+        if self.order_registros == "ASC":
+            self.order_registros = "DESC"
+        else:
+            self.order_registros = "ASC"
+
+        column = self.tabla_registros.identify_column(event.x)
+        item = self.tabla_registros.identify_row(event.y)
+
+        if item == "":
+            indice = re.findall('\d+', column)
+            self.lista_registros = sort_tuples(self.lista_valores, int(indice[0])-1, self.order_registros)
+            self.tabla_lista(False)
 
     def desabilitar_campos(self):
 
@@ -374,7 +403,7 @@ class PageListTablas:
         
         if self.numero_registro == None:
             valor = messagebox.askquestion(
-                "Registro Nuevo", "Desea ingresar nuevo registro"
+                "Registro Nuevo", "Desea ingresar un nuevo registro"
             )
             if valor == "yes":
                 Registros.create(campos=list_campos)
@@ -405,6 +434,7 @@ class PageListTablas:
     def eliminar_datos(self):
         try:
             self.numero_registro = self.tabla_registros.item(self.tabla_registros.selection())["text"]
+            print(self.numero_registro)
             valor = messagebox.askquestion(
                 "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )

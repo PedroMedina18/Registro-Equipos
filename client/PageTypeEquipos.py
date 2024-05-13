@@ -268,42 +268,48 @@ class PageTypeEquipos:
         self.boton_cancelar.config(state="normal")
 
     def guardar_campos(self):
-
-        tipo_equipo = {
-            "nombre": self.mi_nombre.get(),
-            "marca": self.mi_marca.get(),
-            "modelo": self.mi_modelo.get(),
-            "equipo_componente": self.componente_equipo.get(),
-            "descripcion": self.entry_descripcion.get(1.0, tk.END),
-        }
-        if self.id_tipo_equipo == None:
-            valor = messagebox.askquestion(
-                "Registro Nuevo", "Desea ingresar nuevo registro"
-            )
-            if valor == "yes":
-                TipoEquipos.create(
-                    nombre=tipo_equipo["nombre"],
-                    marca=tipo_equipo["marca"],
-                    modelo=tipo_equipo["modelo"],
-                    descripcion=tipo_equipo["descripcion"],
-                    equipo_componente=tipo_equipo["equipo_componente"],
+        try:
+            tipo_equipo = {
+                "nombre": self.mi_nombre.get(),
+                "marca": self.mi_marca.get(),
+                "modelo": self.mi_modelo.get(),
+                "equipo_componente": self.componente_equipo.get(),
+                "descripcion": self.entry_descripcion.get(1.0, tk.END),
+            }
+            if self.id_tipo_equipo == None:
+                valor = messagebox.askquestion(
+                    "Registro Nuevo", "Desea ingresar nuevo registro"
                 )
-        else:
-            valor = messagebox.askquestion(
-                    "Editar Registro", "Desea editar este registro"
-            )
-            if valor == "yes":
-                TipoEquipos.update(
-                    id=self.id_tipo_equipo,
-                    nombre=tipo_equipo["nombre"],
-                    marca=tipo_equipo["marca"],
-                    modelo=tipo_equipo["modelo"],
-                    descripcion=tipo_equipo["descripcion"],
-                    equipo_componente=tipo_equipo["equipo_componente"],
+                if valor == "yes":
+                    TipoEquipos.create(
+                        nombre=tipo_equipo["nombre"],
+                        marca=tipo_equipo["marca"],
+                        modelo=tipo_equipo["modelo"],
+                        descripcion=tipo_equipo["descripcion"],
+                        equipo_componente=tipo_equipo["equipo_componente"],
+                    )
+            else:
+                valor = messagebox.askquestion(
+                        "Editar Registro", "Desea editar este registro"
+                )
+                if valor == "yes":
+                    TipoEquipos.update(
+                        id=self.id_tipo_equipo,
+                        nombre=tipo_equipo["nombre"],
+                        marca=tipo_equipo["marca"],
+                        modelo=tipo_equipo["modelo"],
+                        descripcion=tipo_equipo["descripcion"],
+                        equipo_componente=tipo_equipo["equipo_componente"],
+                    )
+
+            self.desabilitar_campos()
+            self.tabla_lista()
+        except Exception as error:
+            if "expected floating-point number but got" in str(error):
+                messagebox.showwarning(
+                    "Error de campo", "Seleccione que tipode equipo desea registrar"
                 )
 
-        self.desabilitar_campos()
-        self.tabla_lista()
 
     def desabilitar_campos(self):
         self.mi_nombre.set("")

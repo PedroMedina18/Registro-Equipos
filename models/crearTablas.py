@@ -180,6 +180,16 @@ def crearTablas():
         ("Eliminado", "Equipos que fueron botados por estar totalmente inutilizable"),
     ]
 
+    SQL_insert_caracteristicas='''
+        INSERT INTO caracteristicas (nombre, descripcion)
+        VALUES(?, ?)
+    '''
+    caracteristicas=[
+        ("Capacidad de Almacenamiento", "Capacidad de Almacenamiento del dispositivo MB, GB, TB"),
+        ("Capacidad de Memoria", "Capacidad de memoria"),
+        ("Boltaje", "Boltaje del dispositivo"),
+    ]
+
     SQL_insert_areas_trabajo='''
         INSERT INTO areas_trabajo (nombre, descripcion)
         VALUES(?, ?)
@@ -208,24 +218,56 @@ def crearTablas():
     tablas=[
         ("Contraseñas Computadores", "Tabla con todas las contraseñas de los computadores"),
         ("Contraseñas WI-FI", "Tabla con todas las contraseñas de los puntos de WI-FI"),
-        ("Extenciones Telefonicas", "Tabla con las diferentes extsiones de telefono"),
+        ("Extenciones Telefónicas", "Tabla con las diferentes extsiones de telefono"),
         ("Direcciones IP", "Tabla con las direcciones IP de los computadores"),
+        ("Conexion entre los puertos del Stwiche", "Conexion de los puertos de red con los computadores"),
     ]
 
-    SQL_insert_campos_tablas='''
+    SQL_insert_campos_tablas = '''
         INSERT INTO campos_tablas (nombre, descripcion, numero_caracteres)
         VALUES(?, ?, ?)
     '''
     
-    campos_tablas=[
-        ("Red", "Red de WI-FI", 100),
+    campos_tablas = [
+        ("Computador", "Computador", 100),
         ("Contraseña", "Contraseña", 100),
         ("Extension Telefónica", "Codigo Telefónico", 100),
-        ("Departamento", "Nombre del Departamento", 200),
-        ("Nombre del Computador", "Nombre del Computador", 300),
-        ("Nombre de Usuario", "Nombre de Usuario", 300),
+        ("Departamento", "Nombre del Departamento", 100),
+        ("Nombre", "Nombre de algun tema", 100),
+        ("Stwiche", "Nombre del Stwiche", 100),
+        ("Puerto", "Nombre del Puerto", 100),
+        ("Fecha", "Fecha d-m-a", 100),
+        ("Usuario", "Usuario del computador", 100),
+        ("Nombre del Computador", "Nombre del Computador", 100),
+        ("Nombre de Usuario", "Nombre de Usuario", 100),
         ("Dirección IP", "Direccion IP", 100),
-        ("Surcursal", "Nombre de la Surcursal", 100),
+        ("Tienda", "Nombre de la Surcursal", 100),
+        ("Persona", "Nombre de la Persona", 100),
+    ]
+
+    SQL_insert_tablas_has_campos_tablas = """
+            INSERT INTO tablas_has_campos_tablas (tablas_id, campos_id)
+            VALUES(?, ?)
+    """
+
+    tablas_has_campos_tablas = [
+        (1, 13),
+        (1, 1),
+        (1, 9),
+        (1, 2),
+        (2, 13),
+        (2, 5),
+        (2, 2),
+        (3, 13),
+        (3, 14),
+        (3, 3),
+        (4, 13),
+        (4, 1),
+        (4, 12),
+        (5, 13),
+        (5, 7),
+        (5, 6),
+        (5, 11),
     ]
 
     SQL_insert_tipo_registro='''
@@ -249,8 +291,10 @@ def crearTablas():
     tipo_equipo=[
         ("Computadora", "Lenovo", "N/S", "Computadora de escritorio marca lenovo", 1),
         ("Servidor", "N/S", "N/S", "", 1),
-        ("Pantalla de escritorio", "N/S", "N/S", "Pantalla de escritorio", 1),
+        ("Monitores de escritorio", "N/S", "N/S", "Pantalla de escritorio", 1),
         ("Televisor", "N/S", "N/S", "", 1),
+        ("Impresora", "N/S", "N/S", "", 1),
+        ("Impresora Fiscal", "N/S", "N/S", "", 1),
         ("Puntos de Venta", "N/S", "N/S", "", 1),
         ("Visores de Precio", "N/S", "N/S", "", 1),
         ("Mini Stwiche", "N/S", "N/S", "", 1),
@@ -263,7 +307,6 @@ def crearTablas():
         ("Mause", "N/S", "N/S", "", 0),
         ("Teclado", "N/S", "N/S", "", 0),
     ]
-
 
     try:
         conexion.cursor.execute(SQL_tablaEquipos)
@@ -282,9 +325,11 @@ def crearTablas():
         conexion.cursor.execute(SQL_tipo_registro)
         conexion.cursor.execute(SQL_historial)
         conexion.cursor.executemany(SQL_insert_estados, estados)
+        conexion.cursor.executemany(SQL_insert_caracteristicas, caracteristicas)
         conexion.cursor.executemany(SQL_insert_areas_trabajo, areas_trabajo)
         conexion.cursor.executemany(SQL_insert_tablas, tablas)
         conexion.cursor.executemany(SQL_insert_campos_tablas, campos_tablas)
+        conexion.cursor.executemany(SQL_insert_tablas_has_campos_tablas, tablas_has_campos_tablas)
         conexion.cursor.executemany(SQL_insert_tipo_registro, tipo_registro)
         conexion.cursor.executemany(SQL_insert_tipo_equipo, tipo_equipo)
         conexion.cerrar()

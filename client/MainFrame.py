@@ -26,7 +26,6 @@ from models.estados import Estados
 from models.areas_trabajo import AreasTrabajo
 from models.tipos_registros import Tipos_registros
 
-from prueba import pruebasql
 
 
 # La magina inicial al cargar la aplicacion
@@ -35,6 +34,7 @@ class MainFrame:
     def __init__(self, root):
         self.root = root
         self.imgInicio = util_img.leer_imagen("./img/ordenador.png", (300, 300))
+        self.imgLocatel = util_img.leer_imagen("./img/logo-locatel.png", (200, 60))
         self.rootScroll=None
         self.cuerpo_principal = None
         self.menus()
@@ -53,7 +53,6 @@ class MainFrame:
 
         menu_inicio.add_command(label="Crear Base de Datos", command=crearTablas)
         menu_inicio.add_command(label="Salir", command=self.root.destroy)
-        menu_inicio.add_command(label="Prueba", command=pruebasql)
 
         menu_tablas.add_command(
             label="Tablas",
@@ -157,9 +156,9 @@ class MainFrame:
         self.buttonMenuLateral.pack(side=tk.LEFT)
 
         # Etiqueta de informacion
-        self.labelTitulo = tk.Label(self.frame_barra_superior, text="Bienvenido")
+        self.labelTitulo = tk.Label(self.frame_barra_superior, image=self.imgLocatel,)
         self.labelTitulo.config(
-            fg=LETRA_CLARA, font=FONT_ROBOTO_SMALL, bg=COLOR_BARRA_SUPERIOR, padx=10, width=20
+            fg=LETRA_CLARA, font=FONT_ROBOTO_SMALL, bg=COLOR_BARRA_SUPERIOR, padx=100
         )
         self.labelTitulo.pack(side=tk.RIGHT)
 
@@ -309,6 +308,7 @@ class MainFrame:
             font=("Roboto", 30, "bold"),
             compound="top",
         ).pack(side=tk.TOP, fill=tk.X, pady=100)
+
 
     # *Funcion para quitaro colocar el menu lateral
     def toggle_panel(self):

@@ -110,7 +110,7 @@ class Historial:
         finally:
             conexion.cerrar()
     
-    def list(equipo_id, ordenador={"campo":None, "order":None}):
+    def list(equipo_id=0, ordenador={"campo":None, "order":None}):
         conexion = ConexionDB()
 
         lista = []
@@ -136,6 +136,7 @@ class Historial:
             lista = conexion.cursor.fetchall()
 
         except Exception as error:
+            print(error)
             controlError(
                 error,
                 titleTable="Conexion al registro",
