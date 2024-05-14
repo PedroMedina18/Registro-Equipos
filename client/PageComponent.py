@@ -44,7 +44,7 @@ class PageComponent:
             self.framePrincipal = tk.Frame(self.root, bg=COLOR_BASE)
             self.framePrincipal.pack(side=tk.RIGHT, fill="both", expand=True, ipadx=10)
 
-    def listComponentes(self, list=True):
+    def listComponentes(self, lista=True):
         self.framePrincipal.columnconfigure(0, weight=1)
         self.data_component=None
         self.id_componente = None
@@ -54,7 +54,7 @@ class PageComponent:
         tituloPage.config(font=FONT_LABEL_TITULO, bg=COLOR_BASE, anchor="center")
         tituloPage.grid(row=0, column=0, padx=10, pady=10, columnspan=4)
 
-        if list:
+        if lista:
             self.list_componentes = Componentes.list()
             self.list_componentes.reverse()
 
@@ -138,7 +138,7 @@ class PageComponent:
             elif column == "#5":
                 self.list_componentes = Componentes.list(ordenador={"campo":"com.uso", "order":self.order})
         
-        self.listComponentes(False)
+            self.listComponentes(False)
 
     # *la que destrulle y crea una nueva interfaz
     def cambioInterfaz(self, interfaz):
@@ -266,7 +266,9 @@ class PageComponent:
             cursor="hand2",
             activebackground=ACTIVE_AZUL)
         self.boton_agregar.grid(row=8, column=2, padx=10, pady=10)
-
+        self.boton_guardar = tk.Button(
+            self.framePrincipal, text="Guardar", command=self.guardar
+        )
         if self.data_component:
             self.mi_nombre.set(f"{self.data_component[1]}")
             self.usados.set(f"{self.data_component[4]}")
@@ -342,9 +344,7 @@ class PageComponent:
         )
         self.boton_nuevo.grid(row=10, column=0, padx=8, pady=10)
 
-        self.boton_guardar = tk.Button(
-            self.framePrincipal, text="Guardar", command=self.guardar
-        )
+        
         self.boton_guardar.config(
             width=TAMAÑO_BOTON,
             font=FONT_LABEL,

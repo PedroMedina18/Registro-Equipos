@@ -1,7 +1,7 @@
 from .conexion import ConexionDB
 from util.comprobacionCampos import comprobacionString
 from tkinter import messagebox
-from config import TITULO_CAMPOS
+from config import TITULO_CAMPOS, MESSAGE_DELETE
 from util.util_error import controlError
 
 class Tipos_registros:
@@ -82,9 +82,20 @@ class Tipos_registros:
             DELETE FROM tipos_registros
             WHERE id = ?;
         """
+        sql_comprobacion_tipo_registro="""
+            SELECT id FROM historial WHERE tipo_registro_id = ?
+        """
 
         try:
+            conexion.cursor.execute(sql_comprobacion_tipo_registro, [int(id)])
+            comprobacion_tipo_registro = conexion.cursor.fetchall()
+            
+            if len(comprobacion_tipo_registro)>0:
+                messagebox.showerror("Eliminar Registro", MESSAGE_DELETE)
+                return None
+            
             conexion.cursor.execute(sql, [int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,

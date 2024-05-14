@@ -103,10 +103,12 @@ class Historial:
         try:
             conexion.cursor.execute(sql, [int(id_equipo)])
             return True
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+        )
         finally:
             conexion.cerrar()
     

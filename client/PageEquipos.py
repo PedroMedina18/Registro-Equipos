@@ -203,6 +203,7 @@ class PageEquipos:
             id_equipo=item[0]
             tupla=(item[0], item[1], item[2],item[3], ubicacion, item[5], item[6])
             self.list_equipos_ordenados.append(tupla)
+            tupla=(index, item[1], item[2],item[3], ubicacion, item[5], item[6])
             self.tabla_historial_listEquipos.insert("", tk.END, text=id_equipo, values=tupla)
 
     def on_treeview_click_equipos(self, event):
@@ -334,7 +335,6 @@ class PageEquipos:
         self.select_area_trabajo.config(style="Combobox.TCombobox")
         self.select_area_trabajo.grid(row=7, column=1, padx=10, pady=10, columnspan=2 )
 
-
         label_componente = tk.Label(self.framePrincipal, text="Componentes")
         label_componente.config(font=FONT_LABEL, bg=COLOR_BASE)
         label_componente.grid(row=8, column=0, padx=10, pady=10, sticky="w")
@@ -412,7 +412,7 @@ class PageEquipos:
                 label.pack(side=tk.LEFT)
 
                 buton_eliminar.pack(side=tk.RIGHT, padx=10)
-                buton_eliminar.config(state="disabled", command=lambda:self.deleteEquipoComponent(componente))
+                buton_eliminar.config(state="disabled", command=lambda:self.deleteEquipoComponent(componenteData))
 
                 frameData=tk.Frame(frame, bg=COLOR_BASE)
                 frameData.pack(side=tk.BOTTOM, fill=tk.BOTH)
@@ -942,13 +942,14 @@ class PageEquipos:
     
     def deleteEquipo(self):
         try:
+            print(self.dataEquipo)
             valor = messagebox.askquestion(
                 "Eliminar Registro", "Desea Eliminar el equipo"
             )
             if valor == "yes":
                 delete=Equipos.delete(self.dataEquipo[0][0])
                 if delete:
-                    self.cambioInterfaz(self.listComponentes)
+                    self.cambioInterfaz(self.lista_Equipos)
 
         except Exception as error:
             controlError(
@@ -986,6 +987,7 @@ class PageEquipos:
         self.boton_cancelar.config(state="disabled")
 
         if self.dataEquipo: 
+            self.boton_cancelar.config(state="normal")
             for campo in self.componentes:
                 campo[4].config(state="disabled")
 

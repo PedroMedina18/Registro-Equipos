@@ -6,6 +6,7 @@ from util.util_error import controlError
 from .historial import Historial
 from .componentes_has_equipos import Componentes_has_Equipos
 from .componentes import Componentes
+import datetime
 
 class Equipos:
 
@@ -43,16 +44,14 @@ class Equipos:
             INSERT INTO componentes_has_equipos (componente_id, equipo_id)
             VALUES(?, ?)
         """
-
+        componentes_id=[]
         try:
             conexion.cursor.execute(sql_equipo, (str(serial), str(alias), int(tipos_equipos_id), int(bolivar_marron), int(estado_actual_id), int(area_trabajo_id)))
             ultimo_registro_equipo = conexion.cursor.lastrowid
 
             for componente in componentes:
-                Componentes.sumarUsados(int(componente))
                 conexion.cursor.execute(sql_componente_equipo, (int(componente), int(ultimo_registro_equipo)))
-
-            return True
+                componentes_id.append(int(componente))
         except Exception as error:
             controlError(
                 error,
@@ -63,6 +62,10 @@ class Equipos:
             return False
         finally:
             conexion.cerrar()
+        
+        for componente_id in componentes_id:
+            Componentes.sumarUsados(int(componente_id))
+        return True
 
     def update(serial="", alias="", tipos_equipos_id=0, bolivar_marron=bool, estado_actual_id=0, area_trabajo_id=0, id=0, componentes=[]):
         conexion = ConexionDB()
@@ -109,11 +112,11 @@ class Equipos:
 
         try:
             conexion.cursor.execute(sql, (str(serial), str(alias), int(tipos_equipos_id), bool(bolivar_marron), int(estado_actual_id), int(area_trabajo_id), int(id)))
-
+            
+            componentes_id=[]
             for componente in componentes:
-                Componentes.sumarUsados(int(componente))
                 conexion.cursor.execute(sql_componente_equipo, [int(componente), int(id)])
-            return True
+                componentes_id.append(int(componente))
         except Exception as error:
             controlError(
                 error,
@@ -123,6 +126,10 @@ class Equipos:
             return False
         finally:
             conexion.cerrar()
+            
+        for componente_id in componentes_id:
+            Componentes.sumarUsados(int(componente_id))
+        return True
 
     def delete(id):
         conexion = ConexionDB()
@@ -134,16 +141,18 @@ class Equipos:
 
         try:
             conexion.cursor.execute(sql, [int(id)])
-            Historial.delete_equipo(id_equipo=id)
-            return True
-        except:
-            titulo = "Eliminar Datos"
-            message = "No se pudo eliminar el registro"
-            messagebox.showwarning(titulo, message)
-        finally:
             conexion.cerrar()
+            Historial.delete_equipo(id_equipo = id)
+            Componentes_has_Equipos.delete_equipo(id_equipo = id)
+            return True
+        except Exception as error:
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
 
-    def list(order=False, id=0):
+    def list(order = False, id = 0):
         conexion = ConexionDB()
 
         lista = []
@@ -206,7 +215,7 @@ class Equipos:
             conexion.cerrar()
         return lista
 
-    def filter(estado=0, ubicacion=0, tipo_equipo=0, area_trabajo=0):
+    def filter(estado = 0, ubicacion = 0, tipo_equipo = 0, area_trabajo = 0):
         conexion = ConexionDB()
         lista = []
         sql_general='''

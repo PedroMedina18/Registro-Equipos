@@ -248,7 +248,7 @@ class Componentes:
 
     def sumarUsados(id_componente=0):
         conexion = ConexionDB()
-        componente=None
+        componente = None
         sql_component = """
             SELECT 
                 id,
@@ -265,7 +265,7 @@ class Componentes:
         """
         try:
             conexion.cursor.execute(sql_component, [int(id_componente)])
-            componente=conexion.cursor.fetchall()
+            componente = conexion.cursor.fetchall()
 
             conexion.cursor.execute(sql_update, [int(componente[0][2]-1), int(componente[0][3]+1), int(id_componente)])
             return True
@@ -299,9 +299,9 @@ class Componentes:
         try:
             conexion.cursor.execute(sql_component, [int(id_componente)])
             componente=conexion.cursor.fetchall()
-
-            conexion.cursor.execute(sql_update, [int(componente[0][2]+1), int(componente[0][3]-1), int(id_componente)])
-            return True
+            if not int(componente[0][3]) <= 0:
+                conexion.cursor.execute(sql_update, [int(componente[0][2]+1), int(componente[0][3]-1), int(id_componente)])
+                return True
         except Exception as error:
             controlError(
                 error,

@@ -221,6 +221,7 @@ def crearTablas():
         ("Extenciones Telefónicas", "Tabla con las diferentes extsiones de telefono"),
         ("Direcciones IP", "Tabla con las direcciones IP de los computadores"),
         ("Conexion entre los puertos del Stwiche", "Conexion de los puertos de red con los computadores"),
+        ("Correos", "Lista de todos los correos"),
     ]
 
     SQL_insert_campos_tablas = '''
@@ -243,6 +244,7 @@ def crearTablas():
         ("Dirección IP", "Direccion IP", 100),
         ("Tienda", "Nombre de la Surcursal", 100),
         ("Persona", "Nombre de la Persona", 100),
+        ("Correo", "Dirección de correo eléctronico", 100),
     ]
 
     SQL_insert_tablas_has_campos_tablas = """
@@ -268,6 +270,10 @@ def crearTablas():
         (5, 7),
         (5, 6),
         (5, 11),
+        (6, 15),
+        (6, 2),
+        (6, 13),
+        (6, 4),
     ]
 
     SQL_insert_tipo_registro='''

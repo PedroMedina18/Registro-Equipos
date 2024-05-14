@@ -44,7 +44,7 @@ class Componentes_has_Equipos:
             conexion.cerrar()
 
         return lista_componentes
-
+    
     def delete(id_componente_has_equipo, id_componente):
         conexion = ConexionDB()
 
@@ -54,8 +54,28 @@ class Componentes_has_Equipos:
         """
 
         try:
-            Componentes.sumarUsados(int(id_componente))
-            conexion.cursor.execute(sql, [int(id)])
+            Componentes.restarUsados(int(id_componente))
+            conexion.cursor.execute(sql, [int(id_componente_has_equipo)])
+        except Exception as error:
+            print(error)
+            controlError(
+                error,
+                titleTable="Eliminar Datos",
+                messageTable="No se pudo eliminar el registro"
+            )
+        finally:
+            conexion.cerrar()
+    
+    def delete_equipo(id_equipo):
+        conexion = ConexionDB()
+
+        sql = """
+            DELETE FROM componentes_has_equipos
+            WHERE equipo_id = ?;
+        """
+
+        try:
+            conexion.cursor.execute(sql, [int(id_equipo)])
         except Exception as error:
             controlError(
                 error,
