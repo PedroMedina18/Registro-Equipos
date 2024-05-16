@@ -46,6 +46,7 @@ class Campos_Tabla:
             conexion.cursor.execute(
                 sql, (str(nombre).capitalize(), str(descripcion), int(caracteres))
             )
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -93,10 +94,8 @@ class Campos_Tabla:
             WHERE id = ?
         """
         try:
-            conexion.cursor.execute(
-                sql,
-                (str(nombre.capitalize()), str(descripcion), int(caracteres), int(id)),
-            )
+            conexion.cursor.execute(sql, (str(nombre.capitalize()), str(descripcion), int(caracteres), int(id)),)
+            return True
         except Exception as error:
             controlError(
                 error,

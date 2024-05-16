@@ -103,6 +103,9 @@ class Componentes:
         sql_comprobacion="""
             SELECT id FROM componentes_has_equipos WHERE componente_id = ?
         """
+        sql_caracteristicas="""
+            DELETE FROM componentes_has_caracteristicas WHERE componente_id = ?
+        """
 
         try:
             conexion.cursor.execute(sql_comprobacion, [int(id)])
@@ -112,6 +115,7 @@ class Componentes:
                 return None
 
             conexion.cursor.execute(sql, [int(id)])
+            conexion.cursor.execute(sql_caracteristicas, [int(id)])
             return True
         except Exception as error:
             controlError(

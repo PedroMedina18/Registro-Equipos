@@ -603,7 +603,7 @@ class PageEquipos:
                     actualizar_equipo=Equipos.update(id=self.dataEquipo[0][0], serial=serial, alias=alias, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
                     if actualizar_equipo:
                         titulo="Exito"
-                        message="Registro Completado"
+                        message="Registro Editado"
                         valor=messagebox.showinfo(titulo, message)
                         if valor == "ok":
                             self.cambioInterfaz(self.lista_Equipos)
@@ -942,14 +942,17 @@ class PageEquipos:
     
     def deleteEquipo(self):
         try:
-            print(self.dataEquipo)
             valor = messagebox.askquestion(
                 "Eliminar Registro", "Desea Eliminar el equipo"
             )
             if valor == "yes":
                 delete=Equipos.delete(self.dataEquipo[0][0])
                 if delete:
-                    self.cambioInterfaz(self.lista_Equipos)
+                    for component in self.dataEquipo[1]:
+                        Componentes.restarUsados(id_componente=component[1])
+                    valor=messagebox.showinfo("Exito", "Registro Eliminado")
+                    if valor == "ok":
+                        self.cambioInterfaz(self.lista_Equipos)
 
         except Exception as error:
             controlError(

@@ -12,7 +12,7 @@ class Componentes_has_Caracteristicas:
         '''
         try:
             conexion.cursor.execute(sql_componente_caracteristica, (int(componente_id), int(caracteristica_id), str(value)))
-            
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -33,6 +33,7 @@ class Componentes_has_Caracteristicas:
 
         try:
             conexion.cursor.execute(sql_componente_caracteristica, [str(value), int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,

@@ -558,7 +558,7 @@ class PageComponent:
                     componente=Componentes.update(nombre=nombre, dañados=dañados, almacen=almacen, componente_id=id_componente, caracteristicas=caracteristicas, id=self.data_component[0])
                     if componente:
                         titulo="Exito"
-                        message="Registro Completado"
+                        message="Registro Editado"
                         valor=messagebox.showinfo(titulo, message)
                         if valor == "ok":
                             self.cambioInterfaz(self.listComponentes)
@@ -602,7 +602,9 @@ class PageComponent:
             if valor == "yes":
                 detele=Componentes.delete(self.data_component[0])
                 if detele:
-                    self.cambioInterfaz(self.listComponentes)
+                    valor=messagebox.showinfo("Exito", "Registro Eliminado")
+                    if valor == "ok":
+                        self.cambioInterfaz(self.listComponentes)
 
         except Exception as error:
             controlError(

@@ -281,19 +281,22 @@ class PageTypeEquipos:
                     "Registro Nuevo", "Desea ingresar nuevo registro"
                 )
                 if valor == "yes":
-                    TipoEquipos.create(
+                    respuesta = TipoEquipos.create(
                         nombre=tipo_equipo["nombre"],
                         marca=tipo_equipo["marca"],
                         modelo=tipo_equipo["modelo"],
                         descripcion=tipo_equipo["descripcion"],
                         equipo_componente=tipo_equipo["equipo_componente"],
                     )
+                    if respuesta:
+                        messagebox.showinfo("Exito", "Registro Completado")
+                        self.desabilitar_campos()
             else:
                 valor = messagebox.askquestion(
                         "Editar Registro", "Desea editar este registro"
                 )
                 if valor == "yes":
-                    TipoEquipos.update(
+                    respuesta = TipoEquipos.update(
                         id=self.id_tipo_equipo,
                         nombre=tipo_equipo["nombre"],
                         marca=tipo_equipo["marca"],
@@ -301,8 +304,9 @@ class PageTypeEquipos:
                         descripcion=tipo_equipo["descripcion"],
                         equipo_componente=tipo_equipo["equipo_componente"],
                     )
-
-            self.desabilitar_campos()
+                    if respuesta:
+                        messagebox.showinfo("Exito", "Registro Editado")
+                        self.desabilitar_campos()
             self.tabla_lista()
         except Exception as error:
             if "expected floating-point number but got" in str(error):
@@ -366,7 +370,9 @@ class PageTypeEquipos:
                 "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )
             if valor == "yes":
-                TipoEquipos.delete(self.id_tipo_equipo)
+                respuesta = TipoEquipos.delete(self.id_tipo_equipo)
+                if respuesta:
+                    messagebox.showinfo("Exito", "Registro Eliminado")
                 self.tabla_lista()
                 self.desabilitar_campos()
         except Exception as error:

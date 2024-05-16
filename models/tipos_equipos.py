@@ -60,6 +60,7 @@ class TipoEquipos:
                     int(equipo_componente),
                 ),
             )
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -128,6 +129,7 @@ class TipoEquipos:
                     int(id),
                 ),
             )
+            return True
         except Exception as error:
             controlError(
                 error,

@@ -172,7 +172,6 @@ class Equipos:
             ORDER BY equi.id ASC;
         """
 
-
         if id>0:
             sql = """
             SELECT 

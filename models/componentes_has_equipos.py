@@ -56,6 +56,7 @@ class Componentes_has_Equipos:
         try:
             Componentes.restarUsados(int(id_componente))
             conexion.cursor.execute(sql, [int(id_componente_has_equipo)])
+            return True
         except Exception as error:
             print(error)
             controlError(

@@ -225,23 +225,28 @@ class PageCampos_tablas:
                 "Registro Nuevo", "Desea ingresar nuevo registro"
                 )
                 if valor == "yes":
-                    Campos_Tabla.create(
+                    respuesta = Campos_Tabla.create(
                         nombre=campo["nombre"],
                         descripcion=campo["descripcion"],
                         caracteres=campo["caracteres"],
                     )
+                    if respuesta:
+                        messagebox.showinfo("Exito", "Registro Completado")
+                        self.tabla_lista()
             else:
                 valor = messagebox.askquestion(
                     "Editar Registro", "Desea editar este registro"
                 )
                 if valor == "yes":
-                    Campos_Tabla.update(
+                    respuesta = Campos_Tabla.update(
                         id=self.id_campos_tabla,
                         nombre=campo["nombre"],
                         descripcion=campo["descripcion"],
                         caracteres=campo["caracteres"],
                     )
-
+                    if respuesta:
+                        messagebox.showinfo("Exito", "Registro Editado")
+                        self.tabla_lista()
         except Exception as error:
             controlError(
                 error,
@@ -250,7 +255,7 @@ class PageCampos_tablas:
             return
         finally:
             self.desabilitar_campos()
-            self.tabla_lista()
+            
 
     def desabilitar_campos(self):
         self.mi_nombre.set("")
@@ -296,8 +301,9 @@ class PageCampos_tablas:
                     message="No ha seleccionado ningun registro"
                     messagebox.showwarning(titulo, message)
                 else:
-                    Campos_Tabla.delete(self.id_campos_tabla)
-
+                    respuesta = Campos_Tabla.delete(self.id_campos_tabla)
+                    if respuesta:
+                        messagebox.showinfo("Exito", "Registro Eliminado")
                 self.tabla_lista()
                 self.desabilitar_campos()
         except Exception as error:

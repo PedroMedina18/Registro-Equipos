@@ -209,20 +209,25 @@ class PageBasic:
                 "Registro Nuevo", "Desea ingresar nuevo registro"
             )
             if valor == "yes":
-                self.model.create(
+                respuesta = self.model.create(
                     nombre=tipo_equipo["nombre"], descripcion=tipo_equipo["descripcion"]
                 )
+                if respuesta:
+                    messagebox.showinfo("Exito", "Registro Completado")
+                    self.desabilitar_campos()
         else:
             valor = messagebox.askquestion(
                 "Editar Registro", "Desea editar este registro"
             )
             if valor == "yes":
-                self.model.update(
+                respuesta = self.model.update(
                     id=self.id_model,
                     nombre=tipo_equipo["nombre"],
                     descripcion=tipo_equipo["descripcion"],
                 )
-        self.desabilitar_campos()
+                if respuesta:
+                    messagebox.showinfo("Exito", "Registro Editado")
+                    self.desabilitar_campos()
         self.tabla_lista()
 
     def desabilitar_campos(self):
@@ -266,7 +271,9 @@ class PageBasic:
                     message="No a seleccionado el registro que desea eliminar"
                     messagebox.showwarning(titulo, message)
                 else:
-                    self.model.delete(self.id_model)
+                    respuesta = self.model.delete(self.id_model)
+                    if respuesta:
+                        messagebox.showinfo("Exito", "Registro Eliminado")
                 self.desabilitar_campos()
                 self.tabla_lista()
 

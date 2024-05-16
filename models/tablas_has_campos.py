@@ -15,6 +15,7 @@ class Tablas_has_Campos:
 
         try:
             conexion.cursor.execute(sql_create, [int(tablas), int(campos)])
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -32,8 +33,15 @@ class Tablas_has_Campos:
             WHERE id = ?;
         """
 
+        sql_registros = """
+            DELETE FROM registros
+            WHERE campo_tablas_id = ?;
+        """
+
         try:
             conexion.cursor.execute(sql, [int(id)])
+            conexion.cursor.execute(sql_registros, [int(id)])
+            return True
         except Exception as error:
             controlError(
                 error,

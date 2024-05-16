@@ -30,6 +30,7 @@ class Caracteristicas:
 
         try:
             conexion.cursor.execute(sql, (str(nombre).capitalize(), str(descripcion)))
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -65,6 +66,7 @@ class Caracteristicas:
 
         try:
             conexion.cursor.execute(sql, (str(nombre).capitalize(), str(descripcion), int(id)))
+            return True
         except Exception as error:
             controlError(
                 error,

@@ -28,6 +28,7 @@ class Historial:
 
         try:
             conexion.cursor.execute(sql, (int(tipo_registro_id), int(equipo_id), fecha_registro, str(descripcion)))
+            return True
         except Exception as error:
             controlError(
                 error,

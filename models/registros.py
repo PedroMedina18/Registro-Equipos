@@ -39,6 +39,7 @@ class Registros:
                         fecha_hora_actual,
                     ],
                 )
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -77,7 +78,7 @@ class Registros:
                     conexion.cursor.execute(sql_update, [campo["value"], fecha_hora_actual, numero_registro, campo["id"]])
                 elif campo["type"]=="create":
                     conexion.cursor.execute(sql_create, [campo["id"], campo["value"], numero_registro, fecha_hora_actual, fecha_hora_actual])
-
+            return True
         except Exception as error:
             controlError(
                 error,
@@ -98,6 +99,7 @@ class Registros:
 
         try:
             conexion.cursor.execute(sql, [int(numero_registro)])
+            return True
         except Exception as error:
             controlError(
                 error,

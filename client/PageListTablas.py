@@ -406,15 +406,19 @@ class PageListTablas:
                 "Registro Nuevo", "Desea ingresar un nuevo registro"
             )
             if valor == "yes":
-                Registros.create(campos=list_campos)
+                respuesta = Registros.create(campos=list_campos)
+                if respuesta:
+                    messagebox.showinfo("Exito", "Registro Completado")
+                    self.desabilitar_campos()
         else:
             valor = messagebox.askquestion(
                 "Editar Registro", "Desea editar este registro"
             )
             if valor == "yes":
-                Registros.update(campos=list_campos, numero_registro=self.numero_registro)
-
-        self.desabilitar_campos()
+                respuesta = Registros.update(campos=list_campos, numero_registro=self.numero_registro)
+                if respuesta:
+                    messagebox.showinfo("Exito", "Registro Editado")
+                    self.desabilitar_campos()
         self.tabla_lista()
 
     def habilitar_campos(self):
@@ -439,7 +443,9 @@ class PageListTablas:
                 "Eliminar Registro", "Desea Eliminar el registro seleccionado"
             )
             if valor == "yes":
-                Registros.delete(self.numero_registro)
+                respuesta = Registros.delete(self.numero_registro)
+                if respuesta:
+                    messagebox.showinfo("Exito", "Registro Eliminado")
                 self.tabla_lista()
                 self.desabilitar_campos()
         except Exception as error:
