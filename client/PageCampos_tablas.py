@@ -146,7 +146,7 @@ class PageCampos_tablas:
         self.tabla.column("Nombre", stretch=tk.NO, minwidth="50", width="200")
         self.tabla.column("Caracteres", stretch=tk.NO, minwidth="25", width="80")
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25")
-        self.tabla.bind('<ButtonRelease-1>', self.on_treeview_click)
+        self.tabla.bind("<ButtonPress-1>", self.on_treeview_click)
 
         # iterar la lista d epeliculas
         for index, item in enumerate(self.lista_campos, start=1):
@@ -187,11 +187,11 @@ class PageCampos_tablas:
             self.order="DESC"
         else:
             self.order="ASC"
-
+        region = self.tabla.identify_region(event.x ,event.y)
         column = self.tabla.identify_column(event.x)
         item = self.tabla.identify_row(event.y)
 
-        if item=="":
+        if item=="" and region=="heading":
             if column == "#1":
                 self.lista_campos = Campos_Tabla.list(ordenador={"campo":"id", "order":self.order})
             elif column == "#2":

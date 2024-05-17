@@ -194,7 +194,7 @@ class PageEquipos:
         self.tabla_historial_listEquipos.column("Ubicacion", stretch=tk.NO, minwidth="25", width="140")
         self.tabla_historial_listEquipos.column("Estado", stretch=tk.NO, minwidth="25", width="140" )
         self.tabla_historial_listEquipos.column("Area", stretch=tk.YES, minwidth="25")
-        self.tabla_historial_listEquipos.bind('<ButtonRelease-1>', self.on_treeview_click_equipos)
+        self.tabla_historial_listEquipos.bind("<ButtonPress-1>", self.on_treeview_click_equipos)
 
         self.list_equipos_ordenados=[]
         # iterar la lista de campos
@@ -214,8 +214,9 @@ class PageEquipos:
 
         column = self.tabla_historial_listEquipos.identify_column(event.x)
         item = self.tabla_historial_listEquipos.identify_row(event.y)
+        region = self.tabla_historial_listEquipos.identify_region(event.x ,event.y)
 
-        if item == "":
+        if item=="" and region=="heading":
             if column == "#1":
                 self.list_equipos = sort_tuples(self.list_equipos_ordenados, 0, self.order_equipos)
             elif column == "#2":
@@ -788,7 +789,7 @@ class PageEquipos:
         self.tabla_historial.column("Fecha", stretch=tk.NO, minwidth="50", width="150")
         self.tabla_historial.column("Descripcion", stretch=tk.YES, minwidth="25")
 
-        self.tabla_historial.bind('<ButtonRelease-1>', self.on_treeview_click_historial)
+        self.tabla_historial.bind("<ButtonPress-1>", self.on_treeview_click_historial)
 
 
         # iterar la lista de areas de trabao
@@ -834,8 +835,9 @@ class PageEquipos:
 
         column = self.tabla_historial.identify_column(event.x)
         item = self.tabla_historial.identify_row(event.y)
+        region = self.tabla_historial.identify_region(event.x ,event.y)
 
-        if item=="":
+        if item=="" and region=="heading":
             if column == "#1":
                 self.dataHistorial = Historial.list(equipo_id=self.id_equipo, ordenador={"campo":"hi.id", "order":self.order_historial})
             elif column == "#2":

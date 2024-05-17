@@ -81,7 +81,7 @@ class PageComponent:
         self.tabla_listComponentes.column("Almacen", stretch=tk.NO, minwidth="25", width="200")
         self.tabla_listComponentes.column("Dañados", stretch=tk.NO, minwidth="25", width="200")
         self.tabla_listComponentes.column("Usados", stretch=tk.YES, minwidth="25", width="200")
-        self.tabla_listComponentes.bind('<ButtonRelease-1>', self.on_treeview_click)
+        self.tabla_listComponentes.bind("<ButtonPress-1>", self.on_treeview_click)
         # edit column
 
         # iterar la lista de campos
@@ -125,8 +125,9 @@ class PageComponent:
 
         column = self.tabla_listComponentes.identify_column(event.x)
         item = self.tabla_listComponentes.identify_row(event.y)
+        region = self.tabla_listComponentes.identify_region(event.x ,event.y)
 
-        if item=="":
+        if item=="" and region=="heading":
             if column == "#1":
                 self.list_componentes = Componentes.list(ordenador={"campo":"com.id", "order":self.order})
             elif column == "#2":

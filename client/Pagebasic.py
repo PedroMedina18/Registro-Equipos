@@ -138,7 +138,8 @@ class PageBasic:
         self.tabla.column("Nombre", stretch=tk.NO, minwidth="50", width="200")
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25")
 
-        self.tabla.bind('<ButtonRelease-1>', self.on_treeview_click)
+        self.tabla.bind("<ButtonPress-1>", self.on_treeview_click)
+
 
         # iterar la lista de areas de trabao
         for index, item in enumerate(self.lista_registros, start=1):
@@ -178,11 +179,11 @@ class PageBasic:
             self.order="DESC"
         else:
             self.order="ASC"
-
+        region = self.tabla.identify_region(event.x ,event.y)
         column = self.tabla.identify_column(event.x)
         item = self.tabla.identify_row(event.y)
 
-        if item=="":
+        if item=="" and region=="heading":
             if column == "#1":
                 self.lista_registros = self.model.list(ordenador={"campo":"id", "order":self.order})
             elif column == "#2":

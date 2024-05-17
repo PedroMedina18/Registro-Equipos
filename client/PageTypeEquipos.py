@@ -187,7 +187,7 @@ class PageTypeEquipos:
         self.tabla.column("Tipo", stretch=tk.NO, minwidth="25", width="150")
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25", width="150")
 
-        self.tabla.bind('<ButtonRelease-1>', self.on_treeview_click)
+        self.tabla.bind("<ButtonPress-1>", self.on_treeview_click)
 
         # iterar la lista de tipos de equipo
 
@@ -239,8 +239,9 @@ class PageTypeEquipos:
 
         column = self.tabla.identify_column(event.x)
         item = self.tabla.identify_row(event.y)
+        region = self.tabla.identify_region(event.x ,event.y)
 
-        if item=="":
+        if item=="" and region=="heading":
             if column == "#1":
                 self.lista_equipos = TipoEquipos.list(ordenador={"campo":"id", "order":self.order})
             elif column == "#2":

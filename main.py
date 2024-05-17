@@ -13,7 +13,10 @@ def main():
     # *para agregar pantalla completa
     root.state("zoomed")
 
-    root.iconbitmap("./img/icono.ico")
+    root.iconbitmap("./img/sistemas_icono.ico")
+    icon_image = tk.PhotoImage(file="./img/sistemas_escritorio.png")
+    root.iconphoto(True, icon_image)
+
 
     # *tamaño de la ventana en caso de reducir
     width, height = 1250, 800   

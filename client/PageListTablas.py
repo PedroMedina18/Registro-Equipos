@@ -77,7 +77,7 @@ class PageListTablas:
         self.tabla_listTablas.column("Nombre", stretch=tk.NO, minwidth="25", width="250")
         self.tabla_listTablas.column("Descripcion", stretch=tk.YES, minwidth="25")
 
-        self.tabla_listTablas.bind('<ButtonRelease-1>', self.on_treeview_click)
+        self.tabla_listTablas.bind("<ButtonPress-1>", self.on_treeview_click)
 
         # iterar la lista de campos
         for index, item in enumerate(self.list_tabla, start=1):
@@ -107,8 +107,9 @@ class PageListTablas:
 
         column = self.tabla_listTablas.identify_column(event.x)
         item = self.tabla_listTablas.identify_row(event.y)
+        region = self.tabla_listTablas.identify_region(event.x ,event.y)
 
-        if item=="":
+        if item == "" and region=="heading":
             if column == "#1":
                 self.list_tabla = Tablas.list(ordenador={"campo":"id", "order":self.order_table})
             elif column == "#2":
@@ -300,7 +301,7 @@ class PageListTablas:
             if object=="fecha_creacion" or object=="fecha_actualizacion":
                 self.tabla_registros.column(f"{object}", stretch=tk.NO, minwidth="50", width="180")
 
-        self.tabla_registros.bind('<ButtonRelease-1>', self.on_treeview_click_registros)
+        self.tabla_registros.bind("<ButtonPress-1>", self.on_treeview_click_registros)
         self.lista_valores=[]
 
         # Para insertar los registros en al tabla
@@ -354,8 +355,9 @@ class PageListTablas:
 
         column = self.tabla_registros.identify_column(event.x)
         item = self.tabla_registros.identify_row(event.y)
+        region = self.tabla_registros.identify_region(event.x ,event.y)
 
-        if item == "":
+        if item == "" and region=="heading":
             indice = re.findall('\d+', column)
             self.lista_registros = sort_tuples(self.lista_valores, int(indice[0])-1, self.order_registros)
             self.tabla_lista(False)
