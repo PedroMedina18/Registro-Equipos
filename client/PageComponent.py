@@ -160,7 +160,7 @@ class PageComponent:
         self.cambioInterfaz(self.controlComponent)
 
     def controlComponent(self):
-        self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))
+        self.icon_papelera = leer_imagen("img/trash.png", (30, 30))
         self.framePrincipal.columnconfigure(1, weight=1)
 
         buttonRegresar = tk.Button(self.framePrincipal, text="Regresar")

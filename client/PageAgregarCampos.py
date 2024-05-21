@@ -95,7 +95,7 @@ class PageAgregarCampos:
         self.boton_agregar.grid(row=2, column=3, padx=5, pady=10)
 
     def frameCampos(self):
-        self.icon_papelera = leer_imagen("./img/trash.png", (30, 30))
+        self.icon_papelera = leer_imagen("img/trash.png", (30, 30))
         self.frame_campos = tk.Frame(self.framePrincipal, bg=COLOR_BASE, height=100)
         self.frame_campos.columnconfigure(4, weight=1)
         self.frame_campos.grid(

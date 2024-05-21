@@ -33,8 +33,8 @@ class MainFrame:
 
     def __init__(self, root):
         self.root = root
-        self.imgInicio = util_img.leer_imagen("./img/ordenador.png", (300, 300))
-        self.imgLocatel = util_img.leer_imagen("./img/logo-locatel.png", (200, 60))
+        self.imgInicio = util_img.leer_imagen("img/ordenador.png", (300, 300))
+        self.imgLocatel = util_img.leer_imagen("img/logo-locatel.png", (200, 60))
         self.rootScroll=None
         self.cuerpo_principal = None
         self.menus()
@@ -132,7 +132,7 @@ class MainFrame:
         self.frame_barra_superior.pack(side=tk.TOP, fill=tk.BOTH)
 
         font_awesome = font.Font(family="FontAwesome", size=12)
-        self.menu = util_img.leer_imagen("./img/menu.png", (50, 50))
+        self.menu = util_img.leer_imagen("img/menu.png", (50, 50))
 
         # Etiqueta de título
         self.labelTitulo = tk.Label(
@@ -171,11 +171,11 @@ class MainFrame:
         self.ancho_menuButton = 18
         self.alto_menuButton = 2
         self.font_awesomeButton = font.Font(family="FontAwesome", size=15)
-        self.home = util_img.leer_imagen("./img/home.png", (50, 50))
-        self.destokp = util_img.leer_imagen("./img/destokp.png", (50, 50))
-        self.devices = util_img.leer_imagen("./img/devices.png", (50, 50))
-        self.tables = util_img.leer_imagen("./img/table.png", (50, 50))
-        self.component = util_img.leer_imagen("./img/componente.png", (50, 50))
+        self.home = util_img.leer_imagen("img/home.png", (50, 50))
+        self.destokp = util_img.leer_imagen("img/destokp.png", (50, 50))
+        self.devices = util_img.leer_imagen("img/devices.png", (50, 50))
+        self.tables = util_img.leer_imagen("img/table.png", (50, 50))
+        self.component = util_img.leer_imagen("img/componente.png", (50, 50))
 
         # Botones del menú lateral
         self.buttonHome = ttk.Button(

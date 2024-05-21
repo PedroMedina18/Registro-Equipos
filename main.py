@@ -13,8 +13,8 @@ def main():
     # *para agregar pantalla completa
     root.state("zoomed")
 
-    root.iconbitmap("./img/sistemas_icono.ico")
-    icon_image = tk.PhotoImage(file="./img/sistemas_escritorio.png")
+    root.iconbitmap("img/sistemas_icono.ico")
+    icon_image = tk.PhotoImage(file="img/sistemas_escritorio.png")
     root.iconphoto(True, icon_image)
 
 
