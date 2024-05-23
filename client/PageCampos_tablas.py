@@ -147,6 +147,7 @@ class PageCampos_tablas:
         self.tabla.column("Caracteres", stretch=tk.NO, minwidth="25", width="80")
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25")
         self.tabla.bind("<ButtonPress-1>", self.on_treeview_click)
+        self.tabla.bind('<Double-Button-1>', self.handle_double_click)
 
         # iterar la lista d epeliculas
         for index, item in enumerate(self.lista_campos, start=1):
@@ -203,6 +204,11 @@ class PageCampos_tablas:
 
             self.tabla_lista(False)
 
+    def handle_double_click(self, event):
+        region = self.tabla.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.editar_datos()
+
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")
         self.entry_descripcion.config(state="normal")
@@ -256,7 +262,6 @@ class PageCampos_tablas:
         finally:
             self.desabilitar_campos()
             
-
     def desabilitar_campos(self):
         self.mi_nombre.set("")
         self.caracteres.set("")

@@ -82,6 +82,7 @@ class PageComponent:
         self.tabla_listComponentes.column("Dañados", stretch=tk.NO, minwidth="25", width="200")
         self.tabla_listComponentes.column("Usados", stretch=tk.YES, minwidth="25", width="200")
         self.tabla_listComponentes.bind("<ButtonPress-1>", self.on_treeview_click)
+        self.tabla_listComponentes.bind('<Double-Button-1>', self.handle_double_click)
         # edit column
 
         # iterar la lista de campos
@@ -140,6 +141,11 @@ class PageComponent:
                 self.list_componentes = Componentes.list(ordenador={"campo":"com.uso", "order":self.order})
         
             self.listComponentes(False)
+
+    def handle_double_click(self, event):
+        region = self.tabla_listComponentes.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.buscarComponente()
 
     # *la que destrulle y crea una nueva interfaz
     def cambioInterfaz(self, interfaz):

@@ -78,6 +78,7 @@ class PageListTablas:
         self.tabla_listTablas.column("Descripcion", stretch=tk.YES, minwidth="25")
 
         self.tabla_listTablas.bind("<ButtonPress-1>", self.on_treeview_click)
+        self.tabla_listTablas.bind('<Double-Button-1>', self.handle_double_click)
 
         # iterar la lista de campos
         for index, item in enumerate(self.list_tabla, start=1):
@@ -117,6 +118,12 @@ class PageListTablas:
             elif column == "#3":
                 self.list_tabla = Tablas.list(ordenador={"campo":"descripcion", "order":self.order_table})
             self.lista_tablas(False)
+
+    def handle_double_click(self, event):
+        region = self.tabla_listTablas.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.buscarDataTabla()
+
 
     # *la que destrulle y crea el nuevo frame
     def buscarDataTabla(self):
@@ -302,6 +309,7 @@ class PageListTablas:
                 self.tabla_registros.column(f"{object}", stretch=tk.NO, minwidth="50", width="180")
 
         self.tabla_registros.bind("<ButtonPress-1>", self.on_treeview_click_registros)
+        self.tabla_registros.bind('<Double-Button-1>', self.handle_double_click_registros)
         self.lista_valores=[]
 
         # Para insertar los registros en al tabla
@@ -361,6 +369,11 @@ class PageListTablas:
             indice = re.findall('\d+', column)
             self.lista_registros = sort_tuples(self.lista_valores, int(indice[0])-1, self.order_registros)
             self.tabla_lista(False)
+    
+    def handle_double_click_registros(self, event):
+        region = self.tabla_registros.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.editar_datos()
 
     def desabilitar_campos(self):
 

@@ -104,7 +104,7 @@ class PageTypeEquipos:
 
         self.entry_descripcion = tk.Text(self.framePrincipal)
         self.entry_descripcion.config( height=10, font=FONT_LABEL)
-        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=4, sticky="ew")
+        self.entry_descripcion.grid(row=6, column=1, pady=10, columnspan=2, sticky="ew")
 
         scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
         scroll.grid(row=6, column=3, sticky="nse", pady=10)
@@ -188,6 +188,7 @@ class PageTypeEquipos:
         self.tabla.column("Descripcion", stretch=tk.YES, minwidth="25", width="150")
 
         self.tabla.bind("<ButtonPress-1>", self.on_treeview_click)
+        self.tabla.bind('<Double-Button-1>', self.handle_double_click)
 
         # iterar la lista de tipos de equipo
 
@@ -256,6 +257,11 @@ class PageTypeEquipos:
                 self.lista_equipos = TipoEquipos.list(ordenador={"campo":"descripcion", "order":self.order})
         
             self.tabla_lista(False)
+
+    def handle_double_click(self, event):
+        region = self.tabla.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.editar_datos()
 
     def habilitar_campos(self):
         self.entry_nombre.config(state="normal")

@@ -195,6 +195,7 @@ class PageEquipos:
         self.tabla_historial_listEquipos.column("Estado", stretch=tk.NO, minwidth="25", width="140" )
         self.tabla_historial_listEquipos.column("Area", stretch=tk.YES, minwidth="25")
         self.tabla_historial_listEquipos.bind("<ButtonPress-1>", self.on_treeview_click_equipos)
+        self.tabla_historial_listEquipos.bind('<Double-Button-1>', self.handle_double_click)
 
         self.list_equipos_ordenados=[]
         # iterar la lista de campos
@@ -232,6 +233,11 @@ class PageEquipos:
             elif column == "#7":
                 self.list_equipos = sort_tuples(self.list_equipos_ordenados, 6, self.order_equipos)
             self.tabla_equipos()
+
+    def handle_double_click(self, event):
+        region = self.tabla_historial_listEquipos.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.infoEquipo()
 
     # *la que destrulle y crea una nueva interfaz
     def cambioInterfaz(self, interfaz):
@@ -704,7 +710,7 @@ class PageEquipos:
 
             self.entry_descripcion = tk.Text(self.framePrincipal)
             self.entry_descripcion.config(height=10, font=FONT_LABEL)
-            self.entry_descripcion.grid(row=4, column=1, pady=10, columnspan=3, sticky="ew")
+            self.entry_descripcion.grid(row=4, column=1, pady=10, columnspan=2, sticky="ew")
 
             scroll = tk.Scrollbar(self.framePrincipal, command=self.entry_descripcion.yview)
             scroll.grid(row=4, column=3, sticky="nsw", pady=10)
@@ -788,6 +794,7 @@ class PageEquipos:
         self.tabla_historial.column("Tipo de Registro", stretch=tk.NO, minwidth="50", width="200")
         self.tabla_historial.column("Fecha", stretch=tk.NO, minwidth="50", width="150")
         self.tabla_historial.column("Descripcion", stretch=tk.YES, minwidth="25")
+        self.tabla_historial.bind('<Double-Button-1>', self.handle_double_click_historial)
 
         self.tabla_historial.bind("<ButtonPress-1>", self.on_treeview_click_historial)
 
@@ -847,6 +854,11 @@ class PageEquipos:
             elif column == "#4":
                 self.dataHistorial = Historial.list(equipo_id=self.id_equipo, ordenador={"campo":"hi.descripcion", "order":self.order_historial})
             self.tabla_lista_historial(False)
+
+    def handle_double_click_historial(self, event):
+        region = self.tabla_historial.identify_region(event.x ,event.y)
+        if region == "cell":
+            self.editar_datos_historial()
 
     def guardar_campos_historial(self):
         tipo_registro = self.select_tipo_registro.current()
