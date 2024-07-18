@@ -10,10 +10,12 @@ import datetime
 
 class Equipos:
 
-    def create(serial="", alias="", tipos_equipos_id=0, bolivar_marron=None, estado_actual_id=0, area_trabajo_id=0, componentes=[]):
+    def create(serial="", alias="", contraseña="", ip="", tipos_equipos_id=0, bolivar_marron=None, estado_actual_id=0, area_trabajo_id=0, componentes=[]):
         conexion = ConexionDB()
         comprobacionSerial = comprobacionString(serial, 100)
-        comprobacionAlias = comprobacionString(alias, 200, False)
+        comprobacionAlias = comprobacionString(alias, 100, False)
+        comprobacionIp = comprobacionString(ip, 100, False)
+        comprobacioncontraseña = comprobacionString(contraseña, 100, False)
         comprobarUbicacion = comprobacionBoolean(bolivar_marron)
 
         if not comprobacionSerial["status"]:
@@ -24,7 +26,19 @@ class Equipos:
 
         if not comprobacionAlias["status"]:
             messagebox.showwarning(
-                TITULO_CAMPOS, f'Campo Alias {comprobacionSerial["message"]}'
+                TITULO_CAMPOS, f'Campo Alias {comprobacionAlias["message"]}'
+            )
+            return None
+
+        if not comprobacionIp["status"]:
+            messagebox.showwarning(
+                TITULO_CAMPOS, f'Campo Ip {comprobacionIp["message"]}'
+            )
+            return None
+    
+        if not comprobacioncontraseña["status"]:
+            messagebox.showwarning(
+                TITULO_CAMPOS, f'Campo Contraseña {comprobacioncontraseña["message"]}'
             )
             return None
 
@@ -36,8 +50,8 @@ class Equipos:
             return None
 
         sql_equipo = """
-            INSERT INTO equipos (serial, alias, tipos_equipos_id, bolivar_marron, estado_actual_id, area_trabajo_id)
-            VALUES(?, ?, ?, ?, ?, ?)
+            INSERT INTO equipos (serial, alias, ip, contraseña, tipos_equipos_id, bolivar_marron, estado_actual_id, area_trabajo_id)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?)
         """
 
         sql_componente_equipo = """
@@ -46,7 +60,7 @@ class Equipos:
         """
         componentes_id=[]
         try:
-            conexion.cursor.execute(sql_equipo, (str(serial), str(alias), int(tipos_equipos_id), int(bolivar_marron), int(estado_actual_id), int(area_trabajo_id)))
+            conexion.cursor.execute(sql_equipo, (str(serial), str(alias), str(ip), str(contraseña), int(tipos_equipos_id), int(bolivar_marron), int(estado_actual_id), int(area_trabajo_id)))
             ultimo_registro_equipo = conexion.cursor.lastrowid
 
             for componente in componentes:
@@ -67,9 +81,11 @@ class Equipos:
             Componentes.sumarUsados(int(componente_id))
         return True
 
-    def update(serial="", alias="", tipos_equipos_id=0, bolivar_marron=bool, estado_actual_id=0, area_trabajo_id=0, id=0, componentes=[]):
+    def update(serial="", alias="", contraseña="", ip="", tipos_equipos_id=0, bolivar_marron=bool, estado_actual_id=0, area_trabajo_id=0, id=0, componentes=[]):
         conexion = ConexionDB()
         comprobacionSerial = comprobacionString(serial, 100)
+        comprobacionIp = comprobacionString(ip, 100, False)
+        comprobacioncontraseña = comprobacionString(contraseña, 100, False)
         comprobacionAlias = comprobacionString(alias, 100, False)
         comprobarUbicacion = comprobacionBoolean(bolivar_marron)
 
@@ -84,7 +100,18 @@ class Equipos:
                 TITULO_CAMPOS, f'Campo Alias {comprobacionSerial["message"]}'
             )
             return None
-
+        
+        if not comprobacionIp["status"]:
+            messagebox.showwarning(
+                TITULO_CAMPOS, f'Campo Ip {comprobacionIp["message"]}'
+            )
+            return None
+    
+        if not comprobacioncontraseña["status"]:
+            messagebox.showwarning(
+                TITULO_CAMPOS, f'Campo Contraseña {comprobacioncontraseña["message"]}'
+            )
+            return None
 
         if not comprobarUbicacion["status"]:
             messagebox.showwarning(
@@ -99,6 +126,8 @@ class Equipos:
             SET 
                 serial=?,
                 alias=?, 
+                ip=?,
+                contraseña=?,
                 tipos_equipos_id=?, 
                 bolivar_marron=?, 
                 estado_actual_id=?, 
@@ -111,7 +140,7 @@ class Equipos:
         """
 
         try:
-            conexion.cursor.execute(sql, (str(serial), str(alias), int(tipos_equipos_id), bool(bolivar_marron), int(estado_actual_id), int(area_trabajo_id), int(id)))
+            conexion.cursor.execute(sql, (str(serial), str(alias), str(ip), str(contraseña), int(tipos_equipos_id), bool(bolivar_marron), int(estado_actual_id), int(area_trabajo_id), int(id)))
             
             componentes_id=[]
             for componente in componentes:
@@ -178,6 +207,8 @@ class Equipos:
                 equi.id,
                 equi.serial,
                 equi.alias,
+                equi.contraseña,
+                equi.ip,
                 equi.tipos_equipos_id,
                 tip.nombre,
                 equi.bolivar_marron,

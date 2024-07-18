@@ -47,7 +47,9 @@ def crearTablas():
         CREATE TABLE equipos (
             id INTEGER NOT NULL,
             serial VARCHAR(100) NOT NULL UNIQUE,
-            alias VARCHAR(100) UNIQUE,
+            alias VARCHAR(100) NULL UNIQUE,
+            ip VARCHAR(100) NULL,
+            contraseña VARCHAR(100) NULL,
             tipos_equipos_id INT NOT NULL,
             bolivar_marron BOOLEAN NOT NULL,
             estado_actual_id INT NOT NULL,

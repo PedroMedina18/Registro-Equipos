@@ -298,21 +298,29 @@ class PageEquipos:
         label_alias.config(font=FONT_LABEL, bg=COLOR_BASE)
         label_alias.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
+        label_contraseña = tk.Label(self.framePrincipal, text="Contraseña:")
+        label_contraseña.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_contraseña.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+
+        label_ip = tk.Label(self.framePrincipal, text="IP:")
+        label_ip.config(font=FONT_LABEL, bg=COLOR_BASE)
+        label_ip.grid(row=5, column=0, padx=10, pady=10, sticky="w")
+
         label_tipo_equipo = tk.Label(self.framePrincipal, text="Tipo de Equipo:")
         label_tipo_equipo.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_tipo_equipo.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        label_tipo_equipo.grid(row=6, column=0, padx=10, pady=10, sticky="w")
 
         label_ubicacion = tk.Label(self.framePrincipal, text="Ubicacion:")
         label_ubicacion.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_ubicacion.grid(row=5, column=0, padx=10, pady=10, sticky="w")
+        label_ubicacion.grid(row=7, column=0, padx=10, pady=10, sticky="w")
 
         label_estado = tk.Label(self.framePrincipal, text="Estado:")
         label_estado.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_estado.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+        label_estado.grid(row=8, column=0, padx=10, pady=10, sticky="w")
 
         label_area_trabajo = tk.Label(self.framePrincipal, text="Area de Trabajo:")
         label_area_trabajo.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_area_trabajo.grid(row=7, column=0, padx=10, pady=10, sticky="w")
+        label_area_trabajo.grid(row=9, column=0, padx=10, pady=10, sticky="w")
 
         # SELECTS
         self.mi_serial = tk.StringVar()
@@ -325,31 +333,40 @@ class PageEquipos:
         self.entry_alias.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
         self.entry_alias.grid(row=3, column=1, pady=10, padx=10, columnspan=2, sticky="ew")
         
+        self.mi_contraseña = tk.StringVar()
+        self.entry_contraseña = tk.Entry(self.framePrincipal, textvariable=self.mi_contraseña)
+        self.entry_contraseña.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_contraseña.grid(row=4, column=1, pady=10, padx=10, columnspan=2, sticky="ew")
+
+        self.mi_ip = tk.StringVar()
+        self.entry_ip = tk.Entry(self.framePrincipal, textvariable=self.mi_ip)
+        self.entry_ip.config(width=TAMAÑO_ENTRYS, font=FONT_LABEL)
+        self.entry_ip.grid(row=5, column=1, pady=10, padx=10, columnspan=2, sticky="ew")
 
         self.select_tipo_equipo = ttk.Combobox(self.framePrincipal, state="readonly", values=list_values(self.list_tipos_equipos), width=25, font=("Arial", 10, "roman"), justify="center")
         self.select_tipo_equipo.config(style="Combobox.TCombobox")
-        self.select_tipo_equipo.grid(row=4, column=1, padx=10, pady=10, columnspan=2)
+        self.select_tipo_equipo.grid(row=6, column=1, padx=10, pady=10, columnspan=2)
 
         self.select_ubicacion = ttk.Combobox(self.framePrincipal, state="readonly", values=self.list_ubicacion, width=25, font=("Arial", 10, "roman"), justify="center")
         self.select_ubicacion.config(style="Combobox.TCombobox")
-        self.select_ubicacion.grid(row=5, column=1, padx=10, pady=10, columnspan=2)
+        self.select_ubicacion.grid(row=7, column=1, padx=10, pady=10, columnspan=2)
 
         self.select_estado = ttk.Combobox(self.framePrincipal, state="readonly", values=list_values(self.list_estados), width=25, font=("Arial", 10, "roman"), justify="center")
         self.select_estado.config(style="Combobox.TCombobox")
-        self.select_estado.grid(row=6, column=1, padx=10, pady=10, columnspan=2)
+        self.select_estado.grid(row=8, column=1, padx=10, pady=10, columnspan=2)
 
         self.select_area_trabajo = ttk.Combobox(self.framePrincipal, state="readonly", values=list_values(self.list_areas_trabajos), width=25, font=("Arial", 10, "roman"), justify="center")
         self.select_area_trabajo.config(style="Combobox.TCombobox")
-        self.select_area_trabajo.grid(row=7, column=1, padx=10, pady=10, columnspan=2 )
+        self.select_area_trabajo.grid(row=9, column=1, padx=10, pady=10, columnspan=2 )
 
         label_componente = tk.Label(self.framePrincipal, text="Componentes")
         label_componente.config(font=FONT_LABEL, bg=COLOR_BASE)
-        label_componente.grid(row=8, column=0, padx=10, pady=10, sticky="w")
+        label_componente.grid(row=10, column=0, padx=10, pady=10, sticky="w")
 
         self.list_values_componentes=list_values(self.list_componentes)
         self.select_componente = ttk.Combobox(self.framePrincipal, state="readonly", values=self.list_values_componentes, width=18, font=("Arial", 10, "roman"), justify="center")
         self.select_componente.config(style="Combobox.TCombobox")
-        self.select_componente.grid(row=8, column=1, padx=10, pady=10)
+        self.select_componente.grid(row=10, column=1, padx=10, pady=10)
         
         self.boton_agregar = tk.Button(self.framePrincipal, text="Agregar")
         self.boton_agregar.config(
@@ -361,10 +378,10 @@ class PageEquipos:
             activebackground=ACTIVE_AZUL,
             command=self.agregarComponente
         )
-        self.boton_agregar.grid(row=8, column=2, padx=10, pady=10)
+        self.boton_agregar.grid(row=10, column=2, padx=10, pady=10)
 
         self.frameComponentes = tk.Frame(self.framePrincipal, bg=COLOR_BASE, height=150)
-        self.frameComponentes.grid(row=9, column=0, pady=5, padx=10, columnspan=3, sticky="NSEW")
+        self.frameComponentes.grid(row=11, column=0, pady=5, padx=10, columnspan=3, sticky="NSEW")
         self.boton_guardar = tk.Button(
             self.framePrincipal, text="Guardar", command=self.guardar
         )
@@ -383,12 +400,14 @@ class PageEquipos:
 
             self.mi_serial.set(f"{self.dataEquipo[0][1]}")
             self.mi_alias.set(f"{self.dataEquipo[0][2]}")
-            indice_tipo_equipo=determinar_indice(self.list_tipos_equipos, self.dataEquipo[0][3])
+            self.mi_contraseña.set(f"{self.dataEquipo[0][3]}")
+            self.mi_ip.set(f"{self.dataEquipo[0][4]}")
+            indice_tipo_equipo=determinar_indice(self.list_tipos_equipos, self.dataEquipo[0][5])
             self.select_tipo_equipo.current(indice_tipo_equipo)
-            self.select_ubicacion.current(self.dataEquipo[0][5])
-            indice_estado=determinar_indice(self.list_estados, self.dataEquipo[0][6])
+            self.select_ubicacion.current(self.dataEquipo[0][7])
+            indice_estado=determinar_indice(self.list_estados, self.dataEquipo[0][8])
             self.select_estado.current(indice_estado)
-            indice_area_trabajo=determinar_indice(self.list_areas_trabajos, self.dataEquipo[0][8])
+            indice_area_trabajo=determinar_indice(self.list_areas_trabajos, self.dataEquipo[0][10])
             self.select_area_trabajo.current(indice_area_trabajo)
 
             # Botones
@@ -459,7 +478,7 @@ class PageEquipos:
             activebackground=ACTIVE_VERDE,
         )
 
-        self.boton_nuevo.grid(row=10, column=0, padx=10, pady=10)
+        self.boton_nuevo.grid(row=12, column=0, padx=10, pady=10)
 
         self.boton_guardar.config(
             width=TAMAÑO_BOTON,
@@ -469,7 +488,7 @@ class PageEquipos:
             cursor="hand2",
             activebackground=ACTIVE_AZUL,
         )
-        self.boton_guardar.grid(row=10, column=1, padx=10, pady=10)
+        self.boton_guardar.grid(row=12, column=1, padx=10, pady=10)
 
         self.boton_cancelar.config(
             width=TAMAÑO_BOTON,
@@ -479,7 +498,7 @@ class PageEquipos:
             cursor="hand2",
             activebackground=ACTIVE_ROJO,
         )
-        self.boton_cancelar.grid(row=10, column=2, padx=10, pady=10)
+        self.boton_cancelar.grid(row=12, column=2, padx=10, pady=10)
 
     def agregarComponente(self):
         try:
@@ -592,6 +611,8 @@ class PageEquipos:
                 return
 
             serial=self.mi_serial.get()
+            IP=self.mi_ip.get()
+            contraseña=self.mi_contraseña.get()
             alias=self.mi_alias.get()
             id_tipo_equipo=self.list_tipos_equipos[tipo_equipo][0]
             id_estado=self.list_estados[estado][0]
@@ -607,7 +628,7 @@ class PageEquipos:
                     "Editar Registro", "Desea editar este registro"
                 )
                 if valor == "yes":
-                    actualizar_equipo=Equipos.update(id=self.dataEquipo[0][0], serial=serial, alias=alias, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
+                    actualizar_equipo=Equipos.update(id=self.dataEquipo[0][0], ip=IP, contraseña=contraseña, serial=serial, alias=alias, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
                     if actualizar_equipo:
                         titulo="Exito"
                         message="Registro Editado"
@@ -619,7 +640,7 @@ class PageEquipos:
                     "Registro Nuevo", "Desea ingresar nuevo registro "
                 )
                 if valor == "yes":
-                    crear_equipo=Equipos.create(serial=serial, alias=alias, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
+                    crear_equipo=Equipos.create(serial=serial, alias=alias, ip=IP, contraseña=contraseña, area_trabajo_id=id_area_trabajo, estado_actual_id=id_estado, tipos_equipos_id=id_tipo_equipo, bolivar_marron=ubicacion, componentes=componentes)
                     if crear_equipo:
                         titulo="Exito"
                         message="Desea crear otro registro"
@@ -636,6 +657,9 @@ class PageEquipos:
 
     def reset(self):
         self.mi_serial.set("")
+        self.mi_ip.set("")
+        self.mi_contraseña.set("")
+        self.mi_alias.set("")
         self.select_area_trabajo.set("")
         self.select_componente.set("")
         self.select_ubicacion.set("")
@@ -978,6 +1002,8 @@ class PageEquipos:
     def habilitar_campos(self):
         self.entry_serial.config(state="normal")
         self.entry_alias.config(state="normal")
+        self.entry_ip.config(state="normal")
+        self.entry_contraseña.config(state="normal")
         self.select_area_trabajo.config(state="readonly")
         self.select_estado.config(state="readonly")
         self.select_ubicacion.config(state="readonly")
@@ -994,6 +1020,8 @@ class PageEquipos:
     def desabilitar_campos(self):
         self.entry_serial.config(state="disabled")
         self.entry_alias.config(state="disabled")
+        self.entry_ip.config(state="disabled")
+        self.entry_contraseña.config(state="disabled")
         self.select_area_trabajo.config(state="disabled")
         self.select_estado.config(state="disabled")
         self.select_ubicacion.config(state="disabled")
@@ -1010,6 +1038,8 @@ class PageEquipos:
 
         if not self.dataEquipo:
             self.mi_serial.set("")
+            self.mi_ip.set("")
+            self.mi_contraseña.set("")
             self.mi_alias.set("")
             self.select_area_trabajo.set("")
             self.select_estado.set("")
